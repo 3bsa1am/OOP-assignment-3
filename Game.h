@@ -1,55 +1,83 @@
 #ifndef GAME_H
 #define GAME_H
+#include "BoardGame_Classes.h"
 #include <iostream>
 #include <vector>
 #include <string>
-#include <cstdlib>
-#include <ctime>
 using namespace std;
 
-enum PlayerType{HUMAN, COMPUTER};
+struct Point {
+    int r, c;
+};
 
-struct Point{int r, c;};
-
-class Board{
+class TTT_Board : public Board<char> {
 protected:
-    int rows,cols;
-    vector<vector<char>> grid;
-    vector<Point> history; 
-
-public:
-    Board(int r,int c);
-    virtual ~Board() {}
-
-    void display() const;
+    vector<Point> history;
+    bool isValidMove(int r, int c) const;
+    bool checkWin(char s);
     bool isFull() const;
+public:
+    TTT_Board();
     void undoLastMove();
-    int getMoveCount() const{ return history.size();}
-
-    virtual bool makeMove(int col_or_row, int col_if_needed, char symbol)=0;
-    virtual bool checkWin(char symbol)=0;
-    virtual bool isDraw(char p1Sym, char p2Sym)=0;
-    virtual bool isValidMove(int r, int c) const=0;
-    int getRows() const {return rows;}
-    int getCols() const {return cols;}
-    char getCell(int r, int c) const{ return grid[r][c];}
+    bool update_board(Move<char>* move) override;
+    bool is_win(Player<char>* p) override;
+    bool is_lose(Player<char>* p) override;
+    bool is_draw(Player<char>* p) override;
+    bool game_is_over(Player<char>* p) override;
 };
 
-class TTTBoard:public Board{
+class Misere_TTT_Board : public TTT_Board {
 public:
-    TTTBoard();
-    bool makeMove(int r, int c, char symbol) override;
-    bool checkWin(char symbol) override;
-    bool isDraw(char p1Sym, char p2Sym) override;
-    bool isValidMove(int r, int c) const override;
+    bool is_win(Player<char>* p) override;
+    bool is_lose(Player<char>* p) override;
+    bool is_draw(Player<char>* p) override;
+    bool game_is_over(Player<char>* p) override;
 };
 
-class C4Board:public Board {
+class C4_Board : public Board<char> {
+    vector<Point> history;
+
+    bool isValidMove(int c) const;
+    bool checkWin(char s);
+    bool isFull() const;
+
 public:
-    C4Board();
-    bool makeMove(int col, int ignored_row, char symbol) override;
-    bool checkWin(char symbol) override;
-    bool isDraw(char p1Sym, char p2Sym) override;
-    bool isValidMove(int r, int c) const override; 
+    C4_Board();
+    void undoLastMove();
+    bool update_board(Move<char>* move) override;
+    bool is_win(Player<char>* p) override;
+    bool is_lose(Player<char>* p) override;
+    bool is_draw(Player<char>* p) override;
+    bool game_is_over(Player<char>* p) override;
 };
+
+class TTT_UI : 
+public UI<char> {
+    Move<char>* computerMove(Player<char>* aiPlayer);
+
+public:
+    TTT_UI();
+    Player<char>* create_player(string& name, char symbol, PlayerType type) override;
+    Move<char>* get_move(Player<char>* p) override;
+};
+
+class Misere_TTT_UI : 
+public UI<char> {
+    Move<char>* computerMove(Player<char>* aiPlayer);
+public:
+    Misere_TTT_UI();
+    Player<char>* create_player(string& name, char symbol, PlayerType type) override;
+    Move<char>* get_move(Player<char>* p) override;
+};
+
+class C4_UI : 
+public UI<char> {
+    Move<char>* computerMove(Player<char>* aiPlayer);
+
+public:
+    C4_UI();
+    Player<char>* create_player(string& name, char symbol, PlayerType type) override;
+    Move<char>* get_move(Player<char>* p) override;
+};
+
 #endif

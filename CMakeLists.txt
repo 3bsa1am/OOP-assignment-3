@@ -6,6 +6,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 add_executable(Game
 Game.cpp
+Game.h
+BoardGame_Classes.h
 )
 
 add_custom_command(TARGET Game POST_BUILD
