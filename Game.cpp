@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "XO_4_x_4.h"
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
@@ -440,9 +441,10 @@ int main() {
         int choice;
         cout << "\n Games menu\n";
         cout << "1. X-O (3x3)\n";
-        cout << "2. Fourin a row (6x7)\n";
+        cout << "2. Four in a row (6x7)\n";
         cout << "3. Misere X-O\n";
-        cout << "4. Exit\n";
+        cout << "4. 4x4 XO\n";
+        cout << "5. Exit\n";
         cout << "Choose game: ";
         
         if (!(cin >> choice)) {
@@ -452,57 +454,46 @@ int main() {
             continue;
         }
 
-        if (choice == 4) {
+        if (choice == 5) {
             cout << "kfaya l3b ro7 zaker\n";
             break;
         }
+        Board<char>* board = nullptr;
+        UI<char>* ui = nullptr;
+        Player<char>** players = nullptr;
 
         if (choice == 1) {
-            TTT_Board* board = new TTT_Board();
-            UI<char>* ui = new TTT_UI();
-            Player<char>** players = ui->setup_players();
-            
-            GameManager<char> game(board, players, ui);
-            game.run();
-
-            delete board;
-            delete ui;
-            delete players[0];
-            delete players[1];
-            delete[] players;
-
-        } else if (choice == 2) {
-            C4_Board* board = new C4_Board();
-            UI<char>* ui = new C4_UI();
-            Player<char>** players = ui->setup_players();
-
-            GameManager<char> game(board, players, ui);
-            game.run();
-
-            delete board;
-            delete ui;
-            delete players[0];
-            delete players[1];
-            delete[] players;
-
-        } else if (choice == 3) {
-            Misere_TTT_Board* board = new Misere_TTT_Board();
-            UI<char>* ui = new Misere_TTT_UI();
-            Player<char>** players = ui->setup_players();
-            
-            GameManager<char> game(board, players, ui);
-            game.run();
-
-            delete board;
-            delete ui;
-            delete players[0];
-            delete players[1];
-            delete[] players;
-
-        } else {
+            board = new TTT_Board();
+            ui = new TTT_UI();
+            players = ui->setup_players();
+        }
+        else if (choice == 2) {
+            board = new C4_Board();
+            ui = new C4_UI();
+            players = ui->setup_players();
+        }
+        else if (choice == 3) {
+            board = new Misere_TTT_Board();
+            ui = new Misere_TTT_UI();
+            players = ui->setup_players();
+        }
+        else if (choice == 4) {
+            board = new XO_4_x_4_Board();
+            ui = new XO_4_x_4_UI();
+            players = ui->setup_players();
+        }
+        else {
             cout << "Invalid choice. Please select 1, 2, 3, or 4.\n";
+            continue;
         }
 
+        GameManager<char> game(board, players, ui);
+        game.run();
+        delete board;
+        delete ui;
+        delete players[0];
+        delete players[1];
+        delete[] players;
         cout << "\nPress Enter to return to the main menu...";
         cin.ignore(1000, '\n');
         cin.get();
