@@ -80,4 +80,5 @@ public:
     Move<char>* get_move(Player<char>* p) override;
 };
 
+
 #endif
