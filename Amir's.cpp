@@ -39,46 +39,30 @@ bool XO_4_x_4_Board::update_board(Move<char> *move) {
 
 bool XO_4_x_4_Board::is_win(Player<char> *player) {
     char sym = toupper(player->get_symbol());
-    auto all_equal = [&](char a, char b, char c) {
-        return a == b && b == c && a != blank_symbol;
+    const int dx[8] = {0,  0,  1, -1,  1, -1,  1, -1};
+    const int dy[8] = {1, -1,  0,  0,  1, -1, -1,  1};
+    auto equal = [&](int r, int c) {
+        return toupper(board[r][c]) == sym;
     };
-
-    // Check rows and columns
-    for (int i = 0; i < rows; i++) {
-        if ((all_equal(board[i][0], board[i][1], board[i][2]) && toupper(board[i][0]) == sym) ||
-            (all_equal(board[i][1], board[i][2], board[i][3]) && toupper(board[i][1]) == sym) ||
-            (all_equal(board[0][i], board[1][i], board[2][i]) && toupper(board[0][i]) == sym) ||
-            (all_equal(board[1][i], board[2][i], board[3][i]) && toupper(board[1][i]) == sym))
-            return true;
+    for (int i = 0;i < rows;i++) {
+        for (int j = 0;j < columns;j++) {
+            for (int d = 0;d < 8 ;d++) {
+                int cnt = 0;
+                for (int k = 0;k<3;k++) {
+                    int nx = i + dx[d]*k;
+                    int ny = j + dy[d]*k;
+                    if (nx < 0 || ny < 0 || nx >= rows || ny >= columns)
+                        break;
+                    if (equal(nx,ny))
+                        cnt++;
+                    else
+                        break;
+                }
+                if (cnt == 3)
+                    return true;
+            }
+        }
     }
-
-    // Check main diagonals (top-left to bottom-right)
-    // (0,0), (1,1), (2,2)
-    if (all_equal(board[0][0], board[1][1], board[2][2]) && toupper(board[0][0]) == sym)
-        return true;
-    // (1,1), (2,2), (3,3)
-    if (all_equal(board[1][1], board[2][2], board[3][3]) && toupper(board[1][1]) == sym)
-        return true;
-    // (0,1), (1,2), (2,3)
-    if (all_equal(board[0][1], board[1][2], board[2][3]) && toupper(board[0][1]) == sym)
-        return true;
-    // (1,0), (2,1), (3,2)
-    if (all_equal(board[1][0], board[2][1], board[3][2]) && toupper(board[1][0]) == sym)
-        return true;
-
-    // Check anti-diagonals (top-right to bottom-left)
-    // (0,3), (1,2), (2,1)
-    if (all_equal(board[0][3], board[1][2], board[2][1]) && toupper(board[0][3]) == sym)
-        return true;
-    // (1,2), (2,1), (3,0)
-    if (all_equal(board[1][2], board[2][1], board[3][0]) && toupper(board[1][2]) == sym)
-        return true;
-    // (0,2), (1,1), (2,0)
-    if (all_equal(board[0][2], board[1][1], board[2][0]) && toupper(board[0][2]) == sym)
-        return true;
-    if (all_equal(board[1][3], board[2][2], board[3][1]) && toupper(board[1][3]) == sym)
-        return true;
-
     return false;
 }
 
