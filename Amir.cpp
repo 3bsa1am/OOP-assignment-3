@@ -2,7 +2,7 @@
 #include <cctype>
 #include <vector>
 #include <cstdlib>
-#include "Amir's.h"
+#include "Amir.h"
 
 using namespace std;
 

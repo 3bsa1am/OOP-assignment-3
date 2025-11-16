@@ -1,7 +1,7 @@
 #ifndef XO_4_X_4_H
 #define XO_4_X_4_H
 #include "BoardGame_Classes.h"
-#include "Mohammed's.h"
+#include "Mohammed.h"
 using namespace std;
 
 class XO_4_x_4_Board : public Board<char> {
