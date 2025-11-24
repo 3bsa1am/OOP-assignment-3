@@ -151,4 +151,164 @@ Move<char>* XO_4_x_4_UI::get_move(Player<char>* player) {
     return nullptr;
 }
 
+sus_board::sus_board():Board(3,3) {
+    for (int i = 0;i<3;i++) {
+        for (int j = 0;j < 3;j++) {
+            board[i][j] = blank_symbol;
+        }
+    }
+    for (int a=0;a<3;a++)
+        for (int b=0;b<3;b++)
+            taken[a][b] = false;
+}
+
+void sus_board::undoLastMove() {
+    if (!history.empty()) {
+        Point last = history.back();
+        history.pop_back();
+        board[last.r][last.c] = blank_symbol;
+        n_moves--;
+    }
+}
+
+bool sus_board::update_board(Move<char> *move) {
+    int x = move->get_x();
+    int y = move->get_y();
+    char sym = move->get_symbol();
+
+    if (x >= 0 && x < rows && y >= 0 && y < columns && board[x][y] == blank_symbol) {
+        n_moves++;
+        board[x][y] = toupper(sym);
+        cnt_score(move);
+        history.push_back({x, y});
+        return true;
+    }
+    return false;
+}
+
+void sus_board::cnt_score(Move<char> *move) {
+
+
+    char sym = move->get_symbol();
+    int i = move->get_x();
+    int j = move->get_y();
+    string sus = "SUS";
+    const int dx[8] = {0,  0,  1, -1,  1, -1,  1, -1};
+    const int dy[8] = {1, -1,  0,  0,  1, -1, -1,  1};
+
+    if (sym == 'U') {
+        if (i-1 >= 0 && i+1 < rows &&  !taken[i-1][j] && !taken[i+1][j] && board[i-1][j] == 'S' && board[i+1][j] == 'S') {
+            cnt2++;
+            taken[i][j] = taken[i+1][j] = taken[i-1][j] = true;
+        }
+        else if (j-1 >= 0 && j+1 < columns && !taken[i][j-1] && !taken[i][j+1]  && board[i][j-1] == 'S' && board[i][j+1] == 'S') {
+            cnt2++;
+             taken[i][j] = taken[i][j+1] = taken[i][j-1] = true;
+        }
+        else if (i == 1 && j == 1 && !taken[i+1][j-1] && !taken[i-1][j+1] &&  board[i+1][j-1] == 'S' && board[i-1][j+1] == 'S') {
+            cnt2++;
+             taken[i][j] = taken[i+1][j-1] = taken[i-1][j+1] = true;
+        }
+        else if (i == 1 && j == 1 && !taken[i+1][j+1] && !taken[i-1][j-1] && board[i-1][j-1] == 'S' && board[i+1][j+1] == 'S') {
+            cnt2++;
+             taken[i][j] = taken[i+1][j+1] = taken[i-1][j-1] = true;
+        }
+    }
+
+    else {
+        for (int d = 0;d < 8 ;d++) {
+            string curr = "";
+            for (int k = 0;k<3;k++) {
+                int nx = i + dx[d]*k;
+                int ny = j + dy[d]*k;
+                if (nx < 0 || ny < 0 || nx >= rows || ny >= columns || taken[nx][ny])
+                    break;
+                curr+=board[nx][ny];
+            }
+            if (curr == sus) {
+                cnt1++;
+                for (int k = 0; k < 3; k++) {
+                    int nx = i + dx[d]*k;
+                    int ny = j + dy[d]*k;
+                    taken[nx][ny] = true;
+                }
+            }
+        }
+    }
+
+}
+
+
+bool sus_board::game_is_over(Player<char> *player) {
+    return n_moves == 9;
+}
+
+
+
+bool sus_board::is_win(Player<char> *player) {
+    char sym = player->get_symbol();
+    if (!game_is_over(player))
+        return false;
+    if (sym == 'S')return cnt1 > cnt2;
+    else if (sym == 'U') return cnt2 > cnt1;
+    return false;
+
+}
+
+bool sus_board::is_draw(Player<char> *player) {
+    return (game_is_over(player) && cnt1 == cnt2);
+}
+
+
+sus_ui::sus_ui() : UI<char>("Welcome to SUS Game: ", 3) {}
+
+Player<char>* sus_ui::create_player(string& name, char symbol, PlayerType type) {
+    // static bool first = true;
+    // if (first) {
+    //     symbol = 'S';
+    //     first = false;
+    // } else {
+    //     symbol = 'U';
+    // }
+
+    cout << "Creating "
+         << (type == PlayerType::HUMAN ? "human" : "computer")
+         << " player: " << name << " (" << symbol << ")\n";
+
+    return new Player<char>(name, symbol, type);
+
+}
+
+Player<char> **sus_ui::setup_players() {
+    Player<char>** players = new Player<char>*[2];
+    vector<string> type_options = { "Human", "Computer" };
+
+    string nameX = get_player_name("Player S");
+    PlayerType typeX = get_player_type_choice("Player S", type_options);
+    players[0] = create_player(nameX, static_cast<char>('S'), typeX);
+
+    string nameO = get_player_name("Player U");
+    PlayerType typeO = get_player_type_choice("Player U", type_options);
+    players[1] = create_player(nameO, static_cast<char>('U'), typeO);
+
+    return players;
+}
+
+
+
+
+
+Move<char>* sus_ui::get_move(Player<char>* player) {
+    int x, y;
+
+    if (player->get_type() == PlayerType::HUMAN) {
+        cout << "\nPlease enter your move x and y (0 to 2): ";
+        cin >> x >> y;
+    }
+    else if (player->get_type() == PlayerType::COMPUTER) {
+        x = rand() % player->get_board_ptr()->get_rows();
+        y = rand() % player->get_board_ptr()->get_columns();
+    }
+    return new Move<char>(x, y, player->get_symbol());
+}
 

@@ -36,7 +36,8 @@ int main() {
         cout << "4. 4x4 X-O\n";
         cout << "5. Num X-O (3x3)\n";
         cout << "6. Obstacles X-O (6x6)\n";
-        cout << "7. Exit\n";
+        cout << "7. SUS 3x3\n";
+        cout << "8. Exit\n";
         cout << "Choose game: ";
         
         if (!(cin >> choice)) {
@@ -46,7 +47,7 @@ int main() {
             continue;
         }
 
-        if (choice == 7) {
+        if (choice == 8) {
             cout << "kfaya l3b ro7 zaker\n";
             break;
         }
@@ -82,6 +83,11 @@ int main() {
         else if (choice == 6) {
             board = new Obstacles_TTT_Board();
             ui = new Obstacles_TTT_UI();
+            players = ui->setup_players();
+        }
+        else if (choice == 7) {
+            board = new sus_board;
+            ui = new sus_ui;
             players = ui->setup_players();
         }
         else {
