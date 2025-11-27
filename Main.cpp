@@ -6,7 +6,7 @@
 5.misere Tic-Tac-Toe (mohammed)
 6. Diamond Tic-Tac-Toe
 7. 4 x 4 Tic-Tac-Toe (amir)
-8. Pyramid Tic-Tac-Toe
+8. Pyramid Tic-Tac-Toe (Abdelmalik)
 9. Numerical Tic-Tac-Toe (Group)   (mohammed)
 10. Obstacles Tic-Tac-Toe (Group)  (mohammed)
 11. Infinity Tic-Tac-Toe (Group)   (Sayed)
@@ -14,14 +14,13 @@
 
 */
 #include "BoardGame_Classes.h"
-//#include "Mohammed.h"
-//#include "Mohammed.cpp"
-//#include "Amir.h"
-//#include "Amir.cpp"
-//#include "Sayed.h"
-//#include "Sayed.cpp"
+#include "Mohammed.h"
+#include "Mohammed.cpp"
+#include "Amir.h"
+#include "Amir.cpp"
+#include "Sayed.h"
+#include "Sayed.cpp"
 #include "Pyramid_XO.h"
-//#include "Pyramid_XO.cpp"
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
@@ -66,13 +65,9 @@ int main() {
         UI<char>* ui = nullptr;
         Player<char>** players = nullptr;
 
-        if (choice == 8) {
-            ui = new Pyramid_XO_UI();
-            board = new Pyramid_X_O_Board();
-            players = ui->setup_players();
-        }
 
-/*        if (choice == 14) {
+
+        if (choice == 14) {
             board = new TTT_Board();
             ui = new TTT_UI();
             players = ui->setup_players();
@@ -113,7 +108,11 @@ int main() {
             players = ui->setup_players();
         }
 
-
+        else if (choice == 8) {
+            ui = new Pyramid_XO_UI();
+            board = new Pyramid_X_O_Board();
+            players = ui->setup_players();
+        }
 
         else if (choice == 9) {
             board = new Numerical_TTT_Board();
@@ -129,7 +128,7 @@ int main() {
         board = new Infinity_TTT_Board();
         ui = new Infinity_TTT_UI();
         players = ui->setup_players();
-        } */  
+        }  
         else {
             cout << "Invalid choice. Please select from the menu.\n";
             continue;
