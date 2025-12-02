@@ -1,0 +1,285 @@
+\doxysection{Board\texorpdfstring{$<$}{<} T \texorpdfstring{$>$}{>} Class Template Reference}
+\hypertarget{class_board}{}\label{class_board}\index{Board$<$ T $>$@{Board$<$ T $>$}}
+
+
+Base template for any board used in board games.  
+
+
+
+
+{\ttfamily \#include $<$Board\+Game\+\_\+\+Classes.\+h$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_board_ae5dfded241ee3644196e2f6074d1d0b1}{Board}} (int \mbox{\hyperlink{class_board_a948d978e3b5fc460559b588f5dee9572}{rows}}, int \mbox{\hyperlink{class_board_afaf8842d9d52ac724e8c2f5642ecafc7}{columns}})
+\begin{DoxyCompactList}\small\item\em Construct a board with given dimensions. \end{DoxyCompactList}\item 
+virtual \mbox{\hyperlink{class_board_a138a6378af669dd1ce55dc11217aea48}{\texorpdfstring{$\sim$}{\string~}\+Board}} ()
+\begin{DoxyCompactList}\small\item\em Virtual destructor. Frees allocated board memory. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_board_a93d9dec601dda58b7e206ccb47633e57}{update\+\_\+board}} (\mbox{\hyperlink{class_move}{Move}}$<$ T $>$ \texorpdfstring{$\ast$}{*}move)=0
+\begin{DoxyCompactList}\small\item\em Update the board with a new move. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_board_ab316fe3e79677b4617fc3d90d6c48f33}{is\+\_\+win}} (\mbox{\hyperlink{class_player}{Player}}$<$ T $>$ \texorpdfstring{$\ast$}{*})=0
+\begin{DoxyCompactList}\small\item\em Check if a player has won. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_board_a207d5f6feb77f81c51d1462f0245890d}{is\+\_\+lose}} (\mbox{\hyperlink{class_player}{Player}}$<$ T $>$ \texorpdfstring{$\ast$}{*})=0
+\begin{DoxyCompactList}\small\item\em Check if a player has lost. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_board_a8dbe2a243881986f3e53b45799d377fc}{is\+\_\+draw}} (\mbox{\hyperlink{class_player}{Player}}$<$ T $>$ \texorpdfstring{$\ast$}{*})=0
+\begin{DoxyCompactList}\small\item\em Check if the game ended in a draw. \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{class_board_ae0e4575ec3cc4b6eb9f367ffb2beed13}{game\+\_\+is\+\_\+over}} (\mbox{\hyperlink{class_player}{Player}}$<$ T $>$ \texorpdfstring{$\ast$}{*})=0
+\begin{DoxyCompactList}\small\item\em Check if the game is over. \end{DoxyCompactList}\item 
+vector$<$ vector$<$ T $>$ $>$ \mbox{\hyperlink{class_board_a117f2e61fdb7deccca333bbbc9c62d3a}{get\+\_\+board\+\_\+matrix}} () const
+\begin{DoxyCompactList}\small\item\em Return a copy of the current board as a 2D vector. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{class_board_a93b130eff67bd4476fab27be8341cb78}{get\+\_\+rows}} () const
+\begin{DoxyCompactList}\small\item\em Get number of rows. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{class_board_ac665e1ed1f49125fab248e2c9ddfd608}{get\+\_\+columns}} () const
+\begin{DoxyCompactList}\small\item\em Get number of columns. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{class_board_a512d0bd8c282985c410d677c82eb3b78}{get\+\_\+n\+\_\+moves}} () const
+\begin{DoxyCompactList}\small\item\em Get number of moves. \end{DoxyCompactList}\item 
+T \mbox{\hyperlink{class_board_a93558c58e60ca4291c6044828afd260b}{get\+\_\+cell}} (int x, int y)
+\begin{DoxyCompactList}\small\item\em Return content of cell x, y in current board. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{class_board_a948d978e3b5fc460559b588f5dee9572}{rows}}
+\begin{DoxyCompactList}\small\item\em Number of rows. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{class_board_afaf8842d9d52ac724e8c2f5642ecafc7}{columns}}
+\begin{DoxyCompactList}\small\item\em Number of columns. \end{DoxyCompactList}\item 
+vector$<$ vector$<$ T $>$ $>$ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}
+\begin{DoxyCompactList}\small\item\em 2D vector for the board \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{class_board_a5952baefabced65fecec333de638408d}{n\+\_\+moves}} = 0
+\begin{DoxyCompactList}\small\item\em Number of moves made. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$typename T$>$\newline
+class Board$<$ T $>$}
+Base template for any board used in board games. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & Type of the elements stored on the board (e.\+g., char, int, string).\\
+\hline
+\end{DoxyTemplParams}
+Provides core data (rows, columns, matrix) and virtual methods to be implemented by specific games like Tic-\/\+Tac-\/\+Toe, Connect4, etc. 
+
+\label{doc-constructors}
+\Hypertarget{class_board_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_board_ae5dfded241ee3644196e2f6074d1d0b1}\index{Board$<$ T $>$@{Board$<$ T $>$}!Board@{Board}}
+\index{Board@{Board}!Board$<$ T $>$@{Board$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{Board()}{Board()}}
+{\footnotesize\ttfamily \label{class_board_ae5dfded241ee3644196e2f6074d1d0b1} 
+template$<$typename T$>$ \\
+\mbox{\hyperlink{class_board}{Board}}$<$ T $>$\+::\+Board (\begin{DoxyParamCaption}\item[{int}]{rows}{, }\item[{int}]{columns}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Construct a board with given dimensions. 
+
+\Hypertarget{class_board_a138a6378af669dd1ce55dc11217aea48}\index{Board$<$ T $>$@{Board$<$ T $>$}!````~Board@{\texorpdfstring{$\sim$}{\string~}Board}}
+\index{````~Board@{\texorpdfstring{$\sim$}{\string~}Board}!Board$<$ T $>$@{Board$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{\texorpdfstring{$\sim$}{\string~}Board()}{\string~Board()}}
+{\footnotesize\ttfamily \label{class_board_a138a6378af669dd1ce55dc11217aea48} 
+template$<$typename T$>$ \\
+virtual \mbox{\hyperlink{class_board}{Board}}$<$ T $>$\+::\texorpdfstring{$\sim$}{\string~}\mbox{\hyperlink{class_board}{Board}} (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Virtual destructor. Frees allocated board memory. 
+
+
+
+\label{doc-func-members}
+\Hypertarget{class_board_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_board_ae0e4575ec3cc4b6eb9f367ffb2beed13}\index{Board$<$ T $>$@{Board$<$ T $>$}!game\_is\_over@{game\_is\_over}}
+\index{game\_is\_over@{game\_is\_over}!Board$<$ T $>$@{Board$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{game\_is\_over()}{game\_is\_over()}}
+{\footnotesize\ttfamily \label{class_board_ae0e4575ec3cc4b6eb9f367ffb2beed13} 
+template$<$typename T$>$ \\
+virtual bool \mbox{\hyperlink{class_board}{Board}}$<$ T $>$\+::game\+\_\+is\+\_\+over (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_player}{Player}}$<$ T $>$ \texorpdfstring{$\ast$}{*}}]{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+Check if the game is over. 
+
+
+
+Implemented in \mbox{\hyperlink{class_c4___board_a040652ed8114ecf3d541815c28ed5df3}{C4\+\_\+\+Board}}, \mbox{\hyperlink{class_diamond___x_o___board_a0ff3c195aaa23e5d3da6f1b4295b18c1}{Diamond\+\_\+\+XO\+\_\+\+Board}}, \mbox{\hyperlink{class_infinity___t_t_t___board_a83044d12beba35bad5c5be950079f247}{Infinity\+\_\+\+TTT\+\_\+\+Board}}, \mbox{\hyperlink{class_memory___x_o___board_ab65c60abf91832caa5ba5966d466c447}{Memory\+\_\+\+XO\+\_\+\+Board}}, \mbox{\hyperlink{class_misere___t_t_t___board_a02016c995334d8aa276046803e55a908}{Misere\+\_\+\+TTT\+\_\+\+Board}}, \mbox{\hyperlink{class_numerical___t_t_t___board_a2bd122c27f8f3db2589bc4a6559dae44}{Numerical\+\_\+\+TTT\+\_\+\+Board}}, \mbox{\hyperlink{class_obstacles___t_t_t___board_a5390b562cacf5d30b99a2b9c4b3a65a8}{Obstacles\+\_\+\+TTT\+\_\+\+Board}}, \mbox{\hyperlink{class_pyramid___x___o___board_a3e112d5a9fbee17e92004593afee1a44}{Pyramid\+\_\+\+X\+\_\+\+O\+\_\+\+Board}}, \mbox{\hyperlink{classsus__board_ad939e8bae602a354fb9a1483f614a776}{sus\+\_\+board}}, \mbox{\hyperlink{class_t_t_t___board_a1a4597de687f86579f72986dc6bc59d2}{TTT\+\_\+\+Board}}, \mbox{\hyperlink{class_word___t_t_t___board_aa89b95ae48e2bf40652caeb6296b9bf0}{Word\+\_\+\+TTT\+\_\+\+Board}}, \mbox{\hyperlink{class_x_o__4__x__4___board_a736d4b2e57ad6fc555a9270048edaa9d}{XO\+\_\+4\+\_\+x\+\_\+4\+\_\+\+Board}}, and \mbox{\hyperlink{class_x_o__5x5___board_a7ab13d28e97180e24614f9da9cec1d17}{XO\+\_\+5x5\+\_\+\+Board}}.
+
+\Hypertarget{class_board_a117f2e61fdb7deccca333bbbc9c62d3a}\index{Board$<$ T $>$@{Board$<$ T $>$}!get\_board\_matrix@{get\_board\_matrix}}
+\index{get\_board\_matrix@{get\_board\_matrix}!Board$<$ T $>$@{Board$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{get\_board\_matrix()}{get\_board\_matrix()}}
+{\footnotesize\ttfamily \label{class_board_a117f2e61fdb7deccca333bbbc9c62d3a} 
+template$<$typename T$>$ \\
+vector$<$ vector$<$ T $>$ $>$ \mbox{\hyperlink{class_board}{Board}}$<$ T $>$\+::get\+\_\+board\+\_\+matrix (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Return a copy of the current board as a 2D vector. 
+
+\Hypertarget{class_board_a93558c58e60ca4291c6044828afd260b}\index{Board$<$ T $>$@{Board$<$ T $>$}!get\_cell@{get\_cell}}
+\index{get\_cell@{get\_cell}!Board$<$ T $>$@{Board$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{get\_cell()}{get\_cell()}}
+{\footnotesize\ttfamily \label{class_board_a93558c58e60ca4291c6044828afd260b} 
+template$<$typename T$>$ \\
+T \mbox{\hyperlink{class_board}{Board}}$<$ T $>$\+::get\+\_\+cell (\begin{DoxyParamCaption}\item[{int}]{x}{, }\item[{int}]{y}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Return content of cell x, y in current board. 
+
+\Hypertarget{class_board_ac665e1ed1f49125fab248e2c9ddfd608}\index{Board$<$ T $>$@{Board$<$ T $>$}!get\_columns@{get\_columns}}
+\index{get\_columns@{get\_columns}!Board$<$ T $>$@{Board$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{get\_columns()}{get\_columns()}}
+{\footnotesize\ttfamily \label{class_board_ac665e1ed1f49125fab248e2c9ddfd608} 
+template$<$typename T$>$ \\
+int \mbox{\hyperlink{class_board}{Board}}$<$ T $>$\+::get\+\_\+columns (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Get number of columns. 
+
+\Hypertarget{class_board_a512d0bd8c282985c410d677c82eb3b78}\index{Board$<$ T $>$@{Board$<$ T $>$}!get\_n\_moves@{get\_n\_moves}}
+\index{get\_n\_moves@{get\_n\_moves}!Board$<$ T $>$@{Board$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{get\_n\_moves()}{get\_n\_moves()}}
+{\footnotesize\ttfamily \label{class_board_a512d0bd8c282985c410d677c82eb3b78} 
+template$<$typename T$>$ \\
+int \mbox{\hyperlink{class_board}{Board}}$<$ T $>$\+::get\+\_\+n\+\_\+moves (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Get number of moves. 
+
+\Hypertarget{class_board_a93b130eff67bd4476fab27be8341cb78}\index{Board$<$ T $>$@{Board$<$ T $>$}!get\_rows@{get\_rows}}
+\index{get\_rows@{get\_rows}!Board$<$ T $>$@{Board$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{get\_rows()}{get\_rows()}}
+{\footnotesize\ttfamily \label{class_board_a93b130eff67bd4476fab27be8341cb78} 
+template$<$typename T$>$ \\
+int \mbox{\hyperlink{class_board}{Board}}$<$ T $>$\+::get\+\_\+rows (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Get number of rows. 
+
+\Hypertarget{class_board_a8dbe2a243881986f3e53b45799d377fc}\index{Board$<$ T $>$@{Board$<$ T $>$}!is\_draw@{is\_draw}}
+\index{is\_draw@{is\_draw}!Board$<$ T $>$@{Board$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{is\_draw()}{is\_draw()}}
+{\footnotesize\ttfamily \label{class_board_a8dbe2a243881986f3e53b45799d377fc} 
+template$<$typename T$>$ \\
+virtual bool \mbox{\hyperlink{class_board}{Board}}$<$ T $>$\+::is\+\_\+draw (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_player}{Player}}$<$ T $>$ \texorpdfstring{$\ast$}{*}}]{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+Check if the game ended in a draw. 
+
+
+
+Implemented in \mbox{\hyperlink{class_c4___board_ae02e6180dcbaf7ac9cc3b0af2351b83a}{C4\+\_\+\+Board}}, \mbox{\hyperlink{class_diamond___x_o___board_a1ba5a6a5e74e929e5287a3a56ac5c4e4}{Diamond\+\_\+\+XO\+\_\+\+Board}}, \mbox{\hyperlink{class_infinity___t_t_t___board_ab37b7a2604249a0b0457fe36cc7b9ddd}{Infinity\+\_\+\+TTT\+\_\+\+Board}}, \mbox{\hyperlink{class_memory___x_o___board_a3e57c654a4cc56bcacc47d2d3e46ee9e}{Memory\+\_\+\+XO\+\_\+\+Board}}, \mbox{\hyperlink{class_misere___t_t_t___board_a3de6f4b89d8b0e0ee3db732f1b24bbe7}{Misere\+\_\+\+TTT\+\_\+\+Board}}, \mbox{\hyperlink{class_numerical___t_t_t___board_a625ce873142ea88ff9d79ac0a8079102}{Numerical\+\_\+\+TTT\+\_\+\+Board}}, \mbox{\hyperlink{class_obstacles___t_t_t___board_a587abe0b039092a42f8aa82d75c7c835}{Obstacles\+\_\+\+TTT\+\_\+\+Board}}, \mbox{\hyperlink{class_pyramid___x___o___board_aa8da6a425a760b01d025cac8e9703998}{Pyramid\+\_\+\+X\+\_\+\+O\+\_\+\+Board}}, \mbox{\hyperlink{classsus__board_aa63789e8c8d92df1e2746297c97acbd5}{sus\+\_\+board}}, \mbox{\hyperlink{class_t_t_t___board_a872df5be1ee6174ef6743408f068b017}{TTT\+\_\+\+Board}}, \mbox{\hyperlink{class_word___t_t_t___board_a63a63ac23307a54b8cf9cebbdd263f37}{Word\+\_\+\+TTT\+\_\+\+Board}}, \mbox{\hyperlink{class_x_o__4__x__4___board_ac10bc883729f6ddc1074c5a8aa1aeb3c}{XO\+\_\+4\+\_\+x\+\_\+4\+\_\+\+Board}}, and \mbox{\hyperlink{class_x_o__5x5___board_af33df2a7e7595e3ba0bbbd208418f119}{XO\+\_\+5x5\+\_\+\+Board}}.
+
+\Hypertarget{class_board_a207d5f6feb77f81c51d1462f0245890d}\index{Board$<$ T $>$@{Board$<$ T $>$}!is\_lose@{is\_lose}}
+\index{is\_lose@{is\_lose}!Board$<$ T $>$@{Board$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{is\_lose()}{is\_lose()}}
+{\footnotesize\ttfamily \label{class_board_a207d5f6feb77f81c51d1462f0245890d} 
+template$<$typename T$>$ \\
+virtual bool \mbox{\hyperlink{class_board}{Board}}$<$ T $>$\+::is\+\_\+lose (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_player}{Player}}$<$ T $>$ \texorpdfstring{$\ast$}{*}}]{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+Check if a player has lost. 
+
+
+
+Implemented in \mbox{\hyperlink{class_c4___board_a6469932eba2c4946448cac5707b46a28}{C4\+\_\+\+Board}}, \mbox{\hyperlink{class_diamond___x_o___board_ac554ef616f78dc5bbf1ad43218190228}{Diamond\+\_\+\+XO\+\_\+\+Board}}, \mbox{\hyperlink{class_infinity___t_t_t___board_ac65441a2eb2d1e48c0a12e3c40f577f4}{Infinity\+\_\+\+TTT\+\_\+\+Board}}, \mbox{\hyperlink{class_memory___x_o___board_acd10f90fba3cf3081a7e0bb69331fa5d}{Memory\+\_\+\+XO\+\_\+\+Board}}, \mbox{\hyperlink{class_misere___t_t_t___board_a51b4a42cf61f07de8f28faf5f159cec0}{Misere\+\_\+\+TTT\+\_\+\+Board}}, \mbox{\hyperlink{class_numerical___t_t_t___board_a277d3d91d2edab04a248de1faaa0d76c}{Numerical\+\_\+\+TTT\+\_\+\+Board}}, \mbox{\hyperlink{class_obstacles___t_t_t___board_a24c06fc04be745f9b66168f5276a5c47}{Obstacles\+\_\+\+TTT\+\_\+\+Board}}, \mbox{\hyperlink{class_pyramid___x___o___board_afce431c90594cfc349c46bb3f921ec8a}{Pyramid\+\_\+\+X\+\_\+\+O\+\_\+\+Board}}, \mbox{\hyperlink{classsus__board_a95519fd71cfa0d9cfc2713279bdb03b3}{sus\+\_\+board}}, \mbox{\hyperlink{class_t_t_t___board_a515aedba8d0221d7bc361f0a076ac7dc}{TTT\+\_\+\+Board}}, \mbox{\hyperlink{class_word___t_t_t___board_acab72866cb3af91f4d55155817d73fc1}{Word\+\_\+\+TTT\+\_\+\+Board}}, \mbox{\hyperlink{class_x_o__4__x__4___board_a67c92e860874ac078c874d6f6de68b5a}{XO\+\_\+4\+\_\+x\+\_\+4\+\_\+\+Board}}, and \mbox{\hyperlink{class_x_o__5x5___board_a7031555374b0c6cb4b05082ae985c04d}{XO\+\_\+5x5\+\_\+\+Board}}.
+
+\Hypertarget{class_board_ab316fe3e79677b4617fc3d90d6c48f33}\index{Board$<$ T $>$@{Board$<$ T $>$}!is\_win@{is\_win}}
+\index{is\_win@{is\_win}!Board$<$ T $>$@{Board$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{is\_win()}{is\_win()}}
+{\footnotesize\ttfamily \label{class_board_ab316fe3e79677b4617fc3d90d6c48f33} 
+template$<$typename T$>$ \\
+virtual bool \mbox{\hyperlink{class_board}{Board}}$<$ T $>$\+::is\+\_\+win (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_player}{Player}}$<$ T $>$ \texorpdfstring{$\ast$}{*}}]{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+Check if a player has won. 
+
+
+
+Implemented in \mbox{\hyperlink{class_c4___board_af8c037d6cfea96acda5df02c0fcc335e}{C4\+\_\+\+Board}}, \mbox{\hyperlink{class_diamond___x_o___board_a792c24cc8380dfe1c4a6a97c7def2c53}{Diamond\+\_\+\+XO\+\_\+\+Board}}, \mbox{\hyperlink{class_infinity___t_t_t___board_ad3db61f92de2a97e556b93c00870ebdf}{Infinity\+\_\+\+TTT\+\_\+\+Board}}, \mbox{\hyperlink{class_memory___x_o___board_a5f6a929148c3c77de12c547751d9c54c}{Memory\+\_\+\+XO\+\_\+\+Board}}, \mbox{\hyperlink{class_misere___t_t_t___board_a274e5d53122b873f55acc933bb9232fb}{Misere\+\_\+\+TTT\+\_\+\+Board}}, \mbox{\hyperlink{class_numerical___t_t_t___board_ad9ea57d87acd1c4ad922ccb7ef897294}{Numerical\+\_\+\+TTT\+\_\+\+Board}}, \mbox{\hyperlink{class_obstacles___t_t_t___board_ad71d3e79a5a4d1a4dc77ce6e93142a7b}{Obstacles\+\_\+\+TTT\+\_\+\+Board}}, \mbox{\hyperlink{class_pyramid___x___o___board_a84e50a3f401885dc0910cf827e590156}{Pyramid\+\_\+\+X\+\_\+\+O\+\_\+\+Board}}, \mbox{\hyperlink{classsus__board_a03c294bf67b258f5ec2f96ea42f080d7}{sus\+\_\+board}}, \mbox{\hyperlink{class_t_t_t___board_a35a2f1772bd45b373d9f30ed14a5c603}{TTT\+\_\+\+Board}}, \mbox{\hyperlink{class_word___t_t_t___board_a177ecadc173cd141385d3cad910a495b}{Word\+\_\+\+TTT\+\_\+\+Board}}, \mbox{\hyperlink{class_x_o__4__x__4___board_a7975791e5bbba5848d12d762396d8bb5}{XO\+\_\+4\+\_\+x\+\_\+4\+\_\+\+Board}}, and \mbox{\hyperlink{class_x_o__5x5___board_a4d400c35ce4313e15571af6931f866d2}{XO\+\_\+5x5\+\_\+\+Board}}.
+
+\Hypertarget{class_board_a93d9dec601dda58b7e206ccb47633e57}\index{Board$<$ T $>$@{Board$<$ T $>$}!update\_board@{update\_board}}
+\index{update\_board@{update\_board}!Board$<$ T $>$@{Board$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{update\_board()}{update\_board()}}
+{\footnotesize\ttfamily \label{class_board_a93d9dec601dda58b7e206ccb47633e57} 
+template$<$typename T$>$ \\
+virtual bool \mbox{\hyperlink{class_board}{Board}}$<$ T $>$\+::update\+\_\+board (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_move}{Move}}$<$ T $>$ \texorpdfstring{$\ast$}{*}}]{move}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+Update the board with a new move. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em move} & The move object containing position and symbol. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the move is valid and applied, false otherwise. 
+\end{DoxyReturn}
+
+
+Implemented in \mbox{\hyperlink{class_c4___board_a329f2f4549c1c89e22e66f9430cfba93}{C4\+\_\+\+Board}}, \mbox{\hyperlink{class_diamond___x_o___board_a93f7672ea6c6614a48c58516857c2697}{Diamond\+\_\+\+XO\+\_\+\+Board}}, \mbox{\hyperlink{class_infinity___t_t_t___board_a86a489fd4abddb216789b799645a4db6}{Infinity\+\_\+\+TTT\+\_\+\+Board}}, \mbox{\hyperlink{class_memory___x_o___board_a201ab4f964754b986636f6db4c94ee23}{Memory\+\_\+\+XO\+\_\+\+Board}}, \mbox{\hyperlink{class_numerical___t_t_t___board_a36d54ab62a179048c27bd7b68ff2cbd8}{Numerical\+\_\+\+TTT\+\_\+\+Board}}, \mbox{\hyperlink{class_obstacles___t_t_t___board_ab6ef0a5590b9b88be40fa9c06d2f73d2}{Obstacles\+\_\+\+TTT\+\_\+\+Board}}, \mbox{\hyperlink{class_pyramid___x___o___board_a53442ebe70ede8b314210758ab89cfef}{Pyramid\+\_\+\+X\+\_\+\+O\+\_\+\+Board}}, \mbox{\hyperlink{classsus__board_a0ca5f1864253deef7f128d81f57f17bf}{sus\+\_\+board}}, \mbox{\hyperlink{class_t_t_t___board_a6e386d67e1cf724644f530f1c266e687}{TTT\+\_\+\+Board}}, \mbox{\hyperlink{class_word___t_t_t___board_ac2b890abf961c612fbb7be199891ffac}{Word\+\_\+\+TTT\+\_\+\+Board}}, \mbox{\hyperlink{class_x_o__4__x__4___board_aea6587ef00ed305fdf8c4ba14b147115}{XO\+\_\+4\+\_\+x\+\_\+4\+\_\+\+Board}}, and \mbox{\hyperlink{class_x_o__5x5___board_a03110483bd1af0a98e275caa2110d973}{XO\+\_\+5x5\+\_\+\+Board}}.
+
+
+
+\label{doc-variable-members}
+\Hypertarget{class_board_doc-variable-members}
+\doxysubsection{Member Data Documentation}
+\Hypertarget{class_board_af00c1fc363eb640ca276b8a572040040}\index{Board$<$ T $>$@{Board$<$ T $>$}!board@{board}}
+\index{board@{board}!Board$<$ T $>$@{Board$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{board}{board}}
+{\footnotesize\ttfamily \label{class_board_af00c1fc363eb640ca276b8a572040040} 
+template$<$typename T$>$ \\
+vector$<$vector$<$T$>$ $>$ \mbox{\hyperlink{class_board}{Board}}$<$ T $>$\+::board\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+2D vector for the board 
+
+\Hypertarget{class_board_afaf8842d9d52ac724e8c2f5642ecafc7}\index{Board$<$ T $>$@{Board$<$ T $>$}!columns@{columns}}
+\index{columns@{columns}!Board$<$ T $>$@{Board$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{columns}{columns}}
+{\footnotesize\ttfamily \label{class_board_afaf8842d9d52ac724e8c2f5642ecafc7} 
+template$<$typename T$>$ \\
+int \mbox{\hyperlink{class_board}{Board}}$<$ T $>$\+::columns\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Number of columns. 
+
+\Hypertarget{class_board_a5952baefabced65fecec333de638408d}\index{Board$<$ T $>$@{Board$<$ T $>$}!n\_moves@{n\_moves}}
+\index{n\_moves@{n\_moves}!Board$<$ T $>$@{Board$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{n\_moves}{n\_moves}}
+{\footnotesize\ttfamily \label{class_board_a5952baefabced65fecec333de638408d} 
+template$<$typename T$>$ \\
+int \mbox{\hyperlink{class_board}{Board}}$<$ T $>$\+::n\+\_\+moves = 0\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Number of moves made. 
+
+\Hypertarget{class_board_a948d978e3b5fc460559b588f5dee9572}\index{Board$<$ T $>$@{Board$<$ T $>$}!rows@{rows}}
+\index{rows@{rows}!Board$<$ T $>$@{Board$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{rows}{rows}}
+{\footnotesize\ttfamily \label{class_board_a948d978e3b5fc460559b588f5dee9572} 
+template$<$typename T$>$ \\
+int \mbox{\hyperlink{class_board}{Board}}$<$ T $>$\+::rows\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Number of rows. 
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{_board_game___classes_8h}{Board\+Game\+\_\+\+Classes.\+h}}\end{DoxyCompactItemize}

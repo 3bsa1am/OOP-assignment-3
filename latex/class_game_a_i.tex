@@ -1,0 +1,134 @@
+\doxysection{Game\+AI Class Reference}
+\hypertarget{class_game_a_i}{}\label{class_game_a_i}\index{GameAI@{GameAI}}
+
+
+Static helper class containing generic AI logic strategies.  
+
+
+
+
+{\ttfamily \#include $<$Mohammed.\+h$>$}
+
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename Board\+Type$>$ }\\static \mbox{\hyperlink{class_move}{Move}}$<$ char $>$ \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{class_game_a_i_a72e70a67f041697ae0b361a3a17fae88}{get\+Best\+Move\+\_\+2D}} (\mbox{\hyperlink{class_player}{Player}}$<$ char $>$ \texorpdfstring{$\ast$}{*}player)
+\begin{DoxyCompactList}\small\item\em Determines the best move for 2D grid games using a Win -\/\texorpdfstring{$>$}{>} Block -\/\texorpdfstring{$>$}{>} Random strategy. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Board\+Type$>$ }\\static \mbox{\hyperlink{class_move}{Move}}$<$ char $>$ \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{class_game_a_i_a18d2694d0bb1f3b2dd8eb8c0ace3aa20}{get\+Best\+Move\+\_\+\+Column}} (\mbox{\hyperlink{class_player}{Player}}$<$ char $>$ \texorpdfstring{$\ast$}{*}player)
+\begin{DoxyCompactList}\small\item\em Determines the best move for column-\/based games (like Connect 4). \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Board\+Type$>$ }\\static \mbox{\hyperlink{class_move}{Move}}$<$ char $>$ \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{class_game_a_i_abe81a2559d60ebe90cfa4b0fcb4ba281}{get\+Misere\+Move}} (\mbox{\hyperlink{class_player}{Player}}$<$ char $>$ \texorpdfstring{$\ast$}{*}player)
+\begin{DoxyCompactList}\small\item\em AI logic for Misere games where the goal is to avoid winning. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename Board\+Type$>$ }\\static \mbox{\hyperlink{class_move}{Move}}$<$ char $>$ \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{class_game_a_i_a73d08a3110f552dc992599e11b6e9cac}{get\+Random\+Move}} (\mbox{\hyperlink{class_player}{Player}}$<$ char $>$ \texorpdfstring{$\ast$}{*}player)
+\begin{DoxyCompactList}\small\item\em Generates a purely random valid move. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Static helper class containing generic AI logic strategies. 
+
+Implements strategies for 2D grid games, column-\/based games, and Misere variants. 
+
+\label{doc-func-members}
+\Hypertarget{class_game_a_i_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_game_a_i_a72e70a67f041697ae0b361a3a17fae88}\index{GameAI@{GameAI}!getBestMove\_2D@{getBestMove\_2D}}
+\index{getBestMove\_2D@{getBestMove\_2D}!GameAI@{GameAI}}
+\doxysubsubsection{\texorpdfstring{getBestMove\_2D()}{getBestMove\_2D()}}
+{\footnotesize\ttfamily \label{class_game_a_i_a72e70a67f041697ae0b361a3a17fae88} 
+template$<$typename Board\+Type$>$ \\
+\mbox{\hyperlink{class_move}{Move}}$<$ char $>$ \texorpdfstring{$\ast$}{*} Game\+AI\+::get\+Best\+Move\+\_\+2D (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_player}{Player}}$<$ char $>$ \texorpdfstring{$\ast$}{*}}]{player}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Determines the best move for 2D grid games using a Win -\/\texorpdfstring{$>$}{>} Block -\/\texorpdfstring{$>$}{>} Random strategy. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Board\+Type} & The specific board class (must support undo\+Last\+Move). \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em player} & Pointer to the AI player. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A pointer to the selected optimal \doxylink{class_move}{Move}. 
+\end{DoxyReturn}
+\Hypertarget{class_game_a_i_a18d2694d0bb1f3b2dd8eb8c0ace3aa20}\index{GameAI@{GameAI}!getBestMove\_Column@{getBestMove\_Column}}
+\index{getBestMove\_Column@{getBestMove\_Column}!GameAI@{GameAI}}
+\doxysubsubsection{\texorpdfstring{getBestMove\_Column()}{getBestMove\_Column()}}
+{\footnotesize\ttfamily \label{class_game_a_i_a18d2694d0bb1f3b2dd8eb8c0ace3aa20} 
+template$<$typename Board\+Type$>$ \\
+\mbox{\hyperlink{class_move}{Move}}$<$ char $>$ \texorpdfstring{$\ast$}{*} Game\+AI\+::get\+Best\+Move\+\_\+\+Column (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_player}{Player}}$<$ char $>$ \texorpdfstring{$\ast$}{*}}]{player}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Determines the best move for column-\/based games (like Connect 4). 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Board\+Type} & The specific board class. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em player} & Pointer to the AI player. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A pointer to the selected optimal \doxylink{class_move}{Move}. 
+\end{DoxyReturn}
+\Hypertarget{class_game_a_i_abe81a2559d60ebe90cfa4b0fcb4ba281}\index{GameAI@{GameAI}!getMisereMove@{getMisereMove}}
+\index{getMisereMove@{getMisereMove}!GameAI@{GameAI}}
+\doxysubsubsection{\texorpdfstring{getMisereMove()}{getMisereMove()}}
+{\footnotesize\ttfamily \label{class_game_a_i_abe81a2559d60ebe90cfa4b0fcb4ba281} 
+template$<$typename Board\+Type$>$ \\
+\mbox{\hyperlink{class_move}{Move}}$<$ char $>$ \texorpdfstring{$\ast$}{*} Game\+AI\+::get\+Misere\+Move (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_player}{Player}}$<$ char $>$ \texorpdfstring{$\ast$}{*}}]{player}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+AI logic for Misere games where the goal is to avoid winning. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Board\+Type} & The specific board class. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em player} & Pointer to the AI player. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A pointer to a safe \doxylink{class_move}{Move}. 
+\end{DoxyReturn}
+\Hypertarget{class_game_a_i_a73d08a3110f552dc992599e11b6e9cac}\index{GameAI@{GameAI}!getRandomMove@{getRandomMove}}
+\index{getRandomMove@{getRandomMove}!GameAI@{GameAI}}
+\doxysubsubsection{\texorpdfstring{getRandomMove()}{getRandomMove()}}
+{\footnotesize\ttfamily \label{class_game_a_i_a73d08a3110f552dc992599e11b6e9cac} 
+template$<$typename Board\+Type$>$ \\
+\mbox{\hyperlink{class_move}{Move}}$<$ char $>$ \texorpdfstring{$\ast$}{*} Game\+AI\+::get\+Random\+Move (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_player}{Player}}$<$ char $>$ \texorpdfstring{$\ast$}{*}}]{player}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Generates a purely random valid move. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Board\+Type} & The specific board class. \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em player} & Pointer to the AI player. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A pointer to a random valid \doxylink{class_move}{Move}. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{_mohammed_8h}{Mohammed.\+h}}\item 
+\mbox{\hyperlink{_mohammed_8cpp}{Mohammed.\+cpp}}\end{DoxyCompactItemize}

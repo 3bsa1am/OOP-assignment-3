@@ -1,0 +1,77 @@
+\doxysection{Infinity\+Move\+Info Struct Reference}
+\hypertarget{struct_infinity_move_info}{}\label{struct_infinity_move_info}\index{InfinityMoveInfo@{InfinityMoveInfo}}
+
+
+Stores metadata about a move in Infinity Tic-\/\+Tac-\/\+Toe.  
+
+
+
+
+{\ttfamily \#include $<$Sayed.\+h$>$}
+
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{struct_point}{Point}} \mbox{\hyperlink{struct_infinity_move_info_abcb487c9be9127d9693b186c8df2eecf}{placed}}
+\begin{DoxyCompactList}\small\item\em Location where the new mark was placed. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{struct_infinity_move_info_a551ca0495f5aa714c79416e7f013b3f7}{caused\+\_\+removal}}
+\begin{DoxyCompactList}\small\item\em True if this move caused an old mark to disappear. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{struct_point}{Point}} \mbox{\hyperlink{struct_infinity_move_info_af493adb34dda489ae7b7cdf5bd7820ba}{removed\+\_\+point}}
+\begin{DoxyCompactList}\small\item\em Location of the removed mark (if applicable). \end{DoxyCompactList}\item 
+char \mbox{\hyperlink{struct_infinity_move_info_ac048f536b1cd43b428fa80ffd8301f7f}{removed\+\_\+symbol}}
+\begin{DoxyCompactList}\small\item\em Symbol of the removed mark (if applicable). \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Stores metadata about a move in Infinity Tic-\/\+Tac-\/\+Toe. 
+
+Used to track which piece was placed and, crucially, if an old piece was removed (and what/where it was) to support undoing. 
+
+\label{doc-variable-members}
+\Hypertarget{struct_infinity_move_info_doc-variable-members}
+\doxysubsection{Member Data Documentation}
+\Hypertarget{struct_infinity_move_info_a551ca0495f5aa714c79416e7f013b3f7}\index{InfinityMoveInfo@{InfinityMoveInfo}!caused\_removal@{caused\_removal}}
+\index{caused\_removal@{caused\_removal}!InfinityMoveInfo@{InfinityMoveInfo}}
+\doxysubsubsection{\texorpdfstring{caused\_removal}{caused\_removal}}
+{\footnotesize\ttfamily \label{struct_infinity_move_info_a551ca0495f5aa714c79416e7f013b3f7} 
+bool Infinity\+Move\+Info\+::caused\+\_\+removal}
+
+
+
+True if this move caused an old mark to disappear. 
+
+\Hypertarget{struct_infinity_move_info_abcb487c9be9127d9693b186c8df2eecf}\index{InfinityMoveInfo@{InfinityMoveInfo}!placed@{placed}}
+\index{placed@{placed}!InfinityMoveInfo@{InfinityMoveInfo}}
+\doxysubsubsection{\texorpdfstring{placed}{placed}}
+{\footnotesize\ttfamily \label{struct_infinity_move_info_abcb487c9be9127d9693b186c8df2eecf} 
+\mbox{\hyperlink{struct_point}{Point}} Infinity\+Move\+Info\+::placed}
+
+
+
+Location where the new mark was placed. 
+
+\Hypertarget{struct_infinity_move_info_af493adb34dda489ae7b7cdf5bd7820ba}\index{InfinityMoveInfo@{InfinityMoveInfo}!removed\_point@{removed\_point}}
+\index{removed\_point@{removed\_point}!InfinityMoveInfo@{InfinityMoveInfo}}
+\doxysubsubsection{\texorpdfstring{removed\_point}{removed\_point}}
+{\footnotesize\ttfamily \label{struct_infinity_move_info_af493adb34dda489ae7b7cdf5bd7820ba} 
+\mbox{\hyperlink{struct_point}{Point}} Infinity\+Move\+Info\+::removed\+\_\+point}
+
+
+
+Location of the removed mark (if applicable). 
+
+\Hypertarget{struct_infinity_move_info_ac048f536b1cd43b428fa80ffd8301f7f}\index{InfinityMoveInfo@{InfinityMoveInfo}!removed\_symbol@{removed\_symbol}}
+\index{removed\_symbol@{removed\_symbol}!InfinityMoveInfo@{InfinityMoveInfo}}
+\doxysubsubsection{\texorpdfstring{removed\_symbol}{removed\_symbol}}
+{\footnotesize\ttfamily \label{struct_infinity_move_info_ac048f536b1cd43b428fa80ffd8301f7f} 
+char Infinity\+Move\+Info\+::removed\+\_\+symbol}
+
+
+
+Symbol of the removed mark (if applicable). 
+
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{_sayed_8h}{Sayed.\+h}}\end{DoxyCompactItemize}
