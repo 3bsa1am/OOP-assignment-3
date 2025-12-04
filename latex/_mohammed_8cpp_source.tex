@@ -1,0 +1,912 @@
+\doxysection{Mohammed.\+cpp}
+\hypertarget{_mohammed_8cpp_source}{}\label{_mohammed_8cpp_source}\mbox{\hyperlink{_mohammed_8cpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{_mohammed_8h}{Mohammed.h}}"{}}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ <iostream>}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ <cstdlib>}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ <map>}}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \textcolor{keyword}{using\ namespace\ }std;}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \textcolor{comment}{//\ -\/-\/-\/\ GameAI\ Implementations\ -\/-\/-\/}}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ BoardType>}
+\DoxyCodeLine{00018\ \mbox{\hyperlink{class_move}{Move<char>}}*\ \mbox{\hyperlink{class_game_a_i_a72e70a67f041697ae0b361a3a17fae88}{GameAI::getBestMove\_2D}}(\mbox{\hyperlink{class_player}{Player<char>}}*\ player)\ \{}
+\DoxyCodeLine{00019\ \ \ \ \ BoardType*\ board\ =\ \textcolor{keyword}{dynamic\_cast<}BoardType*\textcolor{keyword}{>}(player-\/>\mbox{\hyperlink{class_player_a508617eddfae8915d098102d480fc888}{get\_board\_ptr}}());}
+\DoxyCodeLine{00020\ \ \ \ \ \textcolor{keywordflow}{if}\ (!board)\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ \ \ \ \ \textcolor{keywordtype}{char}\ aiSym\ =\ player-\/>\mbox{\hyperlink{class_player_af56f0bf98c0423a3a75b0848607d03a4}{get\_symbol}}();}
+\DoxyCodeLine{00023\ \ \ \ \ \textcolor{keywordtype}{char}\ humanSym\ =\ (aiSym\ ==\ \textcolor{charliteral}{'X'})\ ?\ \textcolor{charliteral}{'O'}\ :\ \textcolor{charliteral}{'X'};}
+\DoxyCodeLine{00024\ \ \ \ \ \textcolor{keywordtype}{int}\ rows\ =\ board-\/>get\_rows();}
+\DoxyCodeLine{00025\ \ \ \ \ \textcolor{keywordtype}{int}\ cols\ =\ board-\/>get\_columns();}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \ \ \ \ \textcolor{comment}{//\ Strategy\ 1:\ Check\ for\ an\ immediate\ win}}
+\DoxyCodeLine{00028\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ r\ =\ 0;\ r\ <\ rows;\ r++)\ \{}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ c\ =\ 0;\ c\ <\ cols;\ c++)\ \{}
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_move}{Move<char>}}*\ testMove\ =\ \textcolor{keyword}{new}\ \mbox{\hyperlink{class_move}{Move<char>}}(r,\ c,\ aiSym);}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (board-\/>update\_board(testMove))\ \{}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (board-\/>is\_win(player))\ \{}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ board-\/>undoLastMove();}
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{new}\ \mbox{\hyperlink{class_move}{Move<char>}}(r,\ c,\ aiSym);}
+\DoxyCodeLine{00035\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ board-\/>undoLastMove();}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00039\ \ \ \ \ \}}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ \ \ \ \ \textcolor{comment}{//\ Strategy\ 2:\ Check\ for\ an\ immediate\ block\ (prevent\ opponent\ win)}}
+\DoxyCodeLine{00042\ \ \ \ \ \mbox{\hyperlink{class_player}{Player<char>}}\ tempHuman(\textcolor{stringliteral}{"{}temp"{}},\ humanSym,\ \mbox{\hyperlink{_board_game___classes_8h_abe590f3c9109f404f003d5d7e4f0fccfaa36c6719f4d3207d858cf956ef1e93b6}{PlayerType::HUMAN}});}
+\DoxyCodeLine{00043\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ r\ =\ 0;\ r\ <\ rows;\ r++)\ \{}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ c\ =\ 0;\ c\ <\ cols;\ c++)\ \{}
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_move}{Move<char>}}*\ testMove\ =\ \textcolor{keyword}{new}\ \mbox{\hyperlink{class_move}{Move<char>}}(r,\ c,\ humanSym);}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (board-\/>update\_board(testMove))\ \{}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (board-\/>is\_win(\&tempHuman))\ \{}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ board-\/>undoLastMove();}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{new}\ \mbox{\hyperlink{class_move}{Move<char>}}(r,\ c,\ aiSym);}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ board-\/>undoLastMove();}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00054\ \ \ \ \ \}}
+\DoxyCodeLine{00055\ }
+\DoxyCodeLine{00056\ \ \ \ \ \textcolor{comment}{//\ Strategy\ 3:\ Random\ move\ fallback}}
+\DoxyCodeLine{00057\ \ \ \ \ \textcolor{keywordtype}{int}\ r,\ c;}
+\DoxyCodeLine{00058\ \ \ \ \ \mbox{\hyperlink{class_move}{Move<char>}}*\ randomMove;}
+\DoxyCodeLine{00059\ \ \ \ \ \textcolor{keywordflow}{do}\ \{}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ r\ =\ rand()\ \%\ rows;}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ c\ =\ rand()\ \%\ cols;}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ randomMove\ =\ \textcolor{keyword}{new}\ \mbox{\hyperlink{class_move}{Move<char>}}(r,\ c,\ aiSym);}
+\DoxyCodeLine{00063\ \ \ \ \ \}\ \textcolor{keywordflow}{while}\ (!board-\/>update\_board(randomMove));}
+\DoxyCodeLine{00064\ \ \ \ \ }
+\DoxyCodeLine{00065\ \ \ \ \ board-\/>undoLastMove();\ }
+\DoxyCodeLine{00066\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{new}\ \mbox{\hyperlink{class_move}{Move<char>}}(r,\ c,\ aiSym);}
+\DoxyCodeLine{00067\ \}}
+\DoxyCodeLine{00068\ }
+\DoxyCodeLine{00069\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ BoardType>}
+\DoxyCodeLine{00070\ \mbox{\hyperlink{class_move}{Move<char>}}*\ \mbox{\hyperlink{class_game_a_i_a18d2694d0bb1f3b2dd8eb8c0ace3aa20}{GameAI::getBestMove\_Column}}(\mbox{\hyperlink{class_player}{Player<char>}}*\ player)\ \{}
+\DoxyCodeLine{00071\ \ \ \ \ BoardType*\ board\ =\ \textcolor{keyword}{dynamic\_cast<}BoardType*\textcolor{keyword}{>}(player-\/>\mbox{\hyperlink{class_player_a508617eddfae8915d098102d480fc888}{get\_board\_ptr}}());}
+\DoxyCodeLine{00072\ \ \ \ \ \textcolor{keywordflow}{if}\ (!board)\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00074\ \ \ \ \ \textcolor{keywordtype}{char}\ aiSym\ =\ player-\/>\mbox{\hyperlink{class_player_af56f0bf98c0423a3a75b0848607d03a4}{get\_symbol}}();}
+\DoxyCodeLine{00075\ \ \ \ \ \textcolor{keywordtype}{char}\ humanSym\ =\ (aiSym\ ==\ \textcolor{charliteral}{'X'})\ ?\ \textcolor{charliteral}{'O'}\ :\ \textcolor{charliteral}{'X'};}
+\DoxyCodeLine{00076\ \ \ \ \ \textcolor{keywordtype}{int}\ cols\ =\ board-\/>get\_columns();}
+\DoxyCodeLine{00077\ }
+\DoxyCodeLine{00078\ \ \ \ \ \textcolor{comment}{//\ Check\ Win}}
+\DoxyCodeLine{00079\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ c\ =\ 0;\ c\ <\ cols;\ c++)\ \{}
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_move}{Move<char>}}*\ testMove\ =\ \textcolor{keyword}{new}\ \mbox{\hyperlink{class_move}{Move<char>}}(0,\ c,\ aiSym);}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (board-\/>update\_board(testMove))\ \{}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (board-\/>is\_win(player))\ \{}
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ board-\/>undoLastMove();}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{new}\ \mbox{\hyperlink{class_move}{Move<char>}}(0,\ c,\ aiSym);}
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00086\ \ \ \ \ \ \ \ \ \ \ \ \ board-\/>undoLastMove();}
+\DoxyCodeLine{00087\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00088\ \ \ \ \ \}}
+\DoxyCodeLine{00089\ }
+\DoxyCodeLine{00090\ \ \ \ \ \textcolor{comment}{//\ Check\ Block}}
+\DoxyCodeLine{00091\ \ \ \ \ \mbox{\hyperlink{class_player}{Player<char>}}\ tempHuman(\textcolor{stringliteral}{"{}temp"{}},\ humanSym,\ \mbox{\hyperlink{_board_game___classes_8h_abe590f3c9109f404f003d5d7e4f0fccfaa36c6719f4d3207d858cf956ef1e93b6}{PlayerType::HUMAN}});}
+\DoxyCodeLine{00092\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ c\ =\ 0;\ c\ <\ cols;\ c++)\ \{}
+\DoxyCodeLine{00093\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_move}{Move<char>}}*\ testMove\ =\ \textcolor{keyword}{new}\ \mbox{\hyperlink{class_move}{Move<char>}}(0,\ c,\ humanSym);}
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (board-\/>update\_board(testMove))\ \{}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (board-\/>is\_win(\&tempHuman))\ \{}
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ board-\/>undoLastMove();}
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{new}\ \mbox{\hyperlink{class_move}{Move<char>}}(0,\ c,\ aiSym);}
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00099\ \ \ \ \ \ \ \ \ \ \ \ \ board-\/>undoLastMove();}
+\DoxyCodeLine{00100\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00101\ \ \ \ \ \}}
+\DoxyCodeLine{00102\ }
+\DoxyCodeLine{00103\ \ \ \ \ \textcolor{comment}{//\ Random}}
+\DoxyCodeLine{00104\ \ \ \ \ \textcolor{keywordtype}{int}\ c;}
+\DoxyCodeLine{00105\ \ \ \ \ \mbox{\hyperlink{class_move}{Move<char>}}*\ randomMove;}
+\DoxyCodeLine{00106\ \ \ \ \ \textcolor{keywordflow}{do}\ \{}
+\DoxyCodeLine{00107\ \ \ \ \ \ \ \ \ c\ =\ rand()\ \%\ cols;}
+\DoxyCodeLine{00108\ \ \ \ \ \ \ \ \ randomMove\ =\ \textcolor{keyword}{new}\ \mbox{\hyperlink{class_move}{Move<char>}}(0,\ c,\ aiSym);}
+\DoxyCodeLine{00109\ \ \ \ \ \}\ \textcolor{keywordflow}{while}\ (!board-\/>update\_board(randomMove));}
+\DoxyCodeLine{00110\ \ \ \ \ }
+\DoxyCodeLine{00111\ \ \ \ \ board-\/>undoLastMove();}
+\DoxyCodeLine{00112\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{new}\ \mbox{\hyperlink{class_move}{Move<char>}}(0,\ c,\ aiSym);}
+\DoxyCodeLine{00113\ \}}
+\DoxyCodeLine{00114\ }
+\DoxyCodeLine{00115\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ BoardType>}
+\DoxyCodeLine{00116\ \mbox{\hyperlink{class_move}{Move<char>}}*\ \mbox{\hyperlink{class_game_a_i_abe81a2559d60ebe90cfa4b0fcb4ba281}{GameAI::getMisereMove}}(\mbox{\hyperlink{class_player}{Player<char>}}*\ player)\ \{}
+\DoxyCodeLine{00117\ \ \ \ \ BoardType*\ board\ =\ \textcolor{keyword}{dynamic\_cast<}BoardType*\textcolor{keyword}{>}(player-\/>\mbox{\hyperlink{class_player_a508617eddfae8915d098102d480fc888}{get\_board\_ptr}}());}
+\DoxyCodeLine{00118\ \ \ \ \ \textcolor{keywordflow}{if}\ (!board)\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00119\ }
+\DoxyCodeLine{00120\ \ \ \ \ \textcolor{keywordtype}{char}\ aiSym\ =\ player-\/>\mbox{\hyperlink{class_player_af56f0bf98c0423a3a75b0848607d03a4}{get\_symbol}}();}
+\DoxyCodeLine{00121\ \ \ \ \ \textcolor{keywordtype}{int}\ rows\ =\ board-\/>get\_rows();}
+\DoxyCodeLine{00122\ \ \ \ \ \textcolor{keywordtype}{int}\ cols\ =\ board-\/>get\_columns();}
+\DoxyCodeLine{00123\ }
+\DoxyCodeLine{00124\ \ \ \ \ vector<Point>\ safeMoves;}
+\DoxyCodeLine{00125\ \ \ \ \ vector<Point>\ allValidMoves;}
+\DoxyCodeLine{00126\ }
+\DoxyCodeLine{00127\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ r\ =\ 0;\ r\ <\ rows;\ r++)\ \{}
+\DoxyCodeLine{00128\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ c\ =\ 0;\ c\ <\ cols;\ c++)\ \{}
+\DoxyCodeLine{00129\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_move}{Move<char>}}*\ testMove\ =\ \textcolor{keyword}{new}\ \mbox{\hyperlink{class_move}{Move<char>}}(r,\ c,\ aiSym);}
+\DoxyCodeLine{00130\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (board-\/>update\_board(testMove))\ \{}
+\DoxyCodeLine{00131\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ allValidMoves.push\_back(\{r,\ c\});}
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ In\ Misere,\ is\_lose\ checks\ if\ 3-\/in-\/a-\/row\ is\ formed}}
+\DoxyCodeLine{00133\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!board-\/>is\_lose(player))\ \{}
+\DoxyCodeLine{00134\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ safeMoves.push\_back(\{r,\ c\});}
+\DoxyCodeLine{00135\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00136\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ board-\/>undoLastMove();}
+\DoxyCodeLine{00137\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00138\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00139\ \ \ \ \ \}}
+\DoxyCodeLine{00140\ }
+\DoxyCodeLine{00141\ \ \ \ \ \mbox{\hyperlink{struct_point}{Point}}\ p;}
+\DoxyCodeLine{00142\ \ \ \ \ \textcolor{keywordflow}{if}\ (!safeMoves.empty())\ \{}
+\DoxyCodeLine{00143\ \ \ \ \ \ \ \ \ p\ =\ safeMoves[rand()\ \%\ safeMoves.size()];}
+\DoxyCodeLine{00144\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (!allValidMoves.empty())\ \{}
+\DoxyCodeLine{00145\ \ \ \ \ \ \ \ \ p\ =\ allValidMoves[rand()\ \%\ allValidMoves.size()];}
+\DoxyCodeLine{00146\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00147\ \ \ \ \ \ \ \ \ p\ =\ \{0,\ 0\};}
+\DoxyCodeLine{00148\ \ \ \ \ \}}
+\DoxyCodeLine{00149\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{new}\ \mbox{\hyperlink{class_move}{Move<char>}}(p.\mbox{\hyperlink{struct_point_a5eec80a5eba17a6cfc509a17125a5f17}{r}},\ p.\mbox{\hyperlink{struct_point_a8277737deb586b2625d3106aa2fe32d6}{c}},\ aiSym);}
+\DoxyCodeLine{00150\ \}}
+\DoxyCodeLine{00151\ }
+\DoxyCodeLine{00152\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ BoardType>}
+\DoxyCodeLine{00153\ \mbox{\hyperlink{class_move}{Move<char>}}*\ \mbox{\hyperlink{class_game_a_i_a73d08a3110f552dc992599e11b6e9cac}{GameAI::getRandomMove}}(\mbox{\hyperlink{class_player}{Player<char>}}*\ player)\ \{}
+\DoxyCodeLine{00154\ \ \ \ \ BoardType*\ board\ =\ \textcolor{keyword}{dynamic\_cast<}BoardType*\textcolor{keyword}{>}(player-\/>\mbox{\hyperlink{class_player_a508617eddfae8915d098102d480fc888}{get\_board\_ptr}}());}
+\DoxyCodeLine{00155\ \ \ \ \ \textcolor{keywordtype}{char}\ aiSym\ =\ player-\/>\mbox{\hyperlink{class_player_af56f0bf98c0423a3a75b0848607d03a4}{get\_symbol}}();}
+\DoxyCodeLine{00156\ \ \ \ \ \textcolor{keywordtype}{int}\ r,\ c;}
+\DoxyCodeLine{00157\ \ \ \ \ \mbox{\hyperlink{class_move}{Move<char>}}*\ randomMove;}
+\DoxyCodeLine{00158\ \ \ \ \ \textcolor{keywordflow}{do}\ \{}
+\DoxyCodeLine{00159\ \ \ \ \ \ \ \ \ r\ =\ rand()\ \%\ board-\/>get\_rows();}
+\DoxyCodeLine{00160\ \ \ \ \ \ \ \ \ c\ =\ rand()\ \%\ board-\/>get\_columns();}
+\DoxyCodeLine{00161\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (\textcolor{keyword}{dynamic\_cast<}\mbox{\hyperlink{class_obstacles___t_t_t___board}{Obstacles\_TTT\_Board}}*\textcolor{keyword}{>}(board))\ \{}
+\DoxyCodeLine{00162\ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!\textcolor{keyword}{dynamic\_cast<}\mbox{\hyperlink{class_obstacles___t_t_t___board}{Obstacles\_TTT\_Board}}*\textcolor{keyword}{>}(board)-\/>public\_is\_valid(r,c))\ \textcolor{keywordflow}{continue};}
+\DoxyCodeLine{00163\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00164\ \ \ \ \ \ \ \ \ randomMove\ =\ \textcolor{keyword}{new}\ \mbox{\hyperlink{class_move}{Move<char>}}(r,\ c,\ aiSym);}
+\DoxyCodeLine{00165\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (board-\/>update\_board(randomMove))\ \{}
+\DoxyCodeLine{00166\ \ \ \ \ \ \ \ \ \ \ \ \ board-\/>undoLastMove();}
+\DoxyCodeLine{00167\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{new}\ \mbox{\hyperlink{class_move}{Move<char>}}(r,\ c,\ aiSym);}
+\DoxyCodeLine{00168\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00169\ \ \ \ \ \}\ \textcolor{keywordflow}{while}\ (\textcolor{keyword}{true});}
+\DoxyCodeLine{00170\ \}}
+\DoxyCodeLine{00171\ }
+\DoxyCodeLine{00172\ \textcolor{comment}{//\ -\/-\/-\/\ TTT\_Board\ Implementations\ -\/-\/-\/}}
+\DoxyCodeLine{00173\ }
+\DoxyCodeLine{00174\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_t_t_t___board_aa1ab7d21ca2a93b7f4f5a2952e34c66d}{TTT\_Board::isValidMove}}(\textcolor{keywordtype}{int}\ r,\ \textcolor{keywordtype}{int}\ c)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00175\ \ \ \ \ \textcolor{keywordflow}{return}\ r\ >=\ 0\ \&\&\ r\ <\ rows\ \&\&\ c\ >=\ 0\ \&\&\ c\ <\ \mbox{\hyperlink{class_board_afaf8842d9d52ac724e8c2f5642ecafc7}{columns}}\ \&\&\ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[r][c]\ ==\ \textcolor{charliteral}{'\ '};}
+\DoxyCodeLine{00176\ \}}
+\DoxyCodeLine{00177\ }
+\DoxyCodeLine{00178\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_t_t_t___board_a720c5a2f1c1ec969eb2e73ada3ebbfdd}{TTT\_Board::checkWin}}(\textcolor{keywordtype}{char}\ s)\ \{}
+\DoxyCodeLine{00179\ \ \ \ \ \textcolor{comment}{//\ Check\ rows,\ columns,\ and\ diagonals}}
+\DoxyCodeLine{00180\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ 3;\ i++)\ \{}
+\DoxyCodeLine{00181\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (\mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[i][0]\ ==\ s\ \&\&\ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[i][1]\ ==\ s\ \&\&\ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[i][2]\ ==\ s)\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00182\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (\mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[0][i]\ ==\ s\ \&\&\ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[1][i]\ ==\ s\ \&\&\ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[2][i]\ ==\ s)\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00183\ \ \ \ \ \}}
+\DoxyCodeLine{00184\ \ \ \ \ \textcolor{keywordflow}{if}\ (\mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[0][0]\ ==\ s\ \&\&\ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[1][1]\ ==\ s\ \&\&\ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[2][2]\ ==\ s)\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00185\ \ \ \ \ \textcolor{keywordflow}{if}\ (\mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[0][2]\ ==\ s\ \&\&\ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[1][1]\ ==\ s\ \&\&\ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[2][0]\ ==\ s)\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00186\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00187\ \}}
+\DoxyCodeLine{00188\ }
+\DoxyCodeLine{00189\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_t_t_t___board_a0102f4cfef1d2fee6dfab421ebd0942e}{TTT\_Board::isFull}}()\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00190\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_board_a5952baefabced65fecec333de638408d}{n\_moves}}\ >=\ (\mbox{\hyperlink{class_board_a948d978e3b5fc460559b588f5dee9572}{rows}}\ *\ \mbox{\hyperlink{class_board_afaf8842d9d52ac724e8c2f5642ecafc7}{columns}});}
+\DoxyCodeLine{00191\ \}}
+\DoxyCodeLine{00192\ }
+\DoxyCodeLine{00193\ \mbox{\hyperlink{class_t_t_t___board_ab74b1ebea341b61a1a3b716aa60a4816}{TTT\_Board::TTT\_Board}}()\ :\ \mbox{\hyperlink{class_board_ae5dfded241ee3644196e2f6074d1d0b1}{Board}}(3,\ 3)\ \{}
+\DoxyCodeLine{00194\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ \mbox{\hyperlink{class_board_a948d978e3b5fc460559b588f5dee9572}{rows}};\ ++i)\ \{}
+\DoxyCodeLine{00195\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ j\ =\ 0;\ j\ <\ \mbox{\hyperlink{class_board_afaf8842d9d52ac724e8c2f5642ecafc7}{columns}};\ ++j)\ \{}
+\DoxyCodeLine{00196\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[i][j]\ =\ \textcolor{charliteral}{'\ '};}
+\DoxyCodeLine{00197\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00198\ \ \ \ \ \}}
+\DoxyCodeLine{00199\ \}}
+\DoxyCodeLine{00200\ }
+\DoxyCodeLine{00201\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_t_t_t___board_a39d68302ebdcdc9704ee6d172470600f}{TTT\_Board::undoLastMove}}()\ \{}
+\DoxyCodeLine{00202\ \ \ \ \ \textcolor{keywordflow}{if}\ (!\mbox{\hyperlink{class_t_t_t___board_ad8de59d9a55f4c565ff3b7134be940c8}{history}}.empty())\ \{}
+\DoxyCodeLine{00203\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_point}{Point}}\ last\ =\ \mbox{\hyperlink{class_t_t_t___board_ad8de59d9a55f4c565ff3b7134be940c8}{history}}.back();}
+\DoxyCodeLine{00204\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_t_t_t___board_ad8de59d9a55f4c565ff3b7134be940c8}{history}}.pop\_back();}
+\DoxyCodeLine{00205\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[last.\mbox{\hyperlink{struct_point_a5eec80a5eba17a6cfc509a17125a5f17}{r}}][last.\mbox{\hyperlink{struct_point_a8277737deb586b2625d3106aa2fe32d6}{c}}]\ =\ \textcolor{charliteral}{'\ '};}
+\DoxyCodeLine{00206\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_board_a5952baefabced65fecec333de638408d}{n\_moves}}-\/-\/;}
+\DoxyCodeLine{00207\ \ \ \ \ \}}
+\DoxyCodeLine{00208\ \}}
+\DoxyCodeLine{00209\ }
+\DoxyCodeLine{00210\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_t_t_t___board_a6e386d67e1cf724644f530f1c266e687}{TTT\_Board::update\_board}}(\mbox{\hyperlink{class_move}{Move<char>}}*\ move)\ \{}
+\DoxyCodeLine{00211\ \ \ \ \ \textcolor{keywordtype}{int}\ r\ =\ move-\/>\mbox{\hyperlink{class_move_a9d4f543a81e361f872d37bcfb64d5b55}{get\_x}}();}
+\DoxyCodeLine{00212\ \ \ \ \ \textcolor{keywordtype}{int}\ c\ =\ move-\/>\mbox{\hyperlink{class_move_a96469802a55c9083a1e93c7edec8a00c}{get\_y}}();}
+\DoxyCodeLine{00213\ \ \ \ \ \textcolor{keywordtype}{char}\ symbol\ =\ move-\/>\mbox{\hyperlink{class_move_a595bf740852c05a1cb425ef2640fd4ff}{get\_symbol}}();}
+\DoxyCodeLine{00214\ }
+\DoxyCodeLine{00215\ \ \ \ \ \textcolor{keywordflow}{if}\ (!\mbox{\hyperlink{class_t_t_t___board_aa1ab7d21ca2a93b7f4f5a2952e34c66d}{isValidMove}}(r,\ c))\ \{}
+\DoxyCodeLine{00216\ \ \ \ \ \ \ \ \ cout\ <<\ \textcolor{stringliteral}{"{}Invalid\ move.\ Try\ again.\(\backslash\)n"{}};}
+\DoxyCodeLine{00217\ \ \ \ \ \ \ \ \ \textcolor{keyword}{delete}\ move;}
+\DoxyCodeLine{00218\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00219\ \ \ \ \ \}}
+\DoxyCodeLine{00220\ }
+\DoxyCodeLine{00221\ \ \ \ \ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[r][c]\ =\ symbol;}
+\DoxyCodeLine{00222\ \ \ \ \ \mbox{\hyperlink{class_t_t_t___board_ad8de59d9a55f4c565ff3b7134be940c8}{history}}.push\_back(\{r,\ c\});}
+\DoxyCodeLine{00223\ \ \ \ \ \mbox{\hyperlink{class_board_a5952baefabced65fecec333de638408d}{n\_moves}}++;}
+\DoxyCodeLine{00224\ \ \ \ \ \textcolor{keyword}{delete}\ move;}
+\DoxyCodeLine{00225\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00226\ \}}
+\DoxyCodeLine{00227\ }
+\DoxyCodeLine{00228\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_t_t_t___board_a35a2f1772bd45b373d9f30ed14a5c603}{TTT\_Board::is\_win}}(\mbox{\hyperlink{class_player}{Player<char>}}*\ p)\ \{}
+\DoxyCodeLine{00229\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_t_t_t___board_a720c5a2f1c1ec969eb2e73ada3ebbfdd}{checkWin}}(p-\/>\mbox{\hyperlink{class_player_af56f0bf98c0423a3a75b0848607d03a4}{get\_symbol}}());}
+\DoxyCodeLine{00230\ \}}
+\DoxyCodeLine{00231\ }
+\DoxyCodeLine{00232\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_t_t_t___board_a515aedba8d0221d7bc361f0a076ac7dc}{TTT\_Board::is\_lose}}(\mbox{\hyperlink{class_player}{Player<char>}}*\ p)\ \{}
+\DoxyCodeLine{00233\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00234\ \}}
+\DoxyCodeLine{00235\ }
+\DoxyCodeLine{00236\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_t_t_t___board_a872df5be1ee6174ef6743408f068b017}{TTT\_Board::is\_draw}}(\mbox{\hyperlink{class_player}{Player<char>}}*\ p)\ \{}
+\DoxyCodeLine{00237\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_t_t_t___board_a0102f4cfef1d2fee6dfab421ebd0942e}{isFull}}()\ \&\&\ !\mbox{\hyperlink{class_t_t_t___board_a720c5a2f1c1ec969eb2e73ada3ebbfdd}{checkWin}}(\textcolor{charliteral}{'X'})\ \&\&\ !\mbox{\hyperlink{class_t_t_t___board_a720c5a2f1c1ec969eb2e73ada3ebbfdd}{checkWin}}(\textcolor{charliteral}{'O'});}
+\DoxyCodeLine{00238\ \}}
+\DoxyCodeLine{00239\ }
+\DoxyCodeLine{00240\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_t_t_t___board_a1a4597de687f86579f72986dc6bc59d2}{TTT\_Board::game\_is\_over}}(\mbox{\hyperlink{class_player}{Player<char>}}*\ p)\ \{}
+\DoxyCodeLine{00241\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_t_t_t___board_a35a2f1772bd45b373d9f30ed14a5c603}{is\_win}}(p)\ ||\ \mbox{\hyperlink{class_t_t_t___board_a872df5be1ee6174ef6743408f068b017}{is\_draw}}(p);}
+\DoxyCodeLine{00242\ \}}
+\DoxyCodeLine{00243\ }
+\DoxyCodeLine{00244\ \textcolor{comment}{//\ -\/-\/-\/\ Misere\_TTT\_Board\ Implementations\ -\/-\/-\/}}
+\DoxyCodeLine{00245\ }
+\DoxyCodeLine{00246\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_misere___t_t_t___board_a274e5d53122b873f55acc933bb9232fb}{Misere\_TTT\_Board::is\_win}}(\mbox{\hyperlink{class_player}{Player<char>}}*\ p)\ \{}
+\DoxyCodeLine{00247\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};\ \textcolor{comment}{//\ You\ win\ by\ forcing\ the\ other\ player\ to\ lose}}
+\DoxyCodeLine{00248\ \}}
+\DoxyCodeLine{00249\ }
+\DoxyCodeLine{00250\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_misere___t_t_t___board_a51b4a42cf61f07de8f28faf5f159cec0}{Misere\_TTT\_Board::is\_lose}}(\mbox{\hyperlink{class_player}{Player<char>}}*\ p)\ \{}
+\DoxyCodeLine{00251\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_t_t_t___board_a720c5a2f1c1ec969eb2e73ada3ebbfdd}{checkWin}}(p-\/>\mbox{\hyperlink{class_player_af56f0bf98c0423a3a75b0848607d03a4}{get\_symbol}}());\ \textcolor{comment}{//\ You\ lose\ if\ you\ complete\ a\ line}}
+\DoxyCodeLine{00252\ \}}
+\DoxyCodeLine{00253\ }
+\DoxyCodeLine{00254\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_misere___t_t_t___board_a3de6f4b89d8b0e0ee3db732f1b24bbe7}{Misere\_TTT\_Board::is\_draw}}(\mbox{\hyperlink{class_player}{Player<char>}}*\ p)\ \{}
+\DoxyCodeLine{00255\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_t_t_t___board_a0102f4cfef1d2fee6dfab421ebd0942e}{isFull}}()\ \&\&\ !\mbox{\hyperlink{class_t_t_t___board_a720c5a2f1c1ec969eb2e73ada3ebbfdd}{checkWin}}(\textcolor{charliteral}{'X'})\ \&\&\ !\mbox{\hyperlink{class_t_t_t___board_a720c5a2f1c1ec969eb2e73ada3ebbfdd}{checkWin}}(\textcolor{charliteral}{'O'});}
+\DoxyCodeLine{00256\ \}}
+\DoxyCodeLine{00257\ }
+\DoxyCodeLine{00258\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_misere___t_t_t___board_a02016c995334d8aa276046803e55a908}{Misere\_TTT\_Board::game\_is\_over}}(\mbox{\hyperlink{class_player}{Player<char>}}*\ p)\ \{}
+\DoxyCodeLine{00259\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_misere___t_t_t___board_a51b4a42cf61f07de8f28faf5f159cec0}{is\_lose}}(p)\ ||\ \mbox{\hyperlink{class_misere___t_t_t___board_a3de6f4b89d8b0e0ee3db732f1b24bbe7}{is\_draw}}(p);}
+\DoxyCodeLine{00260\ \}}
+\DoxyCodeLine{00261\ }
+\DoxyCodeLine{00262\ \textcolor{comment}{//\ -\/-\/-\/\ C4\_Board\ Implementations\ -\/-\/-\/}}
+\DoxyCodeLine{00263\ }
+\DoxyCodeLine{00264\ \textcolor{keywordtype}{bool}\ C4\_Board::isValidMove(\textcolor{keywordtype}{int}\ c)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00265\ \ \ \ \ \textcolor{keywordflow}{return}\ c\ >=\ 0\ \&\&\ c\ <\ \mbox{\hyperlink{class_board_afaf8842d9d52ac724e8c2f5642ecafc7}{columns}}\ \&\&\ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[0][c]\ ==\ \textcolor{charliteral}{'\ '};}
+\DoxyCodeLine{00266\ \}}
+\DoxyCodeLine{00267\ }
+\DoxyCodeLine{00268\ \textcolor{keywordtype}{bool}\ C4\_Board::checkWin(\textcolor{keywordtype}{char}\ s)\ \{}
+\DoxyCodeLine{00269\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ r\ =\ 0;\ r\ <\ \mbox{\hyperlink{class_board_a948d978e3b5fc460559b588f5dee9572}{rows}};\ r++)\ \{}
+\DoxyCodeLine{00270\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ c\ =\ 0;\ c\ <\ \mbox{\hyperlink{class_board_afaf8842d9d52ac724e8c2f5642ecafc7}{columns}};\ c++)\ \{}
+\DoxyCodeLine{00271\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (\mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[r][c]\ ==\ s)\ \{}
+\DoxyCodeLine{00272\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Check\ Horizontal,\ Vertical,\ Diagonal}}
+\DoxyCodeLine{00273\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (c\ +\ 3\ <\ \mbox{\hyperlink{class_board_afaf8842d9d52ac724e8c2f5642ecafc7}{columns}}\ \&\&\ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[r][c\ +\ 1]\ ==\ s\ \&\&\ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[r][c\ +\ 2]\ ==\ s\ \&\&\ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[r][c\ +\ 3]\ ==\ s)\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00274\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (r\ +\ 3\ <\ \mbox{\hyperlink{class_board_a948d978e3b5fc460559b588f5dee9572}{rows}}\ \&\&\ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[r\ +\ 1][c]\ ==\ s\ \&\&\ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[r\ +\ 2][c]\ ==\ s\ \&\&\ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[r\ +\ 3][c]\ ==\ s)\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00275\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (r\ +\ 3\ <\ \mbox{\hyperlink{class_board_a948d978e3b5fc460559b588f5dee9572}{rows}}\ \&\&\ c\ +\ 3\ <\ \mbox{\hyperlink{class_board_afaf8842d9d52ac724e8c2f5642ecafc7}{columns}}\ \&\&\ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[r\ +\ 1][c\ +\ 1]\ ==\ s\ \&\&\ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[r\ +\ 2][c\ +\ 2]\ ==\ s\ \&\&\ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[r\ +\ 3][c\ +\ 3]\ ==\ s)\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00276\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (r\ -\/\ 3\ >=\ 0\ \&\&\ c\ +\ 3\ <\ \mbox{\hyperlink{class_board_afaf8842d9d52ac724e8c2f5642ecafc7}{columns}}\ \&\&\ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[r\ -\/\ 1][c\ +\ 1]\ ==\ s\ \&\&\ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[r\ -\/\ 2][c\ +\ 2]\ ==\ s\ \&\&\ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[r\ -\/\ 3][c\ +\ 3]\ ==\ s)\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00277\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00278\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00279\ \ \ \ \ \}}
+\DoxyCodeLine{00280\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00281\ \}}
+\DoxyCodeLine{00282\ }
+\DoxyCodeLine{00283\ \textcolor{keywordtype}{bool}\ C4\_Board::isFull()\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00284\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_board_a5952baefabced65fecec333de638408d}{n\_moves}}\ >=\ (\mbox{\hyperlink{class_board_a948d978e3b5fc460559b588f5dee9572}{rows}}\ *\ \mbox{\hyperlink{class_board_afaf8842d9d52ac724e8c2f5642ecafc7}{columns}});}
+\DoxyCodeLine{00285\ \}}
+\DoxyCodeLine{00286\ }
+\DoxyCodeLine{00287\ \mbox{\hyperlink{class_c4___board_ae2cccff986cfc21aaa93c0fafc4c188e}{C4\_Board::C4\_Board}}()\ :\ \mbox{\hyperlink{class_board_ae5dfded241ee3644196e2f6074d1d0b1}{Board}}(6,\ 7)\ \{}
+\DoxyCodeLine{00288\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ \mbox{\hyperlink{class_board_a948d978e3b5fc460559b588f5dee9572}{rows}};\ ++i)\ \{}
+\DoxyCodeLine{00289\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ j\ =\ 0;\ j\ <\ \mbox{\hyperlink{class_board_afaf8842d9d52ac724e8c2f5642ecafc7}{columns}};\ ++j)\ \{}
+\DoxyCodeLine{00290\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[i][j]\ =\ \textcolor{charliteral}{'\ '};}
+\DoxyCodeLine{00291\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00292\ \ \ \ \ \}}
+\DoxyCodeLine{00293\ \}}
+\DoxyCodeLine{00294\ }
+\DoxyCodeLine{00295\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_c4___board_aa815c6844687cbf9970fdf6464a8544e}{C4\_Board::undoLastMove}}()\ \{}
+\DoxyCodeLine{00296\ \ \ \ \ \textcolor{keywordflow}{if}\ (!history.empty())\ \{}
+\DoxyCodeLine{00297\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_point}{Point}}\ last\ =\ history.back();}
+\DoxyCodeLine{00298\ \ \ \ \ \ \ \ \ history.pop\_back();}
+\DoxyCodeLine{00299\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[last.\mbox{\hyperlink{struct_point_a5eec80a5eba17a6cfc509a17125a5f17}{r}}][last.\mbox{\hyperlink{struct_point_a8277737deb586b2625d3106aa2fe32d6}{c}}]\ =\ \textcolor{charliteral}{'\ '};}
+\DoxyCodeLine{00300\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_board_a5952baefabced65fecec333de638408d}{n\_moves}}-\/-\/;}
+\DoxyCodeLine{00301\ \ \ \ \ \}}
+\DoxyCodeLine{00302\ \}}
+\DoxyCodeLine{00303\ }
+\DoxyCodeLine{00304\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_c4___board_a329f2f4549c1c89e22e66f9430cfba93}{C4\_Board::update\_board}}(\mbox{\hyperlink{class_move}{Move<char>}}*\ move)\ \{}
+\DoxyCodeLine{00305\ \ \ \ \ \textcolor{keywordtype}{int}\ col\ =\ move-\/>\mbox{\hyperlink{class_move_a96469802a55c9083a1e93c7edec8a00c}{get\_y}}();}
+\DoxyCodeLine{00306\ \ \ \ \ \textcolor{keywordtype}{char}\ symbol\ =\ move-\/>\mbox{\hyperlink{class_move_a595bf740852c05a1cb425ef2640fd4ff}{get\_symbol}}();}
+\DoxyCodeLine{00307\ }
+\DoxyCodeLine{00308\ \ \ \ \ \textcolor{keywordflow}{if}\ (!isValidMove(col))\ \{}
+\DoxyCodeLine{00309\ \ \ \ \ \ \ \ \ cout\ <<\ \textcolor{stringliteral}{"{}Invalid\ move.\ Try\ again.\(\backslash\)n"{}};}
+\DoxyCodeLine{00310\ \ \ \ \ \ \ \ \ \textcolor{keyword}{delete}\ move;}
+\DoxyCodeLine{00311\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00312\ \ \ \ \ \}}
+\DoxyCodeLine{00313\ }
+\DoxyCodeLine{00314\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ r\ =\ \mbox{\hyperlink{class_board_a948d978e3b5fc460559b588f5dee9572}{rows}}\ -\/\ 1;\ r\ >=\ 0;\ -\/-\/r)\ \{}
+\DoxyCodeLine{00315\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (\mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[r][col]\ ==\ \textcolor{charliteral}{'\ '})\ \{}
+\DoxyCodeLine{00316\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[r][col]\ =\ symbol;}
+\DoxyCodeLine{00317\ \ \ \ \ \ \ \ \ \ \ \ \ history.push\_back(\{r,\ col\});}
+\DoxyCodeLine{00318\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_board_a5952baefabced65fecec333de638408d}{n\_moves}}++;}
+\DoxyCodeLine{00319\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{delete}\ move;}
+\DoxyCodeLine{00320\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00321\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00322\ \ \ \ \ \}}
+\DoxyCodeLine{00323\ \ \ \ \ }
+\DoxyCodeLine{00324\ \ \ \ \ \textcolor{keyword}{delete}\ move;}
+\DoxyCodeLine{00325\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};\ }
+\DoxyCodeLine{00326\ \}}
+\DoxyCodeLine{00327\ }
+\DoxyCodeLine{00328\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_c4___board_af8c037d6cfea96acda5df02c0fcc335e}{C4\_Board::is\_win}}(\mbox{\hyperlink{class_player}{Player<char>}}*\ p)\ \{}
+\DoxyCodeLine{00329\ \ \ \ \ \textcolor{keywordflow}{return}\ checkWin(p-\/>\mbox{\hyperlink{class_player_af56f0bf98c0423a3a75b0848607d03a4}{get\_symbol}}());}
+\DoxyCodeLine{00330\ \}}
+\DoxyCodeLine{00331\ }
+\DoxyCodeLine{00332\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_c4___board_a6469932eba2c4946448cac5707b46a28}{C4\_Board::is\_lose}}(\mbox{\hyperlink{class_player}{Player<char>}}*\ p)\ \{}
+\DoxyCodeLine{00333\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00334\ \}}
+\DoxyCodeLine{00335\ }
+\DoxyCodeLine{00336\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_c4___board_ae02e6180dcbaf7ac9cc3b0af2351b83a}{C4\_Board::is\_draw}}(\mbox{\hyperlink{class_player}{Player<char>}}*\ p)\ \{}
+\DoxyCodeLine{00337\ \ \ \ \ \textcolor{keywordflow}{return}\ isFull()\ \&\&\ !checkWin(\textcolor{charliteral}{'X'})\ \&\&\ !checkWin(\textcolor{charliteral}{'O'});}
+\DoxyCodeLine{00338\ \}}
+\DoxyCodeLine{00339\ }
+\DoxyCodeLine{00340\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_c4___board_a040652ed8114ecf3d541815c28ed5df3}{C4\_Board::game\_is\_over}}(\mbox{\hyperlink{class_player}{Player<char>}}*\ p)\ \{}
+\DoxyCodeLine{00341\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_c4___board_af8c037d6cfea96acda5df02c0fcc335e}{is\_win}}(p)\ ||\ \mbox{\hyperlink{class_c4___board_ae02e6180dcbaf7ac9cc3b0af2351b83a}{is\_draw}}(p);}
+\DoxyCodeLine{00342\ \}}
+\DoxyCodeLine{00343\ }
+\DoxyCodeLine{00344\ \textcolor{comment}{//\ -\/-\/-\/\ TTT\_UI\ Implementations\ -\/-\/-\/}}
+\DoxyCodeLine{00345\ }
+\DoxyCodeLine{00346\ \mbox{\hyperlink{class_move}{Move<char>}}*\ TTT\_UI::computerMove(\mbox{\hyperlink{class_player}{Player<char>}}*\ aiPlayer)\ \{}
+\DoxyCodeLine{00347\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_game_a_i_a72e70a67f041697ae0b361a3a17fae88}{GameAI::getBestMove\_2D<TTT\_Board>}}(aiPlayer);}
+\DoxyCodeLine{00348\ \}}
+\DoxyCodeLine{00349\ }
+\DoxyCodeLine{00350\ \mbox{\hyperlink{class_t_t_t___u_i_a5115bfcd30e31a34b8320624af0e3896}{TTT\_UI::TTT\_UI}}()\ :\ \mbox{\hyperlink{class_u_i_afb59b53f3c2ed750b1a9a0c7d6dc4a7a}{UI}}(\textcolor{stringliteral}{"{}Welcome\ to\ X-\/O"{}},\ 3)\ \{\}}
+\DoxyCodeLine{00351\ }
+\DoxyCodeLine{00352\ \mbox{\hyperlink{class_player}{Player<char>}}*\ \mbox{\hyperlink{class_t_t_t___u_i_a3997ca6bee21cb1c097d0e0f8bbffc71}{TTT\_UI::create\_player}}(\textcolor{keywordtype}{string}\&\ name,\ \textcolor{keywordtype}{char}\ symbol,\ \mbox{\hyperlink{_board_game___classes_8h_abe590f3c9109f404f003d5d7e4f0fccf}{PlayerType}}\ type)\ \{}
+\DoxyCodeLine{00353\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{new}\ \mbox{\hyperlink{class_player}{Player<char>}}(name,\ symbol,\ type);}
+\DoxyCodeLine{00354\ \}}
+\DoxyCodeLine{00355\ }
+\DoxyCodeLine{00356\ \mbox{\hyperlink{class_move}{Move<char>}}*\ \mbox{\hyperlink{class_t_t_t___u_i_abe047a473afcf40b9b8bc08a4ad3101e}{TTT\_UI::get\_move}}(\mbox{\hyperlink{class_player}{Player<char>}}*\ p)\ \{}
+\DoxyCodeLine{00357\ \ \ \ \ \textcolor{keywordflow}{if}\ (p-\/>\mbox{\hyperlink{class_player_a2df3bd299bf7aecfa2275ec6902a60f8}{get\_type}}()\ ==\ \mbox{\hyperlink{_board_game___classes_8h_abe590f3c9109f404f003d5d7e4f0fccfaa36c6719f4d3207d858cf956ef1e93b6}{PlayerType::HUMAN}})\ \{}
+\DoxyCodeLine{00358\ \ \ \ \ \ \ \ \ cout\ <<\ p-\/>\mbox{\hyperlink{class_player_aed2af19790ba73190e3ebeea589518e1}{get\_name}}()\ <<\ \textcolor{stringliteral}{"{}'s\ Turn\ ("{}}\ <<\ p-\/>\mbox{\hyperlink{class_player_af56f0bf98c0423a3a75b0848607d03a4}{get\_symbol}}()\ <<\ \textcolor{stringliteral}{"{}).\(\backslash\)n"{}};}
+\DoxyCodeLine{00359\ \ \ \ \ \ \ \ \ cout\ <<\ \textcolor{stringliteral}{"{}Enter\ row\ and\ col\ (0-\/2)\ or\ -\/1\ to\ Undo:\ "{}};}
+\DoxyCodeLine{00360\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00361\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ r\ =\ -\/1,\ c\ =\ -\/1;}
+\DoxyCodeLine{00362\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!(cin\ >>\ r))\ \{}
+\DoxyCodeLine{00363\ \ \ \ \ \ \ \ \ \ \ \ \ cin.clear();}
+\DoxyCodeLine{00364\ \ \ \ \ \ \ \ \ \ \ \ \ cin.ignore(1000,\ \textcolor{charliteral}{'\(\backslash\)n'});}
+\DoxyCodeLine{00365\ \ \ \ \ \ \ \ \ \ \ \ \ cout\ <<\ \textcolor{stringliteral}{"{}Invalid\ input.\ Try\ again.\(\backslash\)n"{}};}
+\DoxyCodeLine{00366\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_t_t_t___u_i_abe047a473afcf40b9b8bc08a4ad3101e}{get\_move}}(p);}
+\DoxyCodeLine{00367\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00368\ }
+\DoxyCodeLine{00369\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (r\ ==\ -\/1)\ \{}
+\DoxyCodeLine{00370\ \ \ \ \ \ \ \ \ \ \ \ \ c\ =\ -\/1;}
+\DoxyCodeLine{00371\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_t_t_t___board}{TTT\_Board}}*\ board\ =\ \textcolor{keyword}{dynamic\_cast<}\mbox{\hyperlink{class_t_t_t___board}{TTT\_Board}}*\textcolor{keyword}{>}(p-\/>\mbox{\hyperlink{class_player_a508617eddfae8915d098102d480fc888}{get\_board\_ptr}}());}
+\DoxyCodeLine{00372\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (board)\ \{}
+\DoxyCodeLine{00373\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (board-\/>\mbox{\hyperlink{class_t_t_t___board_adca547a23c9f89ecfe0485f27697ea9c}{get\_history\_size}}()\ >=\ 2)\ \{}
+\DoxyCodeLine{00374\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ board-\/>\mbox{\hyperlink{class_t_t_t___board_a39d68302ebdcdc9704ee6d172470600f}{undoLastMove}}();}
+\DoxyCodeLine{00375\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ board-\/>\mbox{\hyperlink{class_t_t_t___board_a39d68302ebdcdc9704ee6d172470600f}{undoLastMove}}();}
+\DoxyCodeLine{00376\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ cout\ <<\ \textcolor{stringliteral}{"{}Undo\ successful.\(\backslash\)n"{}};}
+\DoxyCodeLine{00377\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (board-\/>\mbox{\hyperlink{class_t_t_t___board_adca547a23c9f89ecfe0485f27697ea9c}{get\_history\_size}}()\ ==\ 1)\ \{}
+\DoxyCodeLine{00378\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ board-\/>\mbox{\hyperlink{class_t_t_t___board_a39d68302ebdcdc9704ee6d172470600f}{undoLastMove}}();}
+\DoxyCodeLine{00379\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ cout\ <<\ \textcolor{stringliteral}{"{}Undo\ successful.\(\backslash\)n"{}};}
+\DoxyCodeLine{00380\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00381\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ cout\ <<\ \textcolor{stringliteral}{"{}Cannot\ undo.\(\backslash\)n"{}};}
+\DoxyCodeLine{00382\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00383\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_u_i_aa3775124efaeac59935ae0afb354708d}{display\_board\_matrix}}(board-\/>\mbox{\hyperlink{class_board_a117f2e61fdb7deccca333bbbc9c62d3a}{get\_board\_matrix}}());}
+\DoxyCodeLine{00384\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00385\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_t_t_t___u_i_abe047a473afcf40b9b8bc08a4ad3101e}{get\_move}}(p);\ }
+\DoxyCodeLine{00386\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00387\ }
+\DoxyCodeLine{00388\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!(cin\ >>\ c))\ \{}
+\DoxyCodeLine{00389\ \ \ \ \ \ \ \ \ \ \ \ \ cin.clear();}
+\DoxyCodeLine{00390\ \ \ \ \ \ \ \ \ \ \ \ \ cin.ignore(1000,\ \textcolor{charliteral}{'\(\backslash\)n'});}
+\DoxyCodeLine{00391\ \ \ \ \ \ \ \ \ \ \ \ \ cout\ <<\ \textcolor{stringliteral}{"{}Invalid\ input.\ Try\ again.\(\backslash\)n"{}};}
+\DoxyCodeLine{00392\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_t_t_t___u_i_abe047a473afcf40b9b8bc08a4ad3101e}{get\_move}}(p);}
+\DoxyCodeLine{00393\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00394\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00395\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{new}\ \mbox{\hyperlink{class_move}{Move<char>}}(r,\ c,\ p-\/>\mbox{\hyperlink{class_player_af56f0bf98c0423a3a75b0848607d03a4}{get\_symbol}}());}
+\DoxyCodeLine{00396\ }
+\DoxyCodeLine{00397\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00398\ \ \ \ \ \ \ \ \ cout\ <<\ p-\/>\mbox{\hyperlink{class_player_aed2af19790ba73190e3ebeea589518e1}{get\_name}}()\ <<\ \textcolor{stringliteral}{"{}\ ("{}}\ <<\ p-\/>\mbox{\hyperlink{class_player_af56f0bf98c0423a3a75b0848607d03a4}{get\_symbol}}()\ <<\ \textcolor{stringliteral}{"{})\ is\ thinking...\(\backslash\)n"{}};}
+\DoxyCodeLine{00399\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ computerMove(p);}
+\DoxyCodeLine{00400\ \ \ \ \ \}}
+\DoxyCodeLine{00401\ \}}
+\DoxyCodeLine{00402\ }
+\DoxyCodeLine{00403\ \textcolor{comment}{//\ -\/-\/-\/\ Misere\_TTT\_UI\ Implementations\ -\/-\/-\/}}
+\DoxyCodeLine{00404\ }
+\DoxyCodeLine{00405\ \mbox{\hyperlink{class_misere___t_t_t___u_i_a9a4d7f8798e10ea6baa6fc8202a2db17}{Misere\_TTT\_UI::Misere\_TTT\_UI}}()\ :\ \mbox{\hyperlink{class_u_i_afb59b53f3c2ed750b1a9a0c7d6dc4a7a}{UI}}(\textcolor{stringliteral}{"{}Welcome\ to\ Misere\ X-\/O"{}},\ 3)\ \{\}}
+\DoxyCodeLine{00406\ }
+\DoxyCodeLine{00407\ \mbox{\hyperlink{class_player}{Player<char>}}*\ \mbox{\hyperlink{class_misere___t_t_t___u_i_aaa05ec3c1c20f1c6e4771101b07bf3a5}{Misere\_TTT\_UI::create\_player}}(\textcolor{keywordtype}{string}\&\ name,\ \textcolor{keywordtype}{char}\ symbol,\ \mbox{\hyperlink{_board_game___classes_8h_abe590f3c9109f404f003d5d7e4f0fccf}{PlayerType}}\ type)\ \{}
+\DoxyCodeLine{00408\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{new}\ \mbox{\hyperlink{class_player}{Player<char>}}(name,\ symbol,\ type);}
+\DoxyCodeLine{00409\ \}}
+\DoxyCodeLine{00410\ }
+\DoxyCodeLine{00411\ \mbox{\hyperlink{class_move}{Move<char>}}*\ \mbox{\hyperlink{class_misere___t_t_t___u_i_a81107bbb1007a4e7e07be4ed7b68cf2f}{Misere\_TTT\_UI::get\_move}}(\mbox{\hyperlink{class_player}{Player<char>}}*\ p)\ \{}
+\DoxyCodeLine{00412\ \ \ \ \ \textcolor{keywordflow}{if}\ (p-\/>\mbox{\hyperlink{class_player_a2df3bd299bf7aecfa2275ec6902a60f8}{get\_type}}()\ ==\ \mbox{\hyperlink{_board_game___classes_8h_abe590f3c9109f404f003d5d7e4f0fccfaa36c6719f4d3207d858cf956ef1e93b6}{PlayerType::HUMAN}})\ \{}
+\DoxyCodeLine{00413\ \ \ \ \ \ \ \ \ cout\ <<\ p-\/>\mbox{\hyperlink{class_player_aed2af19790ba73190e3ebeea589518e1}{get\_name}}()\ <<\ \textcolor{stringliteral}{"{}'s\ Turn\ ("{}}\ <<\ p-\/>\mbox{\hyperlink{class_player_af56f0bf98c0423a3a75b0848607d03a4}{get\_symbol}}()\ <<\ \textcolor{stringliteral}{"{}).\(\backslash\)n"{}};}
+\DoxyCodeLine{00414\ \ \ \ \ \ \ \ \ cout\ <<\ \textcolor{stringliteral}{"{}Enter\ row\ and\ col\ (0-\/2)\ or\ -\/1\ to\ Undo:\ "{}};}
+\DoxyCodeLine{00415\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00416\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ r\ =\ -\/1,\ c\ =\ -\/1;}
+\DoxyCodeLine{00417\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!(cin\ >>\ r))\ \{}
+\DoxyCodeLine{00418\ \ \ \ \ \ \ \ \ \ \ \ \ cin.clear();}
+\DoxyCodeLine{00419\ \ \ \ \ \ \ \ \ \ \ \ \ cin.ignore(1000,\ \textcolor{charliteral}{'\(\backslash\)n'});}
+\DoxyCodeLine{00420\ \ \ \ \ \ \ \ \ \ \ \ \ cout\ <<\ \textcolor{stringliteral}{"{}Invalid\ input.\ Try\ again.\(\backslash\)n"{}};}
+\DoxyCodeLine{00421\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_misere___t_t_t___u_i_a81107bbb1007a4e7e07be4ed7b68cf2f}{get\_move}}(p);}
+\DoxyCodeLine{00422\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00423\ }
+\DoxyCodeLine{00424\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (r\ ==\ -\/1)\ \{}
+\DoxyCodeLine{00425\ \ \ \ \ \ \ \ \ \ \ \ \ c\ =\ -\/1;}
+\DoxyCodeLine{00426\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_t_t_t___board}{TTT\_Board}}*\ board\ =\ \textcolor{keyword}{dynamic\_cast<}\mbox{\hyperlink{class_t_t_t___board}{TTT\_Board}}*\textcolor{keyword}{>}(p-\/>\mbox{\hyperlink{class_player_a508617eddfae8915d098102d480fc888}{get\_board\_ptr}}());}
+\DoxyCodeLine{00427\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (board)\ \{}
+\DoxyCodeLine{00428\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (board-\/>\mbox{\hyperlink{class_t_t_t___board_adca547a23c9f89ecfe0485f27697ea9c}{get\_history\_size}}()\ >=\ 2)\ \{}
+\DoxyCodeLine{00429\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ board-\/>\mbox{\hyperlink{class_t_t_t___board_a39d68302ebdcdc9704ee6d172470600f}{undoLastMove}}();}
+\DoxyCodeLine{00430\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ board-\/>\mbox{\hyperlink{class_t_t_t___board_a39d68302ebdcdc9704ee6d172470600f}{undoLastMove}}();}
+\DoxyCodeLine{00431\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ cout\ <<\ \textcolor{stringliteral}{"{}Undo\ successful.\(\backslash\)n"{}};}
+\DoxyCodeLine{00432\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (board-\/>\mbox{\hyperlink{class_t_t_t___board_adca547a23c9f89ecfe0485f27697ea9c}{get\_history\_size}}()\ ==\ 1)\ \{}
+\DoxyCodeLine{00433\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ board-\/>\mbox{\hyperlink{class_t_t_t___board_a39d68302ebdcdc9704ee6d172470600f}{undoLastMove}}();}
+\DoxyCodeLine{00434\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ cout\ <<\ \textcolor{stringliteral}{"{}Undo\ successful.\(\backslash\)n"{}};}
+\DoxyCodeLine{00435\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00436\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ cout\ <<\ \textcolor{stringliteral}{"{}Cannot\ undo.\(\backslash\)n"{}};}
+\DoxyCodeLine{00437\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00438\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_u_i_aa3775124efaeac59935ae0afb354708d}{display\_board\_matrix}}(board-\/>\mbox{\hyperlink{class_board_a117f2e61fdb7deccca333bbbc9c62d3a}{get\_board\_matrix}}());}
+\DoxyCodeLine{00439\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00440\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_misere___t_t_t___u_i_a81107bbb1007a4e7e07be4ed7b68cf2f}{get\_move}}(p);\ }
+\DoxyCodeLine{00441\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00442\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00443\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!(cin\ >>\ c))\ \{}
+\DoxyCodeLine{00444\ \ \ \ \ \ \ \ \ \ \ \ \ cin.clear();}
+\DoxyCodeLine{00445\ \ \ \ \ \ \ \ \ \ \ \ \ cin.ignore(1000,\ \textcolor{charliteral}{'\(\backslash\)n'});}
+\DoxyCodeLine{00446\ \ \ \ \ \ \ \ \ \ \ \ \ cout\ <<\ \textcolor{stringliteral}{"{}Invalid\ input.\ Try\ again.\(\backslash\)n"{}};}
+\DoxyCodeLine{00447\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_misere___t_t_t___u_i_a81107bbb1007a4e7e07be4ed7b68cf2f}{get\_move}}(p);}
+\DoxyCodeLine{00448\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00449\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00450\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{new}\ \mbox{\hyperlink{class_move}{Move<char>}}(r,\ c,\ p-\/>\mbox{\hyperlink{class_player_af56f0bf98c0423a3a75b0848607d03a4}{get\_symbol}}());}
+\DoxyCodeLine{00451\ }
+\DoxyCodeLine{00452\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00453\ \ \ \ \ \ \ \ \ cout\ <<\ p-\/>\mbox{\hyperlink{class_player_aed2af19790ba73190e3ebeea589518e1}{get\_name}}()\ <<\ \textcolor{stringliteral}{"{}\ ("{}}\ <<\ p-\/>\mbox{\hyperlink{class_player_af56f0bf98c0423a3a75b0848607d03a4}{get\_symbol}}()\ <<\ \textcolor{stringliteral}{"{})\ is\ thinking...\(\backslash\)n"{}};}
+\DoxyCodeLine{00454\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ computerMove(p);}
+\DoxyCodeLine{00455\ \ \ \ \ \}}
+\DoxyCodeLine{00456\ \}}
+\DoxyCodeLine{00457\ }
+\DoxyCodeLine{00458\ \mbox{\hyperlink{class_move}{Move<char>}}*\ Misere\_TTT\_UI::computerMove(\mbox{\hyperlink{class_player}{Player<char>}}*\ aiPlayer)\ \{}
+\DoxyCodeLine{00459\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_game_a_i_abe81a2559d60ebe90cfa4b0fcb4ba281}{GameAI::getMisereMove<Misere\_TTT\_Board>}}(aiPlayer);}
+\DoxyCodeLine{00460\ \}}
+\DoxyCodeLine{00461\ }
+\DoxyCodeLine{00462\ \textcolor{comment}{//\ -\/-\/-\/\ C4\_UI\ Implementations\ -\/-\/-\/}}
+\DoxyCodeLine{00463\ }
+\DoxyCodeLine{00464\ \mbox{\hyperlink{class_move}{Move<char>}}*\ C4\_UI::computerMove(\mbox{\hyperlink{class_player}{Player<char>}}*\ aiPlayer)\ \{}
+\DoxyCodeLine{00465\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_game_a_i_a18d2694d0bb1f3b2dd8eb8c0ace3aa20}{GameAI::getBestMove\_Column<C4\_Board>}}(aiPlayer);}
+\DoxyCodeLine{00466\ \}}
+\DoxyCodeLine{00467\ }
+\DoxyCodeLine{00468\ \mbox{\hyperlink{class_c4___u_i_ad5dba6aeb95db9a6f5a689cd6b906808}{C4\_UI::C4\_UI}}()\ :\ \mbox{\hyperlink{class_u_i_afb59b53f3c2ed750b1a9a0c7d6dc4a7a}{UI}}(\textcolor{stringliteral}{"{}Welcome\ to\ Four\ in\ a\ row"{}},\ 2)\ \{\}}
+\DoxyCodeLine{00469\ }
+\DoxyCodeLine{00470\ \mbox{\hyperlink{class_player}{Player<char>}}*\ \mbox{\hyperlink{class_c4___u_i_af3ec615e3f8118f8936d9f8e23a5a908}{C4\_UI::create\_player}}(\textcolor{keywordtype}{string}\&\ name,\ \textcolor{keywordtype}{char}\ symbol,\ \mbox{\hyperlink{_board_game___classes_8h_abe590f3c9109f404f003d5d7e4f0fccf}{PlayerType}}\ type)\ \{}
+\DoxyCodeLine{00471\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{new}\ \mbox{\hyperlink{class_player}{Player<char>}}(name,\ symbol,\ type);}
+\DoxyCodeLine{00472\ \}}
+\DoxyCodeLine{00473\ }
+\DoxyCodeLine{00474\ \mbox{\hyperlink{class_move}{Move<char>}}*\ \mbox{\hyperlink{class_c4___u_i_acc1e13048ae8f8c40bb555679b10950d}{C4\_UI::get\_move}}(\mbox{\hyperlink{class_player}{Player<char>}}*\ p)\ \{}
+\DoxyCodeLine{00475\ \ \ \ \ \textcolor{keywordflow}{if}\ (p-\/>\mbox{\hyperlink{class_player_a2df3bd299bf7aecfa2275ec6902a60f8}{get\_type}}()\ ==\ \mbox{\hyperlink{_board_game___classes_8h_abe590f3c9109f404f003d5d7e4f0fccfaa36c6719f4d3207d858cf956ef1e93b6}{PlayerType::HUMAN}})\ \{}
+\DoxyCodeLine{00476\ \ \ \ \ \ \ \ \ cout\ <<\ p-\/>\mbox{\hyperlink{class_player_aed2af19790ba73190e3ebeea589518e1}{get\_name}}()\ <<\ \textcolor{stringliteral}{"{}'s\ Turn\ ("{}}\ <<\ p-\/>\mbox{\hyperlink{class_player_af56f0bf98c0423a3a75b0848607d03a4}{get\_symbol}}()\ <<\ \textcolor{stringliteral}{"{}).\(\backslash\)n"{}};}
+\DoxyCodeLine{00477\ \ \ \ \ \ \ \ \ cout\ <<\ \textcolor{stringliteral}{"{}Enter\ column\ (0-\/"{}}\ <<\ p-\/>\mbox{\hyperlink{class_player_a508617eddfae8915d098102d480fc888}{get\_board\_ptr}}()-\/>get\_columns()\ -\/\ 1\ <<\ \textcolor{stringliteral}{"{})\ or\ -\/1\ to\ Undo:\ "{}};}
+\DoxyCodeLine{00478\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00479\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ c\ =\ -\/1;}
+\DoxyCodeLine{00480\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!(cin\ >>\ c))\ \{}
+\DoxyCodeLine{00481\ \ \ \ \ \ \ \ \ \ \ \ \ cin.clear();}
+\DoxyCodeLine{00482\ \ \ \ \ \ \ \ \ \ \ \ \ cin.ignore(1000,\ \textcolor{charliteral}{'\(\backslash\)n'});}
+\DoxyCodeLine{00483\ \ \ \ \ \ \ \ \ \ \ \ \ cout\ <<\ \textcolor{stringliteral}{"{}Invalid\ input.\ Try\ again.\(\backslash\)n"{}};}
+\DoxyCodeLine{00484\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_c4___u_i_acc1e13048ae8f8c40bb555679b10950d}{get\_move}}(p);}
+\DoxyCodeLine{00485\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00486\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00487\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (c\ ==\ -\/1)\ \{}
+\DoxyCodeLine{00488\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_c4___board}{C4\_Board}}*\ board\ =\ \textcolor{keyword}{dynamic\_cast<}\mbox{\hyperlink{class_c4___board}{C4\_Board}}*\textcolor{keyword}{>}(p-\/>\mbox{\hyperlink{class_player_a508617eddfae8915d098102d480fc888}{get\_board\_ptr}}());}
+\DoxyCodeLine{00489\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (board)\ \{}
+\DoxyCodeLine{00490\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (board-\/>\mbox{\hyperlink{class_c4___board_a7ccf1ba254785aa0f453d8421310f41b}{get\_history\_size}}()\ >=\ 2)\ \{}
+\DoxyCodeLine{00491\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ board-\/>\mbox{\hyperlink{class_c4___board_aa815c6844687cbf9970fdf6464a8544e}{undoLastMove}}();}
+\DoxyCodeLine{00492\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ board-\/>\mbox{\hyperlink{class_c4___board_aa815c6844687cbf9970fdf6464a8544e}{undoLastMove}}();}
+\DoxyCodeLine{00493\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ cout\ <<\ \textcolor{stringliteral}{"{}Undo\ successful.\(\backslash\)n"{}};}
+\DoxyCodeLine{00494\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (board-\/>\mbox{\hyperlink{class_c4___board_a7ccf1ba254785aa0f453d8421310f41b}{get\_history\_size}}()\ ==\ 1)\ \{}
+\DoxyCodeLine{00495\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ board-\/>\mbox{\hyperlink{class_c4___board_aa815c6844687cbf9970fdf6464a8544e}{undoLastMove}}();}
+\DoxyCodeLine{00496\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ cout\ <<\ \textcolor{stringliteral}{"{}Undo\ successful.\(\backslash\)n"{}};}
+\DoxyCodeLine{00497\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00498\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ cout\ <<\ \textcolor{stringliteral}{"{}Cannot\ undo.\(\backslash\)n"{}};}
+\DoxyCodeLine{00499\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00500\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_u_i_aa3775124efaeac59935ae0afb354708d}{display\_board\_matrix}}(board-\/>\mbox{\hyperlink{class_board_a117f2e61fdb7deccca333bbbc9c62d3a}{get\_board\_matrix}}());}
+\DoxyCodeLine{00501\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00502\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_c4___u_i_acc1e13048ae8f8c40bb555679b10950d}{get\_move}}(p);}
+\DoxyCodeLine{00503\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00504\ }
+\DoxyCodeLine{00505\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ r\ =\ 0;}
+\DoxyCodeLine{00506\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{new}\ \mbox{\hyperlink{class_move}{Move<char>}}(r,\ c,\ p-\/>\mbox{\hyperlink{class_player_af56f0bf98c0423a3a75b0848607d03a4}{get\_symbol}}());}
+\DoxyCodeLine{00507\ }
+\DoxyCodeLine{00508\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00509\ \ \ \ \ \ \ \ \ cout\ <<\ p-\/>\mbox{\hyperlink{class_player_aed2af19790ba73190e3ebeea589518e1}{get\_name}}()\ <<\ \textcolor{stringliteral}{"{}\ ("{}}\ <<\ p-\/>\mbox{\hyperlink{class_player_af56f0bf98c0423a3a75b0848607d03a4}{get\_symbol}}()\ <<\ \textcolor{stringliteral}{"{})\ is\ thinking...\(\backslash\)n"{}};}
+\DoxyCodeLine{00510\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ computerMove(p);}
+\DoxyCodeLine{00511\ \ \ \ \ \}}
+\DoxyCodeLine{00512\ \}}
+\DoxyCodeLine{00513\ }
+\DoxyCodeLine{00514\ \textcolor{comment}{//\ -\/-\/-\/\ Numerical\_TTT\_Board\ Implementations\ -\/-\/-\/}}
+\DoxyCodeLine{00515\ }
+\DoxyCodeLine{00516\ \mbox{\hyperlink{class_numerical___t_t_t___board_a6bf16b0fea31da3c38da484aa8933827}{Numerical\_TTT\_Board::Numerical\_TTT\_Board}}()\ :\ \mbox{\hyperlink{class_board_ae5dfded241ee3644196e2f6074d1d0b1}{Board}}(3,\ 3)\ \{}
+\DoxyCodeLine{00517\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ \mbox{\hyperlink{class_board_a948d978e3b5fc460559b588f5dee9572}{rows}};\ ++i)\ \{}
+\DoxyCodeLine{00518\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ j\ =\ 0;\ j\ <\ \mbox{\hyperlink{class_board_afaf8842d9d52ac724e8c2f5642ecafc7}{columns}};\ ++j)\ \{}
+\DoxyCodeLine{00519\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[i][j]\ =\ \textcolor{charliteral}{'\ '};}
+\DoxyCodeLine{00520\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00521\ \ \ \ \ \}}
+\DoxyCodeLine{00522\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 1;\ i\ <=\ 9;\ i\ +=\ 2)\ \mbox{\hyperlink{class_numerical___t_t_t___board_a8372da227cc3c5cd136bfc5a742f79fb}{odd\_nums\_used}}[i]\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00523\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 2;\ i\ <=\ 8;\ i\ +=\ 2)\ \mbox{\hyperlink{class_numerical___t_t_t___board_acc3557764db594795c5bed4ae26c4d31}{even\_nums\_used}}[i]\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00524\ \}}
+\DoxyCodeLine{00525\ }
+\DoxyCodeLine{00526\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_numerical___t_t_t___board_a9836f0938955fb4f8f8acc8c5e5d26f2}{Numerical\_TTT\_Board::isValidMove}}(\textcolor{keywordtype}{int}\ r,\ \textcolor{keywordtype}{int}\ c,\ \textcolor{keywordtype}{int}\ num,\ \textcolor{keywordtype}{bool}\ is\_odd\_turn)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00527\ \ \ \ \ \textcolor{keywordflow}{if}\ (r\ <\ 0\ ||\ r\ >=\ \mbox{\hyperlink{class_board_a948d978e3b5fc460559b588f5dee9572}{rows}}\ ||\ c\ <\ 0\ ||\ c\ >=\ \mbox{\hyperlink{class_board_afaf8842d9d52ac724e8c2f5642ecafc7}{columns}}\ ||\ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[r][c]\ !=\ \textcolor{charliteral}{'\ '})\ \{}
+\DoxyCodeLine{00528\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00529\ \ \ \ \ \}}
+\DoxyCodeLine{00530\ \ \ \ \ \textcolor{keywordflow}{if}\ (num\ <\ 1\ ||\ num\ >\ 9)\ \{}
+\DoxyCodeLine{00531\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00532\ \ \ \ \ \}}
+\DoxyCodeLine{00533\ }
+\DoxyCodeLine{00534\ \ \ \ \ \textcolor{keywordflow}{if}\ (is\_odd\_turn)\ \{}
+\DoxyCodeLine{00535\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (num\ \%\ 2\ ==\ 0\ ||\ \mbox{\hyperlink{class_numerical___t_t_t___board_a8372da227cc3c5cd136bfc5a742f79fb}{odd\_nums\_used}}.at(num))\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00536\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00537\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (num\ \%\ 2\ !=\ 0\ ||\ \mbox{\hyperlink{class_numerical___t_t_t___board_acc3557764db594795c5bed4ae26c4d31}{even\_nums\_used}}.at(num))\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00538\ \ \ \ \ \}}
+\DoxyCodeLine{00539\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00540\ \}}
+\DoxyCodeLine{00541\ }
+\DoxyCodeLine{00542\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_numerical___t_t_t___board_ae24bb50bfddf3178433bf98cf38cb9fc}{Numerical\_TTT\_Board::public\_is\_valid}}(\textcolor{keywordtype}{int}\ r,\ \textcolor{keywordtype}{int}\ c,\ \textcolor{keywordtype}{int}\ num,\ \textcolor{keywordtype}{bool}\ is\_odd\_turn)\ \{}
+\DoxyCodeLine{00543\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_numerical___t_t_t___board_a9836f0938955fb4f8f8acc8c5e5d26f2}{isValidMove}}(r,\ c,\ num,\ is\_odd\_turn);}
+\DoxyCodeLine{00544\ \}}
+\DoxyCodeLine{00545\ }
+\DoxyCodeLine{00546\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_numerical___t_t_t___board_a74c8fa969b67519bea2985c6e4e52a28}{Numerical\_TTT\_Board::undoLastMove}}()\ \{}
+\DoxyCodeLine{00547\ \ \ \ \ \textcolor{keywordflow}{if}\ (!\mbox{\hyperlink{class_numerical___t_t_t___board_a556fedfdf1f8f72dd42fff93d0bc3911}{history}}.empty())\ \{}
+\DoxyCodeLine{00548\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_point}{Point}}\ last\ =\ \mbox{\hyperlink{class_numerical___t_t_t___board_a556fedfdf1f8f72dd42fff93d0bc3911}{history}}.back();}
+\DoxyCodeLine{00549\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_numerical___t_t_t___board_a556fedfdf1f8f72dd42fff93d0bc3911}{history}}.pop\_back();}
+\DoxyCodeLine{00550\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00551\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}\ num\_char\ =\ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[last.\mbox{\hyperlink{struct_point_a5eec80a5eba17a6cfc509a17125a5f17}{r}}][last.\mbox{\hyperlink{struct_point_a8277737deb586b2625d3106aa2fe32d6}{c}}];}
+\DoxyCodeLine{00552\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ num\ =\ num\_char\ -\/\ \textcolor{charliteral}{'0'};}
+\DoxyCodeLine{00553\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00554\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (num\ \%\ 2\ !=\ 0)\ \{}
+\DoxyCodeLine{00555\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_numerical___t_t_t___board_a8372da227cc3c5cd136bfc5a742f79fb}{odd\_nums\_used}}[num]\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00556\ \ \ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00557\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_numerical___t_t_t___board_acc3557764db594795c5bed4ae26c4d31}{even\_nums\_used}}[num]\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00558\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00559\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00560\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[last.\mbox{\hyperlink{struct_point_a5eec80a5eba17a6cfc509a17125a5f17}{r}}][last.\mbox{\hyperlink{struct_point_a8277737deb586b2625d3106aa2fe32d6}{c}}]\ =\ \textcolor{charliteral}{'\ '};}
+\DoxyCodeLine{00561\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_board_a5952baefabced65fecec333de638408d}{n\_moves}}-\/-\/;}
+\DoxyCodeLine{00562\ \ \ \ \ \}}
+\DoxyCodeLine{00563\ \}}
+\DoxyCodeLine{00564\ }
+\DoxyCodeLine{00565\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_numerical___t_t_t___board_a36d54ab62a179048c27bd7b68ff2cbd8}{Numerical\_TTT\_Board::update\_board}}(\mbox{\hyperlink{class_move}{Move<char>}}*\ move)\ \{}
+\DoxyCodeLine{00566\ \ \ \ \ \textcolor{keywordtype}{int}\ r\ =\ move-\/>\mbox{\hyperlink{class_move_a9d4f543a81e361f872d37bcfb64d5b55}{get\_x}}();}
+\DoxyCodeLine{00567\ \ \ \ \ \textcolor{keywordtype}{int}\ c\ =\ move-\/>\mbox{\hyperlink{class_move_a96469802a55c9083a1e93c7edec8a00c}{get\_y}}();}
+\DoxyCodeLine{00568\ \ \ \ \ \textcolor{keywordtype}{char}\ num\_char\ =\ move-\/>\mbox{\hyperlink{class_move_a595bf740852c05a1cb425ef2640fd4ff}{get\_symbol}}();}
+\DoxyCodeLine{00569\ \ \ \ \ \textcolor{keywordtype}{int}\ num\ =\ num\_char\ -\/\ \textcolor{charliteral}{'0'};}
+\DoxyCodeLine{00570\ }
+\DoxyCodeLine{00571\ \ \ \ \ \textcolor{keywordtype}{bool}\ is\_odd\_turn\ =\ (\mbox{\hyperlink{class_board_a5952baefabced65fecec333de638408d}{n\_moves}}\ \%\ 2\ ==\ 0);}
+\DoxyCodeLine{00572\ }
+\DoxyCodeLine{00573\ \ \ \ \ \textcolor{keywordflow}{if}\ (!\mbox{\hyperlink{class_numerical___t_t_t___board_a9836f0938955fb4f8f8acc8c5e5d26f2}{isValidMove}}(r,\ c,\ num,\ is\_odd\_turn))\ \{}
+\DoxyCodeLine{00574\ \ \ \ \ \ \ \ \ cout\ <<\ \textcolor{stringliteral}{"{}Invalid\ move.\ Try\ again.\(\backslash\)n"{}};}
+\DoxyCodeLine{00575\ \ \ \ \ \ \ \ \ \textcolor{keyword}{delete}\ move;}
+\DoxyCodeLine{00576\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00577\ \ \ \ \ \}}
+\DoxyCodeLine{00578\ }
+\DoxyCodeLine{00579\ \ \ \ \ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[r][c]\ =\ num\_char;}
+\DoxyCodeLine{00580\ \ \ \ \ \mbox{\hyperlink{class_numerical___t_t_t___board_a556fedfdf1f8f72dd42fff93d0bc3911}{history}}.push\_back(\{r,\ c\});}
+\DoxyCodeLine{00581\ \ \ \ \ }
+\DoxyCodeLine{00582\ \ \ \ \ \textcolor{keywordflow}{if}\ (is\_odd\_turn)\ \{}
+\DoxyCodeLine{00583\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_numerical___t_t_t___board_a8372da227cc3c5cd136bfc5a742f79fb}{odd\_nums\_used}}[num]\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00584\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00585\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_numerical___t_t_t___board_acc3557764db594795c5bed4ae26c4d31}{even\_nums\_used}}[num]\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00586\ \ \ \ \ \}}
+\DoxyCodeLine{00587\ \ \ \ \ }
+\DoxyCodeLine{00588\ \ \ \ \ \mbox{\hyperlink{class_board_a5952baefabced65fecec333de638408d}{n\_moves}}++;}
+\DoxyCodeLine{00589\ \ \ \ \ \textcolor{keyword}{delete}\ move;}
+\DoxyCodeLine{00590\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00591\ \}}
+\DoxyCodeLine{00592\ }
+\DoxyCodeLine{00593\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_numerical___t_t_t___board_a8f90730de53d87164cac6681d8d0f61f}{Numerical\_TTT\_Board::checkLine}}(\textcolor{keywordtype}{int}\ r1,\ \textcolor{keywordtype}{int}\ c1,\ \textcolor{keywordtype}{int}\ r2,\ \textcolor{keywordtype}{int}\ c2,\ \textcolor{keywordtype}{int}\ r3,\ \textcolor{keywordtype}{int}\ c3)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00594\ \ \ \ \ \textcolor{keywordflow}{if}\ (\mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[r1][c1]\ ==\ \textcolor{charliteral}{'\ '}\ ||\ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[r2][c2]\ ==\ \textcolor{charliteral}{'\ '}\ ||\ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[r3][c3]\ ==\ \textcolor{charliteral}{'\ '})\ \{}
+\DoxyCodeLine{00595\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00596\ \ \ \ \ \}}
+\DoxyCodeLine{00597\ \ \ \ \ \textcolor{keywordtype}{int}\ v1\ =\ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[r1][c1]\ -\/\ \textcolor{charliteral}{'0'};}
+\DoxyCodeLine{00598\ \ \ \ \ \textcolor{keywordtype}{int}\ v2\ =\ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[r2][c2]\ -\/\ \textcolor{charliteral}{'0'};}
+\DoxyCodeLine{00599\ \ \ \ \ \textcolor{keywordtype}{int}\ v3\ =\ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[r3][c3]\ -\/\ \textcolor{charliteral}{'0'};}
+\DoxyCodeLine{00600\ \ \ \ \ \textcolor{keywordflow}{return}\ (v1\ +\ v2\ +\ v3)\ ==\ 15;}
+\DoxyCodeLine{00601\ \}}
+\DoxyCodeLine{00602\ }
+\DoxyCodeLine{00603\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_numerical___t_t_t___board_aa7013c20d2184dec643a17f5f27aadb1}{Numerical\_TTT\_Board::checkWin}}()\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00604\ \ \ \ \ \textcolor{keywordflow}{if}\ (\mbox{\hyperlink{class_numerical___t_t_t___board_a8f90730de53d87164cac6681d8d0f61f}{checkLine}}(0,\ 0,\ 0,\ 1,\ 0,\ 2))\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00605\ \ \ \ \ \textcolor{keywordflow}{if}\ (\mbox{\hyperlink{class_numerical___t_t_t___board_a8f90730de53d87164cac6681d8d0f61f}{checkLine}}(1,\ 0,\ 1,\ 1,\ 1,\ 2))\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00606\ \ \ \ \ \textcolor{keywordflow}{if}\ (\mbox{\hyperlink{class_numerical___t_t_t___board_a8f90730de53d87164cac6681d8d0f61f}{checkLine}}(2,\ 0,\ 2,\ 1,\ 2,\ 2))\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00607\ \ \ \ \ \textcolor{keywordflow}{if}\ (\mbox{\hyperlink{class_numerical___t_t_t___board_a8f90730de53d87164cac6681d8d0f61f}{checkLine}}(0,\ 0,\ 1,\ 0,\ 2,\ 0))\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00608\ \ \ \ \ \textcolor{keywordflow}{if}\ (\mbox{\hyperlink{class_numerical___t_t_t___board_a8f90730de53d87164cac6681d8d0f61f}{checkLine}}(0,\ 1,\ 1,\ 1,\ 2,\ 1))\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00609\ \ \ \ \ \textcolor{keywordflow}{if}\ (\mbox{\hyperlink{class_numerical___t_t_t___board_a8f90730de53d87164cac6681d8d0f61f}{checkLine}}(0,\ 2,\ 1,\ 2,\ 2,\ 2))\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00610\ \ \ \ \ \textcolor{keywordflow}{if}\ (\mbox{\hyperlink{class_numerical___t_t_t___board_a8f90730de53d87164cac6681d8d0f61f}{checkLine}}(0,\ 0,\ 1,\ 1,\ 2,\ 2))\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00611\ \ \ \ \ \textcolor{keywordflow}{if}\ (\mbox{\hyperlink{class_numerical___t_t_t___board_a8f90730de53d87164cac6681d8d0f61f}{checkLine}}(0,\ 2,\ 1,\ 1,\ 2,\ 0))\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00612\ \ \ \ \ }
+\DoxyCodeLine{00613\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00614\ \}}
+\DoxyCodeLine{00615\ }
+\DoxyCodeLine{00616\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_numerical___t_t_t___board_a75bac18fc23fc63213f53147d4d10db9}{Numerical\_TTT\_Board::isFull}}()\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00617\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_board_a5952baefabced65fecec333de638408d}{n\_moves}}\ >=\ (\mbox{\hyperlink{class_board_a948d978e3b5fc460559b588f5dee9572}{rows}}\ *\ \mbox{\hyperlink{class_board_afaf8842d9d52ac724e8c2f5642ecafc7}{columns}});}
+\DoxyCodeLine{00618\ \}}
+\DoxyCodeLine{00619\ }
+\DoxyCodeLine{00620\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_numerical___t_t_t___board_ad9ea57d87acd1c4ad922ccb7ef897294}{Numerical\_TTT\_Board::is\_win}}(\mbox{\hyperlink{class_player}{Player<char>}}*\ p)\ \{}
+\DoxyCodeLine{00621\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_numerical___t_t_t___board_aa7013c20d2184dec643a17f5f27aadb1}{checkWin}}();}
+\DoxyCodeLine{00622\ \}}
+\DoxyCodeLine{00623\ }
+\DoxyCodeLine{00624\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_numerical___t_t_t___board_a277d3d91d2edab04a248de1faaa0d76c}{Numerical\_TTT\_Board::is\_lose}}(\mbox{\hyperlink{class_player}{Player<char>}}*\ p)\ \{}
+\DoxyCodeLine{00625\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00626\ \}}
+\DoxyCodeLine{00627\ }
+\DoxyCodeLine{00628\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_numerical___t_t_t___board_a625ce873142ea88ff9d79ac0a8079102}{Numerical\_TTT\_Board::is\_draw}}(\mbox{\hyperlink{class_player}{Player<char>}}*\ p)\ \{}
+\DoxyCodeLine{00629\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_numerical___t_t_t___board_a75bac18fc23fc63213f53147d4d10db9}{isFull}}()\ \&\&\ !\mbox{\hyperlink{class_numerical___t_t_t___board_aa7013c20d2184dec643a17f5f27aadb1}{checkWin}}();}
+\DoxyCodeLine{00630\ \}}
+\DoxyCodeLine{00631\ }
+\DoxyCodeLine{00632\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_numerical___t_t_t___board_a2bd122c27f8f3db2589bc4a6559dae44}{Numerical\_TTT\_Board::game\_is\_over}}(\mbox{\hyperlink{class_player}{Player<char>}}*\ p)\ \{}
+\DoxyCodeLine{00633\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_numerical___t_t_t___board_ad9ea57d87acd1c4ad922ccb7ef897294}{is\_win}}(p)\ ||\ \mbox{\hyperlink{class_numerical___t_t_t___board_a625ce873142ea88ff9d79ac0a8079102}{is\_draw}}(p);}
+\DoxyCodeLine{00634\ \}}
+\DoxyCodeLine{00635\ }
+\DoxyCodeLine{00636\ \textcolor{comment}{//\ -\/-\/-\/\ Obstacles\_TTT\_Board\ Implementations\ -\/-\/-\/}}
+\DoxyCodeLine{00637\ }
+\DoxyCodeLine{00638\ \mbox{\hyperlink{class_obstacles___t_t_t___board_ad63930689bd8748f5d198754e6b3e9e4}{Obstacles\_TTT\_Board::Obstacles\_TTT\_Board}}()\ :\ \mbox{\hyperlink{class_board_ae5dfded241ee3644196e2f6074d1d0b1}{Board}}(6,\ 6)\ \{}
+\DoxyCodeLine{00639\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ \mbox{\hyperlink{class_board_a948d978e3b5fc460559b588f5dee9572}{rows}};\ ++i)\ \{}
+\DoxyCodeLine{00640\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ j\ =\ 0;\ j\ <\ \mbox{\hyperlink{class_board_afaf8842d9d52ac724e8c2f5642ecafc7}{columns}};\ ++j)\ \{}
+\DoxyCodeLine{00641\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[i][j]\ =\ \textcolor{charliteral}{'\ '};}
+\DoxyCodeLine{00642\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00643\ \ \ \ \ \}}
+\DoxyCodeLine{00644\ \}}
+\DoxyCodeLine{00645\ }
+\DoxyCodeLine{00646\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_obstacles___t_t_t___board_a39f243400e672c1d8c303618cab8c6e2}{Obstacles\_TTT\_Board::isValidMove}}(\textcolor{keywordtype}{int}\ r,\ \textcolor{keywordtype}{int}\ c)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00647\ \ \ \ \ \textcolor{keywordflow}{return}\ r\ >=\ 0\ \&\&\ r\ <\ rows\ \&\&\ c\ >=\ 0\ \&\&\ c\ <\ \mbox{\hyperlink{class_board_afaf8842d9d52ac724e8c2f5642ecafc7}{columns}}\ \&\&\ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[r][c]\ ==\ \textcolor{charliteral}{'\ '};}
+\DoxyCodeLine{00648\ \}}
+\DoxyCodeLine{00649\ }
+\DoxyCodeLine{00650\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_obstacles___t_t_t___board_aa1db80dbdaa5d559c27dd93d1e4e6f6d}{Obstacles\_TTT\_Board::public\_is\_valid}}(\textcolor{keywordtype}{int}\ r,\ \textcolor{keywordtype}{int}\ c)\ \{}
+\DoxyCodeLine{00651\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_obstacles___t_t_t___board_a39f243400e672c1d8c303618cab8c6e2}{isValidMove}}(r,\ c);}
+\DoxyCodeLine{00652\ \}}
+\DoxyCodeLine{00653\ }
+\DoxyCodeLine{00654\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_obstacles___t_t_t___board_aa59d808c8780c6d943cba70bf36cfc64}{Obstacles\_TTT\_Board::isFull}}()\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00655\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ \mbox{\hyperlink{class_board_a948d978e3b5fc460559b588f5dee9572}{rows}};\ ++i)\ \{}
+\DoxyCodeLine{00656\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ j\ =\ 0;\ j\ <\ \mbox{\hyperlink{class_board_afaf8842d9d52ac724e8c2f5642ecafc7}{columns}};\ ++j)\ \{}
+\DoxyCodeLine{00657\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (\mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[i][j]\ ==\ \textcolor{charliteral}{'\ '})\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00658\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00659\ \ \ \ \ \}}
+\DoxyCodeLine{00660\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00661\ \}}
+\DoxyCodeLine{00662\ }
+\DoxyCodeLine{00663\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_obstacles___t_t_t___board_acfab5ff528d92974282fe307a7584e81}{Obstacles\_TTT\_Board::addObstacles}}()\ \{}
+\DoxyCodeLine{00664\ \ \ \ \ \textcolor{keywordflow}{if}\ (\mbox{\hyperlink{class_obstacles___t_t_t___board_aa59d808c8780c6d943cba70bf36cfc64}{isFull}}())\ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00665\ }
+\DoxyCodeLine{00666\ \ \ \ \ \textcolor{keywordtype}{int}\ count\ =\ 0;}
+\DoxyCodeLine{00667\ \ \ \ \ \textcolor{keywordflow}{while}\ (count\ <\ 2)\ \{}
+\DoxyCodeLine{00668\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (\mbox{\hyperlink{class_obstacles___t_t_t___board_aa59d808c8780c6d943cba70bf36cfc64}{isFull}}())\ \textcolor{keywordflow}{return};\ }
+\DoxyCodeLine{00669\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ r\ =\ rand()\ \%\ \mbox{\hyperlink{class_board_a948d978e3b5fc460559b588f5dee9572}{rows}};}
+\DoxyCodeLine{00670\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ c\ =\ rand()\ \%\ \mbox{\hyperlink{class_board_afaf8842d9d52ac724e8c2f5642ecafc7}{columns}};}
+\DoxyCodeLine{00671\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (\mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[r][c]\ ==\ \textcolor{charliteral}{'\ '})\ \{}
+\DoxyCodeLine{00672\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[r][c]\ =\ \textcolor{charliteral}{'\#'};}
+\DoxyCodeLine{00673\ \ \ \ \ \ \ \ \ \ \ \ \ count++;}
+\DoxyCodeLine{00674\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00675\ \ \ \ \ \}}
+\DoxyCodeLine{00676\ \}}
+\DoxyCodeLine{00677\ }
+\DoxyCodeLine{00678\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_obstacles___t_t_t___board_a8b911fbe5c802677050d67d7b2025c27}{Obstacles\_TTT\_Board::undoLastMove}}()\ \{}
+\DoxyCodeLine{00679\ \ \ \ \ \textcolor{keywordflow}{if}\ (!\mbox{\hyperlink{class_obstacles___t_t_t___board_a6d3e1a4d6c6149a39d6a7e98fb7a0d0a}{history}}.empty())\ \{}
+\DoxyCodeLine{00680\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{struct_point}{Point}}\ last\ =\ \mbox{\hyperlink{class_obstacles___t_t_t___board_a6d3e1a4d6c6149a39d6a7e98fb7a0d0a}{history}}.back();}
+\DoxyCodeLine{00681\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_obstacles___t_t_t___board_a6d3e1a4d6c6149a39d6a7e98fb7a0d0a}{history}}.pop\_back();}
+\DoxyCodeLine{00682\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[last.\mbox{\hyperlink{struct_point_a5eec80a5eba17a6cfc509a17125a5f17}{r}}][last.\mbox{\hyperlink{struct_point_a8277737deb586b2625d3106aa2fe32d6}{c}}]\ =\ \textcolor{charliteral}{'\ '};}
+\DoxyCodeLine{00683\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_board_a5952baefabced65fecec333de638408d}{n\_moves}}-\/-\/;}
+\DoxyCodeLine{00684\ \ \ \ \ \}}
+\DoxyCodeLine{00685\ \}}
+\DoxyCodeLine{00686\ }
+\DoxyCodeLine{00687\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_obstacles___t_t_t___board_ab6ef0a5590b9b88be40fa9c06d2f73d2}{Obstacles\_TTT\_Board::update\_board}}(\mbox{\hyperlink{class_move}{Move<char>}}*\ move)\ \{}
+\DoxyCodeLine{00688\ \ \ \ \ \textcolor{keywordtype}{int}\ r\ =\ move-\/>\mbox{\hyperlink{class_move_a9d4f543a81e361f872d37bcfb64d5b55}{get\_x}}();}
+\DoxyCodeLine{00689\ \ \ \ \ \textcolor{keywordtype}{int}\ c\ =\ move-\/>\mbox{\hyperlink{class_move_a96469802a55c9083a1e93c7edec8a00c}{get\_y}}();}
+\DoxyCodeLine{00690\ \ \ \ \ \textcolor{keywordtype}{char}\ symbol\ =\ move-\/>\mbox{\hyperlink{class_move_a595bf740852c05a1cb425ef2640fd4ff}{get\_symbol}}();}
+\DoxyCodeLine{00691\ }
+\DoxyCodeLine{00692\ \ \ \ \ \textcolor{keywordflow}{if}\ (!\mbox{\hyperlink{class_obstacles___t_t_t___board_a39f243400e672c1d8c303618cab8c6e2}{isValidMove}}(r,\ c))\ \{}
+\DoxyCodeLine{00693\ \ \ \ \ \ \ \ \ cout\ <<\ \textcolor{stringliteral}{"{}Invalid\ move.\ Try\ again.\(\backslash\)n"{}};}
+\DoxyCodeLine{00694\ \ \ \ \ \ \ \ \ \textcolor{keyword}{delete}\ move;}
+\DoxyCodeLine{00695\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00696\ \ \ \ \ \}}
+\DoxyCodeLine{00697\ }
+\DoxyCodeLine{00698\ \ \ \ \ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[r][c]\ =\ symbol;}
+\DoxyCodeLine{00699\ \ \ \ \ \mbox{\hyperlink{class_obstacles___t_t_t___board_a6d3e1a4d6c6149a39d6a7e98fb7a0d0a}{history}}.push\_back(\{r,\ c\});}
+\DoxyCodeLine{00700\ \ \ \ \ \mbox{\hyperlink{class_board_a5952baefabced65fecec333de638408d}{n\_moves}}++;}
+\DoxyCodeLine{00701\ }
+\DoxyCodeLine{00702\ \ \ \ \ \textcolor{keywordflow}{if}\ (\mbox{\hyperlink{class_board_a5952baefabced65fecec333de638408d}{n\_moves}}\ >\ 0\ \&\&\ \mbox{\hyperlink{class_board_a5952baefabced65fecec333de638408d}{n\_moves}}\ \%\ 2\ ==\ 0)\ \{}
+\DoxyCodeLine{00703\ \ \ \ \ \ \ \ \ cout\ <<\ \textcolor{stringliteral}{"{}Adding\ obstacles...\(\backslash\)n"{}};}
+\DoxyCodeLine{00704\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_obstacles___t_t_t___board_acfab5ff528d92974282fe307a7584e81}{addObstacles}}();}
+\DoxyCodeLine{00705\ \ \ \ \ \}}
+\DoxyCodeLine{00706\ }
+\DoxyCodeLine{00707\ \ \ \ \ \textcolor{keyword}{delete}\ move;}
+\DoxyCodeLine{00708\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00709\ \}}
+\DoxyCodeLine{00710\ }
+\DoxyCodeLine{00711\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_obstacles___t_t_t___board_a36ccc75da5619616fed229ad80f4638c}{Obstacles\_TTT\_Board::checkWin}}(\textcolor{keywordtype}{char}\ s)\ \{}
+\DoxyCodeLine{00712\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ r\ =\ 0;\ r\ <\ \mbox{\hyperlink{class_board_a948d978e3b5fc460559b588f5dee9572}{rows}};\ r++)\ \{}
+\DoxyCodeLine{00713\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ c\ =\ 0;\ c\ <\ \mbox{\hyperlink{class_board_afaf8842d9d52ac724e8c2f5642ecafc7}{columns}};\ c++)\ \{}
+\DoxyCodeLine{00714\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (\mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[r][c]\ ==\ s)\ \{}
+\DoxyCodeLine{00715\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (c\ +\ 3\ <\ \mbox{\hyperlink{class_board_afaf8842d9d52ac724e8c2f5642ecafc7}{columns}}\ \&\&\ }
+\DoxyCodeLine{00716\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[r][c\ +\ 1]\ ==\ s\ \&\&\ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[r][c\ +\ 2]\ ==\ s\ \&\&\ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[r][c\ +\ 3]\ ==\ s)\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00717\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (r\ +\ 3\ <\ \mbox{\hyperlink{class_board_a948d978e3b5fc460559b588f5dee9572}{rows}}\ \&\&\ }
+\DoxyCodeLine{00718\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[r\ +\ 1][c]\ ==\ s\ \&\&\ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[r\ +\ 2][c]\ ==\ s\ \&\&\ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[r\ +\ 3][c]\ ==\ s)\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00719\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (r\ +\ 3\ <\ \mbox{\hyperlink{class_board_a948d978e3b5fc460559b588f5dee9572}{rows}}\ \&\&\ c\ +\ 3\ <\ \mbox{\hyperlink{class_board_afaf8842d9d52ac724e8c2f5642ecafc7}{columns}}\ \&\&\ }
+\DoxyCodeLine{00720\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[r\ +\ 1][c\ +\ 1]\ ==\ s\ \&\&\ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[r\ +\ 2][c\ +\ 2]\ ==\ s\ \&\&\ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[r\ +\ 3][c\ +\ 3]\ ==\ s)\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00721\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (r\ -\/\ 3\ >=\ 0\ \&\&\ c\ +\ 3\ <\ \mbox{\hyperlink{class_board_afaf8842d9d52ac724e8c2f5642ecafc7}{columns}}\ \&\&\ }
+\DoxyCodeLine{00722\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[r\ -\/\ 1][c\ +\ 1]\ ==\ s\ \&\&\ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[r\ -\/\ 2][c\ +\ 2]\ ==\ s\ \&\&\ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}[r\ -\/\ 3][c\ +\ 3]\ ==\ s)\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00723\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00724\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00725\ \ \ \ \ \}}
+\DoxyCodeLine{00726\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00727\ \}}
+\DoxyCodeLine{00728\ }
+\DoxyCodeLine{00729\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_obstacles___t_t_t___board_ad71d3e79a5a4d1a4dc77ce6e93142a7b}{Obstacles\_TTT\_Board::is\_win}}(\mbox{\hyperlink{class_player}{Player<char>}}*\ p)\ \{}
+\DoxyCodeLine{00730\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_obstacles___t_t_t___board_a36ccc75da5619616fed229ad80f4638c}{checkWin}}(p-\/>\mbox{\hyperlink{class_player_af56f0bf98c0423a3a75b0848607d03a4}{get\_symbol}}());}
+\DoxyCodeLine{00731\ \}}
+\DoxyCodeLine{00732\ }
+\DoxyCodeLine{00733\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_obstacles___t_t_t___board_a24c06fc04be745f9b66168f5276a5c47}{Obstacles\_TTT\_Board::is\_lose}}(\mbox{\hyperlink{class_player}{Player<char>}}*\ p)\ \{}
+\DoxyCodeLine{00734\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00735\ \}}
+\DoxyCodeLine{00736\ }
+\DoxyCodeLine{00737\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_obstacles___t_t_t___board_a587abe0b039092a42f8aa82d75c7c835}{Obstacles\_TTT\_Board::is\_draw}}(\mbox{\hyperlink{class_player}{Player<char>}}*\ p)\ \{}
+\DoxyCodeLine{00738\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_obstacles___t_t_t___board_aa59d808c8780c6d943cba70bf36cfc64}{isFull}}()\ \&\&\ !\mbox{\hyperlink{class_obstacles___t_t_t___board_a36ccc75da5619616fed229ad80f4638c}{checkWin}}(\textcolor{charliteral}{'X'})\ \&\&\ !\mbox{\hyperlink{class_obstacles___t_t_t___board_a36ccc75da5619616fed229ad80f4638c}{checkWin}}(\textcolor{charliteral}{'O'});}
+\DoxyCodeLine{00739\ \}}
+\DoxyCodeLine{00740\ }
+\DoxyCodeLine{00741\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{class_obstacles___t_t_t___board_a5390b562cacf5d30b99a2b9c4b3a65a8}{Obstacles\_TTT\_Board::game\_is\_over}}(\mbox{\hyperlink{class_player}{Player<char>}}*\ p)\ \{}
+\DoxyCodeLine{00742\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_obstacles___t_t_t___board_ad71d3e79a5a4d1a4dc77ce6e93142a7b}{is\_win}}(p)\ ||\ \mbox{\hyperlink{class_obstacles___t_t_t___board_a587abe0b039092a42f8aa82d75c7c835}{is\_draw}}(p);}
+\DoxyCodeLine{00743\ \}}
+\DoxyCodeLine{00744\ }
+\DoxyCodeLine{00745\ \textcolor{comment}{//\ -\/-\/-\/\ Numerical\_TTT\_UI\ Implementations\ -\/-\/-\/}}
+\DoxyCodeLine{00746\ }
+\DoxyCodeLine{00747\ \mbox{\hyperlink{class_numerical___t_t_t___u_i_a2715fa4b793c7979e4c93d1100f4afbb}{Numerical\_TTT\_UI::Numerical\_TTT\_UI}}()\ :\ \mbox{\hyperlink{class_u_i_afb59b53f3c2ed750b1a9a0c7d6dc4a7a}{UI}}(\textcolor{stringliteral}{"{}Welcome\ to\ Numerical\ X-\/O\ (Sum\ to\ 15)"{}},\ 3)\ \{\}}
+\DoxyCodeLine{00748\ }
+\DoxyCodeLine{00749\ \mbox{\hyperlink{class_player}{Player<char>}}*\ \mbox{\hyperlink{class_numerical___t_t_t___u_i_a6c2b33bfd56729fdaf7f3bf8f2c42c20}{Numerical\_TTT\_UI::create\_player}}(\textcolor{keywordtype}{string}\&\ name,\ \textcolor{keywordtype}{char}\ symbol,\ \mbox{\hyperlink{_board_game___classes_8h_abe590f3c9109f404f003d5d7e4f0fccf}{PlayerType}}\ type)\ \{}
+\DoxyCodeLine{00750\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{new}\ \mbox{\hyperlink{class_player}{Player<char>}}(name,\ symbol,\ type);}
+\DoxyCodeLine{00751\ \}}
+\DoxyCodeLine{00752\ }
+\DoxyCodeLine{00753\ \mbox{\hyperlink{class_move}{Move<char>}}*\ \mbox{\hyperlink{class_numerical___t_t_t___u_i_a47f622d92a877e7707ed0ae38635860c}{Numerical\_TTT\_UI::get\_move}}(\mbox{\hyperlink{class_player}{Player<char>}}*\ p)\ \{}
+\DoxyCodeLine{00754\ \ \ \ \ \textcolor{keywordflow}{if}\ (p-\/>\mbox{\hyperlink{class_player_a2df3bd299bf7aecfa2275ec6902a60f8}{get\_type}}()\ ==\ \mbox{\hyperlink{_board_game___classes_8h_abe590f3c9109f404f003d5d7e4f0fccfaa36c6719f4d3207d858cf956ef1e93b6}{PlayerType::HUMAN}})\ \{}
+\DoxyCodeLine{00755\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ is\_odd\_player\ =\ (p-\/>\mbox{\hyperlink{class_player_af56f0bf98c0423a3a75b0848607d03a4}{get\_symbol}}()\ ==\ \textcolor{charliteral}{'X'});}
+\DoxyCodeLine{00756\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00757\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_numerical___t_t_t___board}{Numerical\_TTT\_Board}}*\ board\ =\ \textcolor{keyword}{dynamic\_cast<}\mbox{\hyperlink{class_numerical___t_t_t___board}{Numerical\_TTT\_Board}}*\textcolor{keyword}{>}(p-\/>\mbox{\hyperlink{class_player_a508617eddfae8915d098102d480fc888}{get\_board\_ptr}}());}
+\DoxyCodeLine{00758\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{string}\ available\_nums\_str;}
+\DoxyCodeLine{00759\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00760\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (is\_odd\_player)\ \{}
+\DoxyCodeLine{00761\ \ \ \ \ \ \ \ \ \ \ \ \ available\_nums\_str\ =\ \textcolor{stringliteral}{"{}Odd:\ "{}};}
+\DoxyCodeLine{00762\ \ \ \ \ \ \ \ \ \ \ \ \ map<int,\ bool>\ used\ =\ board-\/>\mbox{\hyperlink{class_numerical___t_t_t___board_a32b29d06ae07b4a974ebbe271aacf301}{get\_odd\_nums\_used}}();}
+\DoxyCodeLine{00763\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (map<int,\ bool>::iterator\ it\ =\ used.begin();\ it\ !=\ used.end();\ ++it)\ \{}
+\DoxyCodeLine{00764\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!it-\/>second)\ \{\ }
+\DoxyCodeLine{00765\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ available\_nums\_str\ +=\ to\_string(it-\/>first)\ +\ \textcolor{stringliteral}{"{},"{}};}
+\DoxyCodeLine{00766\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00767\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00768\ \ \ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00769\ \ \ \ \ \ \ \ \ \ \ \ \ available\_nums\_str\ =\ \textcolor{stringliteral}{"{}Even:\ "{}};}
+\DoxyCodeLine{00770\ \ \ \ \ \ \ \ \ \ \ \ \ map<int,\ bool>\ used\ =\ board-\/>\mbox{\hyperlink{class_numerical___t_t_t___board_ad506c54988762aaed8748607d30aae5e}{get\_even\_nums\_used}}();}
+\DoxyCodeLine{00771\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (map<int,\ bool>::iterator\ it\ =\ used.begin();\ it\ !=\ used.end();\ ++it)\ \{}
+\DoxyCodeLine{00772\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!it-\/>second)\ \{\ }
+\DoxyCodeLine{00773\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ available\_nums\_str\ +=\ to\_string(it-\/>first)\ +\ \textcolor{stringliteral}{"{},"{}};}
+\DoxyCodeLine{00774\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00775\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00776\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00777\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (available\_nums\_str.length()\ >\ 0\ \&\&\ available\_nums\_str.back()\ ==\ \textcolor{charliteral}{','})\ \{}
+\DoxyCodeLine{00778\ \ \ \ \ \ \ \ \ \ \ \ \ available\_nums\_str.pop\_back();\ }
+\DoxyCodeLine{00779\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00780\ }
+\DoxyCodeLine{00781\ \ \ \ \ \ \ \ \ cout\ <<\ p-\/>\mbox{\hyperlink{class_player_aed2af19790ba73190e3ebeea589518e1}{get\_name}}()\ <<\ \textcolor{stringliteral}{"{}'s\ Turn\ ("{}}\ <<\ available\_nums\_str\ <<\ \textcolor{stringliteral}{"{}).\(\backslash\)n"{}};}
+\DoxyCodeLine{00782\ \ \ \ \ \ \ \ \ cout\ <<\ \textcolor{stringliteral}{"{}Enter\ row\ (0-\/2),\ col\ (0-\/2),\ and\ number,\ or\ -\/1\ to\ Undo:\ "{}};}
+\DoxyCodeLine{00783\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00784\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ r\ =\ -\/1,\ c\ =\ -\/1,\ num\ =\ -\/1;}
+\DoxyCodeLine{00785\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!(cin\ >>\ r))\ \{}
+\DoxyCodeLine{00786\ \ \ \ \ \ \ \ \ \ \ \ \ cin.clear();}
+\DoxyCodeLine{00787\ \ \ \ \ \ \ \ \ \ \ \ \ cin.ignore(1000,\ \textcolor{charliteral}{'\(\backslash\)n'});}
+\DoxyCodeLine{00788\ \ \ \ \ \ \ \ \ \ \ \ \ cout\ <<\ \textcolor{stringliteral}{"{}Invalid\ input.\ Try\ again.\(\backslash\)n"{}};}
+\DoxyCodeLine{00789\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_numerical___t_t_t___u_i_a47f622d92a877e7707ed0ae38635860c}{get\_move}}(p);}
+\DoxyCodeLine{00790\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00791\ }
+\DoxyCodeLine{00792\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (r\ ==\ -\/1)\ \{}
+\DoxyCodeLine{00793\ \ \ \ \ \ \ \ \ \ \ \ \ c\ =\ -\/1;}
+\DoxyCodeLine{00794\ \ \ \ \ \ \ \ \ \ \ \ \ num\ =\ -\/1;}
+\DoxyCodeLine{00795\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (board)\ \{}
+\DoxyCodeLine{00796\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (board-\/>\mbox{\hyperlink{class_numerical___t_t_t___board_a453b5b0f9e71c950ea87b0ecfb08274d}{get\_history\_size}}()\ >=\ 2)\ \{}
+\DoxyCodeLine{00797\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ board-\/>\mbox{\hyperlink{class_numerical___t_t_t___board_a74c8fa969b67519bea2985c6e4e52a28}{undoLastMove}}();}
+\DoxyCodeLine{00798\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ board-\/>\mbox{\hyperlink{class_numerical___t_t_t___board_a74c8fa969b67519bea2985c6e4e52a28}{undoLastMove}}();}
+\DoxyCodeLine{00799\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ cout\ <<\ \textcolor{stringliteral}{"{}Undo\ successful.\(\backslash\)n"{}};}
+\DoxyCodeLine{00800\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (board-\/>\mbox{\hyperlink{class_numerical___t_t_t___board_a453b5b0f9e71c950ea87b0ecfb08274d}{get\_history\_size}}()\ ==\ 1)\ \{}
+\DoxyCodeLine{00801\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ board-\/>\mbox{\hyperlink{class_numerical___t_t_t___board_a74c8fa969b67519bea2985c6e4e52a28}{undoLastMove}}();}
+\DoxyCodeLine{00802\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ cout\ <<\ \textcolor{stringliteral}{"{}Undo\ successful.\(\backslash\)n"{}};}
+\DoxyCodeLine{00803\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00804\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ cout\ <<\ \textcolor{stringliteral}{"{}Cannot\ undo.\(\backslash\)n"{}};}
+\DoxyCodeLine{00805\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00806\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_u_i_aa3775124efaeac59935ae0afb354708d}{display\_board\_matrix}}(board-\/>\mbox{\hyperlink{class_board_a117f2e61fdb7deccca333bbbc9c62d3a}{get\_board\_matrix}}());}
+\DoxyCodeLine{00807\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00808\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_numerical___t_t_t___u_i_a47f622d92a877e7707ed0ae38635860c}{get\_move}}(p);}
+\DoxyCodeLine{00809\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00810\ }
+\DoxyCodeLine{00811\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!(cin\ >>\ c\ >>\ num))\ \{}
+\DoxyCodeLine{00812\ \ \ \ \ \ \ \ \ \ \ \ \ cin.clear();}
+\DoxyCodeLine{00813\ \ \ \ \ \ \ \ \ \ \ \ \ cin.ignore(1000,\ \textcolor{charliteral}{'\(\backslash\)n'});}
+\DoxyCodeLine{00814\ \ \ \ \ \ \ \ \ \ \ \ \ cout\ <<\ \textcolor{stringliteral}{"{}Invalid\ input.\ Try\ again.\(\backslash\)n"{}};}
+\DoxyCodeLine{00815\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_numerical___t_t_t___u_i_a47f622d92a877e7707ed0ae38635860c}{get\_move}}(p);}
+\DoxyCodeLine{00816\ \ \ \ \ \ \ \ \ \}\ }
+\DoxyCodeLine{00817\ }
+\DoxyCodeLine{00818\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}\ num\_char\ =\ (num\ ==\ -\/1)\ ?\ \textcolor{charliteral}{'\ '}\ :\ (num\ +\ \textcolor{charliteral}{'0'});}
+\DoxyCodeLine{00819\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{new}\ \mbox{\hyperlink{class_move}{Move<char>}}(r,\ c,\ num\_char);}
+\DoxyCodeLine{00820\ }
+\DoxyCodeLine{00821\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00822\ \ \ \ \ \ \ \ \ cout\ <<\ p-\/>\mbox{\hyperlink{class_player_aed2af19790ba73190e3ebeea589518e1}{get\_name}}()\ <<\ \textcolor{stringliteral}{"{}\ ("{}}\ <<\ p-\/>\mbox{\hyperlink{class_player_af56f0bf98c0423a3a75b0848607d03a4}{get\_symbol}}()\ <<\ \textcolor{stringliteral}{"{})\ is\ thinking...\(\backslash\)n"{}};}
+\DoxyCodeLine{00823\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ computerMove(p);}
+\DoxyCodeLine{00824\ \ \ \ \ \}}
+\DoxyCodeLine{00825\ \}}
+\DoxyCodeLine{00826\ }
+\DoxyCodeLine{00827\ \mbox{\hyperlink{class_move}{Move<char>}}*\ Numerical\_TTT\_UI::computerMove(\mbox{\hyperlink{class_player}{Player<char>}}*\ aiPlayer)\ \{}
+\DoxyCodeLine{00828\ \ \ \ \ \mbox{\hyperlink{class_numerical___t_t_t___board}{Numerical\_TTT\_Board}}*\ board\ =\ \textcolor{keyword}{dynamic\_cast<}\mbox{\hyperlink{class_numerical___t_t_t___board}{Numerical\_TTT\_Board}}*\textcolor{keyword}{>}(aiPlayer-\/>\mbox{\hyperlink{class_player_a508617eddfae8915d098102d480fc888}{get\_board\_ptr}}());}
+\DoxyCodeLine{00829\ \ \ \ \ \textcolor{keywordflow}{if}\ (!board)\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00830\ }
+\DoxyCodeLine{00831\ \ \ \ \ \textcolor{keywordtype}{bool}\ is\_odd\ =\ (aiPlayer-\/>\mbox{\hyperlink{class_player_af56f0bf98c0423a3a75b0848607d03a4}{get\_symbol}}()\ ==\ \textcolor{charliteral}{'X'});}
+\DoxyCodeLine{00832\ \ \ \ \ vector<int>\ available\_nums;}
+\DoxyCodeLine{00833\ \ \ \ \ \textcolor{keywordflow}{if}\ (is\_odd)\ \{}
+\DoxyCodeLine{00834\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 1;\ i\ <=\ 9;\ i\ +=\ 2)\ available\_nums.push\_back(i);}
+\DoxyCodeLine{00835\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00836\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 2;\ i\ <=\ 8;\ i\ +=\ 2)\ available\_nums.push\_back(i);}
+\DoxyCodeLine{00837\ \ \ \ \ \}}
+\DoxyCodeLine{00838\ }
+\DoxyCodeLine{00839\ \ \ \ \ \textcolor{keywordtype}{int}\ r,\ c,\ num;}
+\DoxyCodeLine{00840\ \ \ \ \ \textcolor{keywordtype}{char}\ num\_char;}
+\DoxyCodeLine{00841\ \ \ \ \ \textcolor{comment}{//\ Move<char>*\ testMove;\ //\ unused\ variable}}
+\DoxyCodeLine{00842\ }
+\DoxyCodeLine{00843\ \ \ \ \ \textcolor{keywordflow}{do}\ \{}
+\DoxyCodeLine{00844\ \ \ \ \ \ \ \ \ r\ =\ rand()\ \%\ 3;}
+\DoxyCodeLine{00845\ \ \ \ \ \ \ \ \ c\ =\ rand()\ \%\ 3;}
+\DoxyCodeLine{00846\ \ \ \ \ \ \ \ \ num\ =\ available\_nums[rand()\ \%\ available\_nums.size()];}
+\DoxyCodeLine{00847\ \ \ \ \ \ \ \ \ num\_char\ =\ num\ +\ \textcolor{charliteral}{'0'};}
+\DoxyCodeLine{00848\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00849\ \ \ \ \ \}\ \textcolor{keywordflow}{while}\ (!board-\/>\mbox{\hyperlink{class_numerical___t_t_t___board_ae24bb50bfddf3178433bf98cf38cb9fc}{public\_is\_valid}}(r,\ c,\ num,\ is\_odd));}
+\DoxyCodeLine{00850\ }
+\DoxyCodeLine{00851\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{new}\ Move<char>(r,\ c,\ num\_char);}
+\DoxyCodeLine{00852\ \}}
+\DoxyCodeLine{00853\ }
+\DoxyCodeLine{00854\ \textcolor{comment}{//\ -\/-\/-\/\ Obstacles\_TTT\_UI\ Implementations\ -\/-\/-\/}}
+\DoxyCodeLine{00855\ }
+\DoxyCodeLine{00856\ \mbox{\hyperlink{class_obstacles___t_t_t___u_i_a49b15adeb881d14c1abf419bcc13dd31}{Obstacles\_TTT\_UI::Obstacles\_TTT\_UI}}()\ :\ \mbox{\hyperlink{class_u_i_afb59b53f3c2ed750b1a9a0c7d6dc4a7a}{UI}}(\textcolor{stringliteral}{"{}Welcome\ to\ Obstacles\ X-\/O\ (4-\/in-\/a-\/row)"{}},\ 2)\ \{\}}
+\DoxyCodeLine{00857\ }
+\DoxyCodeLine{00858\ \mbox{\hyperlink{class_player}{Player<char>}}*\ \mbox{\hyperlink{class_obstacles___t_t_t___u_i_aa470d37757ea6ed9c555114502755daf}{Obstacles\_TTT\_UI::create\_player}}(\textcolor{keywordtype}{string}\&\ name,\ \textcolor{keywordtype}{char}\ symbol,\ \mbox{\hyperlink{_board_game___classes_8h_abe590f3c9109f404f003d5d7e4f0fccf}{PlayerType}}\ type)\ \{}
+\DoxyCodeLine{00859\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{new}\ \mbox{\hyperlink{class_player}{Player<char>}}(name,\ symbol,\ type);}
+\DoxyCodeLine{00860\ \}}
+\DoxyCodeLine{00861\ }
+\DoxyCodeLine{00862\ \mbox{\hyperlink{class_move}{Move<char>}}*\ \mbox{\hyperlink{class_obstacles___t_t_t___u_i_afaa283eec0cc3758218622e1dadf78c3}{Obstacles\_TTT\_UI::get\_move}}(\mbox{\hyperlink{class_player}{Player<char>}}*\ p)\ \{}
+\DoxyCodeLine{00863\ \ \ \ \ \textcolor{keywordflow}{if}\ (p-\/>\mbox{\hyperlink{class_player_a2df3bd299bf7aecfa2275ec6902a60f8}{get\_type}}()\ ==\ \mbox{\hyperlink{_board_game___classes_8h_abe590f3c9109f404f003d5d7e4f0fccfaa36c6719f4d3207d858cf956ef1e93b6}{PlayerType::HUMAN}})\ \{}
+\DoxyCodeLine{00864\ \ \ \ \ \ \ \ \ cout\ <<\ p-\/>\mbox{\hyperlink{class_player_aed2af19790ba73190e3ebeea589518e1}{get\_name}}()\ <<\ \textcolor{stringliteral}{"{}'s\ Turn\ ("{}}\ <<\ p-\/>\mbox{\hyperlink{class_player_af56f0bf98c0423a3a75b0848607d03a4}{get\_symbol}}()\ <<\ \textcolor{stringliteral}{"{}).\(\backslash\)n"{}};}
+\DoxyCodeLine{00865\ \ \ \ \ \ \ \ \ cout\ <<\ \textcolor{stringliteral}{"{}Enter\ row\ and\ col\ (0-\/5)\ or\ -\/1\ to\ Undo:\ "{}};}
+\DoxyCodeLine{00866\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00867\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ r\ =\ -\/1,\ c\ =\ -\/1;}
+\DoxyCodeLine{00868\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!(cin\ >>\ r))\ \{}
+\DoxyCodeLine{00869\ \ \ \ \ \ \ \ \ \ \ \ \ cin.clear();}
+\DoxyCodeLine{00870\ \ \ \ \ \ \ \ \ \ \ \ \ cin.ignore(1000,\ \textcolor{charliteral}{'\(\backslash\)n'});}
+\DoxyCodeLine{00871\ \ \ \ \ \ \ \ \ \ \ \ \ cout\ <<\ \textcolor{stringliteral}{"{}Invalid\ input.\ Try\ again.\(\backslash\)n"{}};}
+\DoxyCodeLine{00872\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_obstacles___t_t_t___u_i_afaa283eec0cc3758218622e1dadf78c3}{get\_move}}(p);}
+\DoxyCodeLine{00873\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00874\ }
+\DoxyCodeLine{00875\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (r\ ==\ -\/1)\ \{}
+\DoxyCodeLine{00876\ \ \ \ \ \ \ \ \ \ \ \ \ c\ =\ -\/1;}
+\DoxyCodeLine{00877\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_obstacles___t_t_t___board}{Obstacles\_TTT\_Board}}*\ board\ =\ \textcolor{keyword}{dynamic\_cast<}\mbox{\hyperlink{class_obstacles___t_t_t___board}{Obstacles\_TTT\_Board}}*\textcolor{keyword}{>}(p-\/>\mbox{\hyperlink{class_player_a508617eddfae8915d098102d480fc888}{get\_board\_ptr}}());}
+\DoxyCodeLine{00878\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (board)\ \{}
+\DoxyCodeLine{00879\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (board-\/>\mbox{\hyperlink{class_obstacles___t_t_t___board_ae8005fdb7192697055d4c047ce813740}{get\_history\_size}}()\ >=\ 2)\ \{}
+\DoxyCodeLine{00880\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ board-\/>\mbox{\hyperlink{class_obstacles___t_t_t___board_a8b911fbe5c802677050d67d7b2025c27}{undoLastMove}}();}
+\DoxyCodeLine{00881\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ board-\/>\mbox{\hyperlink{class_obstacles___t_t_t___board_a8b911fbe5c802677050d67d7b2025c27}{undoLastMove}}();}
+\DoxyCodeLine{00882\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ cout\ <<\ \textcolor{stringliteral}{"{}Undo\ successful.\(\backslash\)n"{}};}
+\DoxyCodeLine{00883\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (board-\/>\mbox{\hyperlink{class_obstacles___t_t_t___board_ae8005fdb7192697055d4c047ce813740}{get\_history\_size}}()\ ==\ 1)\ \{}
+\DoxyCodeLine{00884\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ board-\/>\mbox{\hyperlink{class_obstacles___t_t_t___board_a8b911fbe5c802677050d67d7b2025c27}{undoLastMove}}();}
+\DoxyCodeLine{00885\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ cout\ <<\ \textcolor{stringliteral}{"{}Undo\ successful.\(\backslash\)n"{}};}
+\DoxyCodeLine{00886\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00887\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ cout\ <<\ \textcolor{stringliteral}{"{}Cannot\ undo.\(\backslash\)n"{}};}
+\DoxyCodeLine{00888\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00889\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{class_u_i_aa3775124efaeac59935ae0afb354708d}{display\_board\_matrix}}(board-\/>\mbox{\hyperlink{class_board_a117f2e61fdb7deccca333bbbc9c62d3a}{get\_board\_matrix}}());}
+\DoxyCodeLine{00890\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00891\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_obstacles___t_t_t___u_i_afaa283eec0cc3758218622e1dadf78c3}{get\_move}}(p);}
+\DoxyCodeLine{00892\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00893\ }
+\DoxyCodeLine{00894\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!(cin\ >>\ c))\ \{}
+\DoxyCodeLine{00895\ \ \ \ \ \ \ \ \ \ \ \ \ cin.clear();}
+\DoxyCodeLine{00896\ \ \ \ \ \ \ \ \ \ \ \ \ cin.ignore(1000,\ \textcolor{charliteral}{'\(\backslash\)n'});}
+\DoxyCodeLine{00897\ \ \ \ \ \ \ \ \ \ \ \ \ cout\ <<\ \textcolor{stringliteral}{"{}Invalid\ input.\ Try\ again.\(\backslash\)n"{}};}
+\DoxyCodeLine{00898\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_obstacles___t_t_t___u_i_afaa283eec0cc3758218622e1dadf78c3}{get\_move}}(p);}
+\DoxyCodeLine{00899\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00900\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00901\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{new}\ \mbox{\hyperlink{class_move}{Move<char>}}(r,\ c,\ p-\/>\mbox{\hyperlink{class_player_af56f0bf98c0423a3a75b0848607d03a4}{get\_symbol}}());}
+\DoxyCodeLine{00902\ }
+\DoxyCodeLine{00903\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00904\ \ \ \ \ \ \ \ \ cout\ <<\ p-\/>\mbox{\hyperlink{class_player_aed2af19790ba73190e3ebeea589518e1}{get\_name}}()\ <<\ \textcolor{stringliteral}{"{}\ ("{}}\ <<\ p-\/>\mbox{\hyperlink{class_player_af56f0bf98c0423a3a75b0848607d03a4}{get\_symbol}}()\ <<\ \textcolor{stringliteral}{"{})\ is\ thinking...\(\backslash\)n"{}};}
+\DoxyCodeLine{00905\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ computerMove(p);}
+\DoxyCodeLine{00906\ \ \ \ \ \}}
+\DoxyCodeLine{00907\ \}}
+\DoxyCodeLine{00908\ }
+\DoxyCodeLine{00909\ \mbox{\hyperlink{class_move}{Move<char>}}*\ Obstacles\_TTT\_UI::computerMove(\mbox{\hyperlink{class_player}{Player<char>}}*\ aiPlayer)\ \{}
+\DoxyCodeLine{00910\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{class_game_a_i_a73d08a3110f552dc992599e11b6e9cac}{GameAI::getRandomMove<Obstacles\_TTT\_Board>}}(aiPlayer);}
+\DoxyCodeLine{00911\ \}}
+
+\end{DoxyCode}

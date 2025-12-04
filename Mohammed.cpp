@@ -1,3 +1,9 @@
+/**
+ * @file Mohammed.cpp
+ * @brief Implementation details for TTT, Misere, Connect 4, Numerical, and Obstacles games.
+ * @details Includes the GameAI logic template specializations and board-specific rule implementations.
+ */
+
 #include "Mohammed.h"
 #include <iostream>
 #include <cstdlib>
@@ -6,11 +12,171 @@
 
 using namespace std;
 
+// --- GameAI Implementations ---
+
+template <typename BoardType>
+Move<char>* GameAI::getBestMove_2D(Player<char>* player) {
+    BoardType* board = dynamic_cast<BoardType*>(player->get_board_ptr());
+    if (!board) return nullptr;
+
+    char aiSym = player->get_symbol();
+    char humanSym = (aiSym == 'X') ? 'O' : 'X';
+    int rows = board->get_rows();
+    int cols = board->get_columns();
+
+    // Strategy 1: Check for an immediate win
+    for (int r = 0; r < rows; r++) {
+        for (int c = 0; c < cols; c++) {
+            Move<char>* testMove = new Move<char>(r, c, aiSym);
+            if (board->update_board(testMove)) {
+                if (board->is_win(player)) {
+                    board->undoLastMove();
+                    return new Move<char>(r, c, aiSym);
+                }
+                board->undoLastMove();
+            }
+        }
+    }
+
+    // Strategy 2: Check for an immediate block (prevent opponent win)
+    Player<char> tempHuman("temp", humanSym, PlayerType::HUMAN);
+    for (int r = 0; r < rows; r++) {
+        for (int c = 0; c < cols; c++) {
+            Move<char>* testMove = new Move<char>(r, c, humanSym);
+            if (board->update_board(testMove)) {
+                if (board->is_win(&tempHuman)) {
+                    board->undoLastMove();
+                    return new Move<char>(r, c, aiSym);
+                }
+                board->undoLastMove();
+            }
+        }
+    }
+
+    // Strategy 3: Random move fallback
+    int r, c;
+    Move<char>* randomMove;
+    do {
+        r = rand() % rows;
+        c = rand() % cols;
+        randomMove = new Move<char>(r, c, aiSym);
+    } while (!board->update_board(randomMove));
+    
+    board->undoLastMove(); 
+    return new Move<char>(r, c, aiSym);
+}
+
+template <typename BoardType>
+Move<char>* GameAI::getBestMove_Column(Player<char>* player) {
+    BoardType* board = dynamic_cast<BoardType*>(player->get_board_ptr());
+    if (!board) return nullptr;
+
+    char aiSym = player->get_symbol();
+    char humanSym = (aiSym == 'X') ? 'O' : 'X';
+    int cols = board->get_columns();
+
+    // Check Win
+    for (int c = 0; c < cols; c++) {
+        Move<char>* testMove = new Move<char>(0, c, aiSym);
+        if (board->update_board(testMove)) {
+            if (board->is_win(player)) {
+                board->undoLastMove();
+                return new Move<char>(0, c, aiSym);
+            }
+            board->undoLastMove();
+        }
+    }
+
+    // Check Block
+    Player<char> tempHuman("temp", humanSym, PlayerType::HUMAN);
+    for (int c = 0; c < cols; c++) {
+        Move<char>* testMove = new Move<char>(0, c, humanSym);
+        if (board->update_board(testMove)) {
+            if (board->is_win(&tempHuman)) {
+                board->undoLastMove();
+                return new Move<char>(0, c, aiSym);
+            }
+            board->undoLastMove();
+        }
+    }
+
+    // Random
+    int c;
+    Move<char>* randomMove;
+    do {
+        c = rand() % cols;
+        randomMove = new Move<char>(0, c, aiSym);
+    } while (!board->update_board(randomMove));
+    
+    board->undoLastMove();
+    return new Move<char>(0, c, aiSym);
+}
+
+template <typename BoardType>
+Move<char>* GameAI::getMisereMove(Player<char>* player) {
+    BoardType* board = dynamic_cast<BoardType*>(player->get_board_ptr());
+    if (!board) return nullptr;
+
+    char aiSym = player->get_symbol();
+    int rows = board->get_rows();
+    int cols = board->get_columns();
+
+    vector<Point> safeMoves;
+    vector<Point> allValidMoves;
+
+    for (int r = 0; r < rows; r++) {
+        for (int c = 0; c < cols; c++) {
+            Move<char>* testMove = new Move<char>(r, c, aiSym);
+            if (board->update_board(testMove)) {
+                allValidMoves.push_back({r, c});
+                // In Misere, is_lose checks if 3-in-a-row is formed
+                if (!board->is_lose(player)) {
+                    safeMoves.push_back({r, c});
+                }
+                board->undoLastMove();
+            }
+        }
+    }
+
+    Point p;
+    if (!safeMoves.empty()) {
+        p = safeMoves[rand() % safeMoves.size()];
+    } else if (!allValidMoves.empty()) {
+        p = allValidMoves[rand() % allValidMoves.size()];
+    } else {
+        p = {0, 0};
+    }
+    return new Move<char>(p.r, p.c, aiSym);
+}
+
+template <typename BoardType>
+Move<char>* GameAI::getRandomMove(Player<char>* player) {
+    BoardType* board = dynamic_cast<BoardType*>(player->get_board_ptr());
+    char aiSym = player->get_symbol();
+    int r, c;
+    Move<char>* randomMove;
+    do {
+        r = rand() % board->get_rows();
+        c = rand() % board->get_columns();
+        if (dynamic_cast<Obstacles_TTT_Board*>(board)) {
+             if (!dynamic_cast<Obstacles_TTT_Board*>(board)->public_is_valid(r,c)) continue;
+        }
+        randomMove = new Move<char>(r, c, aiSym);
+        if (board->update_board(randomMove)) {
+            board->undoLastMove();
+            return new Move<char>(r, c, aiSym);
+        }
+    } while (true);
+}
+
+// --- TTT_Board Implementations ---
+
 bool TTT_Board::isValidMove(int r, int c) const {
     return r >= 0 && r < rows && c >= 0 && c < columns && board[r][c] == ' ';
 }
 
 bool TTT_Board::checkWin(char s) {
+    // Check rows, columns, and diagonals
     for (int i = 0; i < 3; i++) {
         if (board[i][0] == s && board[i][1] == s && board[i][2] == s) return true;
         if (board[0][i] == s && board[1][i] == s && board[2][i] == s) return true;
@@ -75,12 +241,14 @@ bool TTT_Board::game_is_over(Player<char>* p) {
     return is_win(p) || is_draw(p);
 }
 
+// --- Misere_TTT_Board Implementations ---
+
 bool Misere_TTT_Board::is_win(Player<char>* p) {
-    return false;
+    return false; // You win by forcing the other player to lose
 }
 
 bool Misere_TTT_Board::is_lose(Player<char>* p) {
-    return checkWin(p->get_symbol());
+    return checkWin(p->get_symbol()); // You lose if you complete a line
 }
 
 bool Misere_TTT_Board::is_draw(Player<char>* p) {
@@ -91,6 +259,8 @@ bool Misere_TTT_Board::game_is_over(Player<char>* p) {
     return is_lose(p) || is_draw(p);
 }
 
+// --- C4_Board Implementations ---
+
 bool C4_Board::isValidMove(int c) const {
     return c >= 0 && c < columns && board[0][c] == ' ';
 }
@@ -99,6 +269,7 @@ bool C4_Board::checkWin(char s) {
     for (int r = 0; r < rows; r++) {
         for (int c = 0; c < columns; c++) {
             if (board[r][c] == s) {
+                // Check Horizontal, Vertical, Diagonal
                 if (c + 3 < columns && board[r][c + 1] == s && board[r][c + 2] == s && board[r][c + 3] == s) return true;
                 if (r + 3 < rows && board[r + 1][c] == s && board[r + 2][c] == s && board[r + 3][c] == s) return true;
                 if (r + 3 < rows && c + 3 < columns && board[r + 1][c + 1] == s && board[r + 2][c + 2] == s && board[r + 3][c + 3] == s) return true;
@@ -170,54 +341,10 @@ bool C4_Board::game_is_over(Player<char>* p) {
     return is_win(p) || is_draw(p);
 }
 
+// --- TTT_UI Implementations ---
+
 Move<char>* TTT_UI::computerMove(Player<char>* aiPlayer) {
-    TTT_Board* board = dynamic_cast<TTT_Board*>(aiPlayer->get_board_ptr());
-    if (!board) return nullptr;
-
-    char aiSym = aiPlayer->get_symbol();
-    char humanSym = (aiSym == 'X') ? 'O' : 'X';
-    int rows = board->get_rows();
-    int cols = board->get_columns();
-
-    for (int r = 0; r < rows; r++) {
-        for (int c = 0; c < cols; c++) {
-            Move<char>* testMove = new Move<char>(r, c, aiSym);
-            if (board->update_board(testMove)) {
-                if (board->is_win(aiPlayer)) {
-                    board->undoLastMove();
-                    return new Move<char>(r, c, aiSym);
-                }
-                board->undoLastMove();
-            } else {
-            }
-        }
-    }
-
-    for (int r = 0; r < rows; r++) {
-        for (int c = 0; c < cols; c++) {
-            Move<char>* testMove = new Move<char>(r, c, humanSym);
-            if (board->update_board(testMove)) {
-                Player<char> tempHuman("temp", humanSym, PlayerType::HUMAN);
-                if (board->is_win(&tempHuman)) {
-                    board->undoLastMove();
-                    return new Move<char>(r, c, aiSym);
-                }
-                board->undoLastMove();
-            } else {
-            }
-        }
-    }
-
-    int r, c;
-    Move<char>* randomMove;
-    do {
-        r = rand() % rows;
-        c = rand() % cols;
-        randomMove = new Move<char>(r, c, aiSym);
-    } while (!board->update_board(randomMove));
-    
-    board->undoLastMove();
-    return new Move<char>(r, c, aiSym);
+    return GameAI::getBestMove_2D<TTT_Board>(aiPlayer);
 }
 
 TTT_UI::TTT_UI() : UI("Welcome to X-O", 3) {}
@@ -273,6 +400,8 @@ Move<char>* TTT_UI::get_move(Player<char>* p) {
     }
 }
 
+// --- Misere_TTT_UI Implementations ---
+
 Misere_TTT_UI::Misere_TTT_UI() : UI("Welcome to Misere X-O", 3) {}
 
 Player<char>* Misere_TTT_UI::create_player(string& name, char symbol, PlayerType type) {
@@ -327,85 +456,13 @@ Move<char>* Misere_TTT_UI::get_move(Player<char>* p) {
 }
 
 Move<char>* Misere_TTT_UI::computerMove(Player<char>* aiPlayer) {
-    Misere_TTT_Board* board = dynamic_cast<Misere_TTT_Board*>(aiPlayer->get_board_ptr());
-    if (!board) return nullptr;
-
-    char aiSym = aiPlayer->get_symbol();
-    int rows = board->get_rows();
-    int cols = board->get_columns();
-
-    vector<Point> safeMoves;
-    vector<Point> allValidMoves;
-
-    for (int r = 0; r < rows; r++) {
-        for (int c = 0; c < cols; c++) {
-            Move<char>* testMove = new Move<char>(r, c, aiSym);
-            if (board->update_board(testMove)) {
-                allValidMoves.push_back({r, c});
-                if (!board->is_lose(aiPlayer)) {
-                    safeMoves.push_back({r, c});
-                }
-                board->undoLastMove();
-            } else {
-            }
-        }
-    }
-
-    if (!safeMoves.empty()) {
-        Point p = safeMoves[rand() % safeMoves.size()];
-        return new Move<char>(p.r, p.c, aiSym);
-    } 
-    
-    if (!allValidMoves.empty()) {
-        Point p = allValidMoves[rand() % allValidMoves.size()];
-        return new Move<char>(p.r, p.c, aiSym);
-    }
-
-    return new Move<char>(0, 0, aiSym); 
+    return GameAI::getMisereMove<Misere_TTT_Board>(aiPlayer);
 }
 
+// --- C4_UI Implementations ---
+
 Move<char>* C4_UI::computerMove(Player<char>* aiPlayer) {
-    C4_Board* board = dynamic_cast<C4_Board*>(aiPlayer->get_board_ptr());
-    if (!board) return nullptr;
-
-    char aiSym = aiPlayer->get_symbol();
-    char humanSym = (aiSym == 'X') ? 'O' : 'X';
-    int cols = board->get_columns();
-
-    for (int c = 0; c < cols; c++) {
-        Move<char>* testMove = new Move<char>(0, c, aiSym);
-        if (board->update_board(testMove)) {
-            if (board->is_win(aiPlayer)) {
-                board->undoLastMove();
-                return new Move<char>(0, c, aiSym);
-            }
-            board->undoLastMove();
-        } else {
-        }
-    }
-
-    for (int c = 0; c < cols; c++) {
-        Move<char>* testMove = new Move<char>(0, c, humanSym);
-        if (board->update_board(testMove)) {
-            Player<char> tempHuman("temp", humanSym, PlayerType::HUMAN);
-            if (board->is_win(&tempHuman)) {
-                board->undoLastMove();
-                return new Move<char>(0, c, aiSym);
-            }
-            board->undoLastMove();
-        } else {
-        }
-    }
-
-    int c;
-    Move<char>* randomMove;
-    do {
-        c = rand() % cols;
-        randomMove = new Move<char>(0, c, aiSym);
-    } while (!board->update_board(randomMove));
-    
-    board->undoLastMove();
-    return new Move<char>(0, c, aiSym);
+    return GameAI::getBestMove_Column<C4_Board>(aiPlayer);
 }
 
 C4_UI::C4_UI() : UI("Welcome to Four in a row", 2) {}
@@ -453,6 +510,8 @@ Move<char>* C4_UI::get_move(Player<char>* p) {
         return computerMove(p);
     }
 }
+
+// --- Numerical_TTT_Board Implementations ---
 
 Numerical_TTT_Board::Numerical_TTT_Board() : Board(3, 3) {
     for (int i = 0; i < rows; ++i) {
@@ -574,6 +633,8 @@ bool Numerical_TTT_Board::game_is_over(Player<char>* p) {
     return is_win(p) || is_draw(p);
 }
 
+// --- Obstacles_TTT_Board Implementations ---
+
 Obstacles_TTT_Board::Obstacles_TTT_Board() : Board(6, 6) {
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < columns; ++j) {
@@ -681,6 +742,7 @@ bool Obstacles_TTT_Board::game_is_over(Player<char>* p) {
     return is_win(p) || is_draw(p);
 }
 
+// --- Numerical_TTT_UI Implementations ---
 
 Numerical_TTT_UI::Numerical_TTT_UI() : UI("Welcome to Numerical X-O (Sum to 15)", 3) {}
 
@@ -776,7 +838,7 @@ Move<char>* Numerical_TTT_UI::computerMove(Player<char>* aiPlayer) {
 
     int r, c, num;
     char num_char;
-    Move<char>* testMove;
+    // Move<char>* testMove; // unused variable
 
     do {
         r = rand() % 3;
@@ -788,6 +850,8 @@ Move<char>* Numerical_TTT_UI::computerMove(Player<char>* aiPlayer) {
 
     return new Move<char>(r, c, num_char);
 }
+
+// --- Obstacles_TTT_UI Implementations ---
 
 Obstacles_TTT_UI::Obstacles_TTT_UI() : UI("Welcome to Obstacles X-O (4-in-a-row)", 2) {}
 
@@ -843,16 +907,5 @@ Move<char>* Obstacles_TTT_UI::get_move(Player<char>* p) {
 }
 
 Move<char>* Obstacles_TTT_UI::computerMove(Player<char>* aiPlayer) {
-    Obstacles_TTT_Board* board = dynamic_cast<Obstacles_TTT_Board*>(aiPlayer->get_board_ptr());
-    if (!board) return nullptr;
-
-    char aiSym = aiPlayer->get_symbol();
-
-    int r, c;
-    do {
-        r = rand() % 6;
-        c = rand() % 6;
-    } while (!board->public_is_valid(r, c));
-    
-    return new Move<char>(r, c, aiSym);
+    return GameAI::getRandomMove<Obstacles_TTT_Board>(aiPlayer);
 }

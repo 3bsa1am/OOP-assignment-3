@@ -1,0 +1,240 @@
+\doxysection{Obstacles\+\_\+\+TTT\+\_\+\+Board Class Reference}
+\hypertarget{class_obstacles___t_t_t___board}{}\label{class_obstacles___t_t_t___board}\index{Obstacles\_TTT\_Board@{Obstacles\_TTT\_Board}}
+
+
+A 6x6 board where random obstacles appear.  
+
+
+
+
+{\ttfamily \#include $<$Mohammed.\+h$>$}
+
+Inheritance diagram for Obstacles\+\_\+\+TTT\+\_\+\+Board\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_obstacles___t_t_t___board}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_obstacles___t_t_t___board_ad63930689bd8748f5d198754e6b3e9e4}{Obstacles\+\_\+\+TTT\+\_\+\+Board}} ()
+\item 
+void \mbox{\hyperlink{class_obstacles___t_t_t___board_a8b911fbe5c802677050d67d7b2025c27}{undo\+Last\+Move}} ()
+\item 
+bool \mbox{\hyperlink{class_obstacles___t_t_t___board_ab6ef0a5590b9b88be40fa9c06d2f73d2}{update\+\_\+board}} (\mbox{\hyperlink{class_move}{Move}}$<$ char $>$ \texorpdfstring{$\ast$}{*}move) override
+\begin{DoxyCompactList}\small\item\em Update the board with a new move. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_obstacles___t_t_t___board_ad71d3e79a5a4d1a4dc77ce6e93142a7b}{is\+\_\+win}} (\mbox{\hyperlink{class_player}{Player}}$<$ char $>$ \texorpdfstring{$\ast$}{*}p) override
+\begin{DoxyCompactList}\small\item\em Check if a player has won. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_obstacles___t_t_t___board_a24c06fc04be745f9b66168f5276a5c47}{is\+\_\+lose}} (\mbox{\hyperlink{class_player}{Player}}$<$ char $>$ \texorpdfstring{$\ast$}{*}p) override
+\begin{DoxyCompactList}\small\item\em Check if a player has lost. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_obstacles___t_t_t___board_a587abe0b039092a42f8aa82d75c7c835}{is\+\_\+draw}} (\mbox{\hyperlink{class_player}{Player}}$<$ char $>$ \texorpdfstring{$\ast$}{*}p) override
+\begin{DoxyCompactList}\small\item\em Check if the game ended in a draw. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_obstacles___t_t_t___board_a5390b562cacf5d30b99a2b9c4b3a65a8}{game\+\_\+is\+\_\+over}} (\mbox{\hyperlink{class_player}{Player}}$<$ char $>$ \texorpdfstring{$\ast$}{*}p) override
+\begin{DoxyCompactList}\small\item\em Check if the game is over. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_obstacles___t_t_t___board_aa1db80dbdaa5d559c27dd93d1e4e6f6d}{public\+\_\+is\+\_\+valid}} (int r, int c)
+\item 
+int \mbox{\hyperlink{class_obstacles___t_t_t___board_ae8005fdb7192697055d4c047ce813740}{get\+\_\+history\+\_\+size}} () const
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_board}{Board$<$ char $>$}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_board_ae5dfded241ee3644196e2f6074d1d0b1}{Board}} (int \mbox{\hyperlink{class_board_a948d978e3b5fc460559b588f5dee9572}{rows}}, int \mbox{\hyperlink{class_board_afaf8842d9d52ac724e8c2f5642ecafc7}{columns}})
+\begin{DoxyCompactList}\small\item\em Construct a board with given dimensions. \end{DoxyCompactList}\item 
+virtual \mbox{\hyperlink{class_board_a138a6378af669dd1ce55dc11217aea48}{\texorpdfstring{$\sim$}{\string~}\+Board}} ()
+\begin{DoxyCompactList}\small\item\em Virtual destructor. Frees allocated board memory. \end{DoxyCompactList}\item 
+vector$<$ vector$<$ char $>$ $>$ \mbox{\hyperlink{class_board_a117f2e61fdb7deccca333bbbc9c62d3a}{get\+\_\+board\+\_\+matrix}} () const
+\begin{DoxyCompactList}\small\item\em Return a copy of the current board as a 2D vector. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{class_board_a93b130eff67bd4476fab27be8341cb78}{get\+\_\+rows}} () const
+\begin{DoxyCompactList}\small\item\em Get number of rows. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{class_board_ac665e1ed1f49125fab248e2c9ddfd608}{get\+\_\+columns}} () const
+\begin{DoxyCompactList}\small\item\em Get number of columns. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{class_board_a512d0bd8c282985c410d677c82eb3b78}{get\+\_\+n\+\_\+moves}} () const
+\begin{DoxyCompactList}\small\item\em Get number of moves. \end{DoxyCompactList}\item 
+char \mbox{\hyperlink{class_board_a93558c58e60ca4291c6044828afd260b}{get\+\_\+cell}} (int x, int y)
+\begin{DoxyCompactList}\small\item\em Return content of cell x, y in current board. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{class_obstacles___t_t_t___board_a39f243400e672c1d8c303618cab8c6e2}{is\+Valid\+Move}} (int r, int c) const
+\item 
+bool \mbox{\hyperlink{class_obstacles___t_t_t___board_a36ccc75da5619616fed229ad80f4638c}{check\+Win}} (char s)
+\item 
+bool \mbox{\hyperlink{class_obstacles___t_t_t___board_aa59d808c8780c6d943cba70bf36cfc64}{is\+Full}} () const
+\item 
+void \mbox{\hyperlink{class_obstacles___t_t_t___board_acfab5ff528d92974282fe307a7584e81}{add\+Obstacles}} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+vector$<$ \mbox{\hyperlink{struct_point}{Point}} $>$ \mbox{\hyperlink{class_obstacles___t_t_t___board_a6d3e1a4d6c6149a39d6a7e98fb7a0d0a}{history}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_board}{Board$<$ char $>$}}}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{class_board_a948d978e3b5fc460559b588f5dee9572}{rows}}
+\begin{DoxyCompactList}\small\item\em Number of rows. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{class_board_afaf8842d9d52ac724e8c2f5642ecafc7}{columns}}
+\begin{DoxyCompactList}\small\item\em Number of columns. \end{DoxyCompactList}\item 
+vector$<$ vector$<$ char $>$ $>$ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}
+\begin{DoxyCompactList}\small\item\em 2D vector for the board \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{class_board_a5952baefabced65fecec333de638408d}{n\+\_\+moves}}
+\begin{DoxyCompactList}\small\item\em Number of moves made. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+A 6x6 board where random obstacles appear. 
+
+The goal is to get 4 in a row. Some cells are blocked (\textquotesingle{}\#\textquotesingle{}). 
+
+\label{doc-constructors}
+\Hypertarget{class_obstacles___t_t_t___board_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_obstacles___t_t_t___board_ad63930689bd8748f5d198754e6b3e9e4}\index{Obstacles\_TTT\_Board@{Obstacles\_TTT\_Board}!Obstacles\_TTT\_Board@{Obstacles\_TTT\_Board}}
+\index{Obstacles\_TTT\_Board@{Obstacles\_TTT\_Board}!Obstacles\_TTT\_Board@{Obstacles\_TTT\_Board}}
+\doxysubsubsection{\texorpdfstring{Obstacles\_TTT\_Board()}{Obstacles\_TTT\_Board()}}
+{\footnotesize\ttfamily \label{class_obstacles___t_t_t___board_ad63930689bd8748f5d198754e6b3e9e4} 
+Obstacles\+\_\+\+TTT\+\_\+\+Board\+::\+Obstacles\+\_\+\+TTT\+\_\+\+Board (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+\label{doc-func-members}
+\Hypertarget{class_obstacles___t_t_t___board_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_obstacles___t_t_t___board_acfab5ff528d92974282fe307a7584e81}\index{Obstacles\_TTT\_Board@{Obstacles\_TTT\_Board}!addObstacles@{addObstacles}}
+\index{addObstacles@{addObstacles}!Obstacles\_TTT\_Board@{Obstacles\_TTT\_Board}}
+\doxysubsubsection{\texorpdfstring{addObstacles()}{addObstacles()}}
+{\footnotesize\ttfamily \label{class_obstacles___t_t_t___board_acfab5ff528d92974282fe307a7584e81} 
+void Obstacles\+\_\+\+TTT\+\_\+\+Board\+::add\+Obstacles (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\Hypertarget{class_obstacles___t_t_t___board_a36ccc75da5619616fed229ad80f4638c}\index{Obstacles\_TTT\_Board@{Obstacles\_TTT\_Board}!checkWin@{checkWin}}
+\index{checkWin@{checkWin}!Obstacles\_TTT\_Board@{Obstacles\_TTT\_Board}}
+\doxysubsubsection{\texorpdfstring{checkWin()}{checkWin()}}
+{\footnotesize\ttfamily \label{class_obstacles___t_t_t___board_a36ccc75da5619616fed229ad80f4638c} 
+bool Obstacles\+\_\+\+TTT\+\_\+\+Board\+::check\+Win (\begin{DoxyParamCaption}\item[{char}]{s}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\Hypertarget{class_obstacles___t_t_t___board_a5390b562cacf5d30b99a2b9c4b3a65a8}\index{Obstacles\_TTT\_Board@{Obstacles\_TTT\_Board}!game\_is\_over@{game\_is\_over}}
+\index{game\_is\_over@{game\_is\_over}!Obstacles\_TTT\_Board@{Obstacles\_TTT\_Board}}
+\doxysubsubsection{\texorpdfstring{game\_is\_over()}{game\_is\_over()}}
+{\footnotesize\ttfamily \label{class_obstacles___t_t_t___board_a5390b562cacf5d30b99a2b9c4b3a65a8} 
+bool Obstacles\+\_\+\+TTT\+\_\+\+Board\+::game\+\_\+is\+\_\+over (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_player}{Player}}$<$ char $>$ \texorpdfstring{$\ast$}{*}}]{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Check if the game is over. 
+
+
+
+Implements \mbox{\hyperlink{class_board_ae0e4575ec3cc4b6eb9f367ffb2beed13}{Board$<$ char $>$}}.
+
+\Hypertarget{class_obstacles___t_t_t___board_ae8005fdb7192697055d4c047ce813740}\index{Obstacles\_TTT\_Board@{Obstacles\_TTT\_Board}!get\_history\_size@{get\_history\_size}}
+\index{get\_history\_size@{get\_history\_size}!Obstacles\_TTT\_Board@{Obstacles\_TTT\_Board}}
+\doxysubsubsection{\texorpdfstring{get\_history\_size()}{get\_history\_size()}}
+{\footnotesize\ttfamily \label{class_obstacles___t_t_t___board_ae8005fdb7192697055d4c047ce813740} 
+int Obstacles\+\_\+\+TTT\+\_\+\+Board\+::get\+\_\+history\+\_\+size (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\Hypertarget{class_obstacles___t_t_t___board_a587abe0b039092a42f8aa82d75c7c835}\index{Obstacles\_TTT\_Board@{Obstacles\_TTT\_Board}!is\_draw@{is\_draw}}
+\index{is\_draw@{is\_draw}!Obstacles\_TTT\_Board@{Obstacles\_TTT\_Board}}
+\doxysubsubsection{\texorpdfstring{is\_draw()}{is\_draw()}}
+{\footnotesize\ttfamily \label{class_obstacles___t_t_t___board_a587abe0b039092a42f8aa82d75c7c835} 
+bool Obstacles\+\_\+\+TTT\+\_\+\+Board\+::is\+\_\+draw (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_player}{Player}}$<$ char $>$ \texorpdfstring{$\ast$}{*}}]{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Check if the game ended in a draw. 
+
+
+
+Implements \mbox{\hyperlink{class_board_a8dbe2a243881986f3e53b45799d377fc}{Board$<$ char $>$}}.
+
+\Hypertarget{class_obstacles___t_t_t___board_a24c06fc04be745f9b66168f5276a5c47}\index{Obstacles\_TTT\_Board@{Obstacles\_TTT\_Board}!is\_lose@{is\_lose}}
+\index{is\_lose@{is\_lose}!Obstacles\_TTT\_Board@{Obstacles\_TTT\_Board}}
+\doxysubsubsection{\texorpdfstring{is\_lose()}{is\_lose()}}
+{\footnotesize\ttfamily \label{class_obstacles___t_t_t___board_a24c06fc04be745f9b66168f5276a5c47} 
+bool Obstacles\+\_\+\+TTT\+\_\+\+Board\+::is\+\_\+lose (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_player}{Player}}$<$ char $>$ \texorpdfstring{$\ast$}{*}}]{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Check if a player has lost. 
+
+
+
+Implements \mbox{\hyperlink{class_board_a207d5f6feb77f81c51d1462f0245890d}{Board$<$ char $>$}}.
+
+\Hypertarget{class_obstacles___t_t_t___board_ad71d3e79a5a4d1a4dc77ce6e93142a7b}\index{Obstacles\_TTT\_Board@{Obstacles\_TTT\_Board}!is\_win@{is\_win}}
+\index{is\_win@{is\_win}!Obstacles\_TTT\_Board@{Obstacles\_TTT\_Board}}
+\doxysubsubsection{\texorpdfstring{is\_win()}{is\_win()}}
+{\footnotesize\ttfamily \label{class_obstacles___t_t_t___board_ad71d3e79a5a4d1a4dc77ce6e93142a7b} 
+bool Obstacles\+\_\+\+TTT\+\_\+\+Board\+::is\+\_\+win (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_player}{Player}}$<$ char $>$ \texorpdfstring{$\ast$}{*}}]{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Check if a player has won. 
+
+
+
+Implements \mbox{\hyperlink{class_board_ab316fe3e79677b4617fc3d90d6c48f33}{Board$<$ char $>$}}.
+
+\Hypertarget{class_obstacles___t_t_t___board_aa59d808c8780c6d943cba70bf36cfc64}\index{Obstacles\_TTT\_Board@{Obstacles\_TTT\_Board}!isFull@{isFull}}
+\index{isFull@{isFull}!Obstacles\_TTT\_Board@{Obstacles\_TTT\_Board}}
+\doxysubsubsection{\texorpdfstring{isFull()}{isFull()}}
+{\footnotesize\ttfamily \label{class_obstacles___t_t_t___board_aa59d808c8780c6d943cba70bf36cfc64} 
+bool Obstacles\+\_\+\+TTT\+\_\+\+Board\+::is\+Full (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [protected]}}
+
+\Hypertarget{class_obstacles___t_t_t___board_a39f243400e672c1d8c303618cab8c6e2}\index{Obstacles\_TTT\_Board@{Obstacles\_TTT\_Board}!isValidMove@{isValidMove}}
+\index{isValidMove@{isValidMove}!Obstacles\_TTT\_Board@{Obstacles\_TTT\_Board}}
+\doxysubsubsection{\texorpdfstring{isValidMove()}{isValidMove()}}
+{\footnotesize\ttfamily \label{class_obstacles___t_t_t___board_a39f243400e672c1d8c303618cab8c6e2} 
+bool Obstacles\+\_\+\+TTT\+\_\+\+Board\+::is\+Valid\+Move (\begin{DoxyParamCaption}\item[{int}]{r}{, }\item[{int}]{c}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [protected]}}
+
+\Hypertarget{class_obstacles___t_t_t___board_aa1db80dbdaa5d559c27dd93d1e4e6f6d}\index{Obstacles\_TTT\_Board@{Obstacles\_TTT\_Board}!public\_is\_valid@{public\_is\_valid}}
+\index{public\_is\_valid@{public\_is\_valid}!Obstacles\_TTT\_Board@{Obstacles\_TTT\_Board}}
+\doxysubsubsection{\texorpdfstring{public\_is\_valid()}{public\_is\_valid()}}
+{\footnotesize\ttfamily \label{class_obstacles___t_t_t___board_aa1db80dbdaa5d559c27dd93d1e4e6f6d} 
+bool Obstacles\+\_\+\+TTT\+\_\+\+Board\+::public\+\_\+is\+\_\+valid (\begin{DoxyParamCaption}\item[{int}]{r}{, }\item[{int}]{c}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_obstacles___t_t_t___board_a8b911fbe5c802677050d67d7b2025c27}\index{Obstacles\_TTT\_Board@{Obstacles\_TTT\_Board}!undoLastMove@{undoLastMove}}
+\index{undoLastMove@{undoLastMove}!Obstacles\_TTT\_Board@{Obstacles\_TTT\_Board}}
+\doxysubsubsection{\texorpdfstring{undoLastMove()}{undoLastMove()}}
+{\footnotesize\ttfamily \label{class_obstacles___t_t_t___board_a8b911fbe5c802677050d67d7b2025c27} 
+void Obstacles\+\_\+\+TTT\+\_\+\+Board\+::undo\+Last\+Move (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_obstacles___t_t_t___board_ab6ef0a5590b9b88be40fa9c06d2f73d2}\index{Obstacles\_TTT\_Board@{Obstacles\_TTT\_Board}!update\_board@{update\_board}}
+\index{update\_board@{update\_board}!Obstacles\_TTT\_Board@{Obstacles\_TTT\_Board}}
+\doxysubsubsection{\texorpdfstring{update\_board()}{update\_board()}}
+{\footnotesize\ttfamily \label{class_obstacles___t_t_t___board_ab6ef0a5590b9b88be40fa9c06d2f73d2} 
+bool Obstacles\+\_\+\+TTT\+\_\+\+Board\+::update\+\_\+board (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_move}{Move}}$<$ char $>$ \texorpdfstring{$\ast$}{*}}]{move}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Update the board with a new move. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em move} & The move object containing position and symbol. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the move is valid and applied, false otherwise. 
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{class_board_a93d9dec601dda58b7e206ccb47633e57}{Board$<$ char $>$}}.
+
+
+
+\label{doc-variable-members}
+\Hypertarget{class_obstacles___t_t_t___board_doc-variable-members}
+\doxysubsection{Member Data Documentation}
+\Hypertarget{class_obstacles___t_t_t___board_a6d3e1a4d6c6149a39d6a7e98fb7a0d0a}\index{Obstacles\_TTT\_Board@{Obstacles\_TTT\_Board}!history@{history}}
+\index{history@{history}!Obstacles\_TTT\_Board@{Obstacles\_TTT\_Board}}
+\doxysubsubsection{\texorpdfstring{history}{history}}
+{\footnotesize\ttfamily \label{class_obstacles___t_t_t___board_a6d3e1a4d6c6149a39d6a7e98fb7a0d0a} 
+vector$<$\mbox{\hyperlink{struct_point}{Point}}$>$ Obstacles\+\_\+\+TTT\+\_\+\+Board\+::history\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{_mohammed_8h}{Mohammed.\+h}}\item 
+\mbox{\hyperlink{_mohammed_8cpp}{Mohammed.\+cpp}}\end{DoxyCompactItemize}

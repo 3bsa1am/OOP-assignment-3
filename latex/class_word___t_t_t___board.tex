@@ -1,0 +1,189 @@
+\doxysection{Word\+\_\+\+TTT\+\_\+\+Board Class Reference}
+\hypertarget{class_word___t_t_t___board}{}\label{class_word___t_t_t___board}\index{Word\_TTT\_Board@{Word\_TTT\_Board}}
+
+
+Represents a Word Tic-\/\+Tac-\/\+Toe board.  
+
+
+
+
+{\ttfamily \#include $<$Sayed.\+h$>$}
+
+Inheritance diagram for Word\+\_\+\+TTT\+\_\+\+Board\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_word___t_t_t___board}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_word___t_t_t___board_a4616864406de66531411b0f997b30fad}{Word\+\_\+\+TTT\+\_\+\+Board}} ()
+\item 
+void \mbox{\hyperlink{class_word___t_t_t___board_a2c8530ac1759c9feb9f5a2f601b71a13}{undo\+Last\+Move}} ()
+\item 
+bool \mbox{\hyperlink{class_word___t_t_t___board_ac2b890abf961c612fbb7be199891ffac}{update\+\_\+board}} (\mbox{\hyperlink{class_move}{Move}}$<$ char $>$ \texorpdfstring{$\ast$}{*}move) override
+\begin{DoxyCompactList}\small\item\em Update the board with a new move. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_word___t_t_t___board_a177ecadc173cd141385d3cad910a495b}{is\+\_\+win}} (\mbox{\hyperlink{class_player}{Player}}$<$ char $>$ \texorpdfstring{$\ast$}{*}player) override
+\begin{DoxyCompactList}\small\item\em Check if a player has won. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_word___t_t_t___board_acab72866cb3af91f4d55155817d73fc1}{is\+\_\+lose}} (\mbox{\hyperlink{class_player}{Player}}$<$ char $>$ \texorpdfstring{$\ast$}{*}player) override
+\begin{DoxyCompactList}\small\item\em Check if a player has lost. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_word___t_t_t___board_a63a63ac23307a54b8cf9cebbdd263f37}{is\+\_\+draw}} (\mbox{\hyperlink{class_player}{Player}}$<$ char $>$ \texorpdfstring{$\ast$}{*}player) override
+\begin{DoxyCompactList}\small\item\em Check if the game ended in a draw. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_word___t_t_t___board_aa89b95ae48e2bf40652caeb6296b9bf0}{game\+\_\+is\+\_\+over}} (\mbox{\hyperlink{class_player}{Player}}$<$ char $>$ \texorpdfstring{$\ast$}{*}player) override
+\begin{DoxyCompactList}\small\item\em Check if the game is over. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_word___t_t_t___board_ae4a0bc6f66c5c13084aa48a247aef267}{check\+\_\+word\+\_\+formed}} () const
+\begin{DoxyCompactList}\small\item\em Checks if any valid word is currently formed on the board. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_board}{Board$<$ char $>$}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_board_ae5dfded241ee3644196e2f6074d1d0b1}{Board}} (int \mbox{\hyperlink{class_board_a948d978e3b5fc460559b588f5dee9572}{rows}}, int \mbox{\hyperlink{class_board_afaf8842d9d52ac724e8c2f5642ecafc7}{columns}})
+\begin{DoxyCompactList}\small\item\em Construct a board with given dimensions. \end{DoxyCompactList}\item 
+virtual \mbox{\hyperlink{class_board_a138a6378af669dd1ce55dc11217aea48}{\texorpdfstring{$\sim$}{\string~}\+Board}} ()
+\begin{DoxyCompactList}\small\item\em Virtual destructor. Frees allocated board memory. \end{DoxyCompactList}\item 
+vector$<$ vector$<$ char $>$ $>$ \mbox{\hyperlink{class_board_a117f2e61fdb7deccca333bbbc9c62d3a}{get\+\_\+board\+\_\+matrix}} () const
+\begin{DoxyCompactList}\small\item\em Return a copy of the current board as a 2D vector. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{class_board_a93b130eff67bd4476fab27be8341cb78}{get\+\_\+rows}} () const
+\begin{DoxyCompactList}\small\item\em Get number of rows. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{class_board_ac665e1ed1f49125fab248e2c9ddfd608}{get\+\_\+columns}} () const
+\begin{DoxyCompactList}\small\item\em Get number of columns. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{class_board_a512d0bd8c282985c410d677c82eb3b78}{get\+\_\+n\+\_\+moves}} () const
+\begin{DoxyCompactList}\small\item\em Get number of moves. \end{DoxyCompactList}\item 
+char \mbox{\hyperlink{class_board_a93558c58e60ca4291c6044828afd260b}{get\+\_\+cell}} (int x, int y)
+\begin{DoxyCompactList}\small\item\em Return content of cell x, y in current board. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_board}{Board$<$ char $>$}}}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{class_board_a948d978e3b5fc460559b588f5dee9572}{rows}}
+\begin{DoxyCompactList}\small\item\em Number of rows. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{class_board_afaf8842d9d52ac724e8c2f5642ecafc7}{columns}}
+\begin{DoxyCompactList}\small\item\em Number of columns. \end{DoxyCompactList}\item 
+vector$<$ vector$<$ char $>$ $>$ \mbox{\hyperlink{class_board_af00c1fc363eb640ca276b8a572040040}{board}}
+\begin{DoxyCompactList}\small\item\em 2D vector for the board \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{class_board_a5952baefabced65fecec333de638408d}{n\+\_\+moves}}
+\begin{DoxyCompactList}\small\item\em Number of moves made. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Represents a Word Tic-\/\+Tac-\/\+Toe board. 
+
+A 3x3 grid where players place letters to form valid 3-\/letter English words. Relies on a dictionary file (dic.\+txt) for validation. 
+
+\label{doc-constructors}
+\Hypertarget{class_word___t_t_t___board_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_word___t_t_t___board_a4616864406de66531411b0f997b30fad}\index{Word\_TTT\_Board@{Word\_TTT\_Board}!Word\_TTT\_Board@{Word\_TTT\_Board}}
+\index{Word\_TTT\_Board@{Word\_TTT\_Board}!Word\_TTT\_Board@{Word\_TTT\_Board}}
+\doxysubsubsection{\texorpdfstring{Word\_TTT\_Board()}{Word\_TTT\_Board()}}
+{\footnotesize\ttfamily \label{class_word___t_t_t___board_a4616864406de66531411b0f997b30fad} 
+Word\+\_\+\+TTT\+\_\+\+Board\+::\+Word\+\_\+\+TTT\+\_\+\+Board (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+\label{doc-func-members}
+\Hypertarget{class_word___t_t_t___board_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_word___t_t_t___board_ae4a0bc6f66c5c13084aa48a247aef267}\index{Word\_TTT\_Board@{Word\_TTT\_Board}!check\_word\_formed@{check\_word\_formed}}
+\index{check\_word\_formed@{check\_word\_formed}!Word\_TTT\_Board@{Word\_TTT\_Board}}
+\doxysubsubsection{\texorpdfstring{check\_word\_formed()}{check\_word\_formed()}}
+{\footnotesize\ttfamily \label{class_word___t_t_t___board_ae4a0bc6f66c5c13084aa48a247aef267} 
+bool Word\+\_\+\+TTT\+\_\+\+Board\+::check\+\_\+word\+\_\+formed (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const}
+
+
+
+Checks if any valid word is currently formed on the board. 
+
+\begin{DoxyReturn}{Returns}
+True if a valid word exists in any row, column, or diagonal. 
+\end{DoxyReturn}
+\Hypertarget{class_word___t_t_t___board_aa89b95ae48e2bf40652caeb6296b9bf0}\index{Word\_TTT\_Board@{Word\_TTT\_Board}!game\_is\_over@{game\_is\_over}}
+\index{game\_is\_over@{game\_is\_over}!Word\_TTT\_Board@{Word\_TTT\_Board}}
+\doxysubsubsection{\texorpdfstring{game\_is\_over()}{game\_is\_over()}}
+{\footnotesize\ttfamily \label{class_word___t_t_t___board_aa89b95ae48e2bf40652caeb6296b9bf0} 
+bool Word\+\_\+\+TTT\+\_\+\+Board\+::game\+\_\+is\+\_\+over (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_player}{Player}}$<$ char $>$ \texorpdfstring{$\ast$}{*}}]{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Check if the game is over. 
+
+
+
+Implements \mbox{\hyperlink{class_board_ae0e4575ec3cc4b6eb9f367ffb2beed13}{Board$<$ char $>$}}.
+
+\Hypertarget{class_word___t_t_t___board_a63a63ac23307a54b8cf9cebbdd263f37}\index{Word\_TTT\_Board@{Word\_TTT\_Board}!is\_draw@{is\_draw}}
+\index{is\_draw@{is\_draw}!Word\_TTT\_Board@{Word\_TTT\_Board}}
+\doxysubsubsection{\texorpdfstring{is\_draw()}{is\_draw()}}
+{\footnotesize\ttfamily \label{class_word___t_t_t___board_a63a63ac23307a54b8cf9cebbdd263f37} 
+bool Word\+\_\+\+TTT\+\_\+\+Board\+::is\+\_\+draw (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_player}{Player}}$<$ char $>$ \texorpdfstring{$\ast$}{*}}]{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Check if the game ended in a draw. 
+
+
+
+Implements \mbox{\hyperlink{class_board_a8dbe2a243881986f3e53b45799d377fc}{Board$<$ char $>$}}.
+
+\Hypertarget{class_word___t_t_t___board_acab72866cb3af91f4d55155817d73fc1}\index{Word\_TTT\_Board@{Word\_TTT\_Board}!is\_lose@{is\_lose}}
+\index{is\_lose@{is\_lose}!Word\_TTT\_Board@{Word\_TTT\_Board}}
+\doxysubsubsection{\texorpdfstring{is\_lose()}{is\_lose()}}
+{\footnotesize\ttfamily \label{class_word___t_t_t___board_acab72866cb3af91f4d55155817d73fc1} 
+bool Word\+\_\+\+TTT\+\_\+\+Board\+::is\+\_\+lose (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_player}{Player}}$<$ char $>$ \texorpdfstring{$\ast$}{*}}]{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Check if a player has lost. 
+
+
+
+Implements \mbox{\hyperlink{class_board_a207d5f6feb77f81c51d1462f0245890d}{Board$<$ char $>$}}.
+
+\Hypertarget{class_word___t_t_t___board_a177ecadc173cd141385d3cad910a495b}\index{Word\_TTT\_Board@{Word\_TTT\_Board}!is\_win@{is\_win}}
+\index{is\_win@{is\_win}!Word\_TTT\_Board@{Word\_TTT\_Board}}
+\doxysubsubsection{\texorpdfstring{is\_win()}{is\_win()}}
+{\footnotesize\ttfamily \label{class_word___t_t_t___board_a177ecadc173cd141385d3cad910a495b} 
+bool Word\+\_\+\+TTT\+\_\+\+Board\+::is\+\_\+win (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_player}{Player}}$<$ char $>$ \texorpdfstring{$\ast$}{*}}]{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Check if a player has won. 
+
+
+
+Implements \mbox{\hyperlink{class_board_ab316fe3e79677b4617fc3d90d6c48f33}{Board$<$ char $>$}}.
+
+\Hypertarget{class_word___t_t_t___board_a2c8530ac1759c9feb9f5a2f601b71a13}\index{Word\_TTT\_Board@{Word\_TTT\_Board}!undoLastMove@{undoLastMove}}
+\index{undoLastMove@{undoLastMove}!Word\_TTT\_Board@{Word\_TTT\_Board}}
+\doxysubsubsection{\texorpdfstring{undoLastMove()}{undoLastMove()}}
+{\footnotesize\ttfamily \label{class_word___t_t_t___board_a2c8530ac1759c9feb9f5a2f601b71a13} 
+void Word\+\_\+\+TTT\+\_\+\+Board\+::undo\+Last\+Move (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\Hypertarget{class_word___t_t_t___board_ac2b890abf961c612fbb7be199891ffac}\index{Word\_TTT\_Board@{Word\_TTT\_Board}!update\_board@{update\_board}}
+\index{update\_board@{update\_board}!Word\_TTT\_Board@{Word\_TTT\_Board}}
+\doxysubsubsection{\texorpdfstring{update\_board()}{update\_board()}}
+{\footnotesize\ttfamily \label{class_word___t_t_t___board_ac2b890abf961c612fbb7be199891ffac} 
+bool Word\+\_\+\+TTT\+\_\+\+Board\+::update\+\_\+board (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_move}{Move}}$<$ char $>$ \texorpdfstring{$\ast$}{*}}]{move}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Update the board with a new move. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em move} & The move object containing position and symbol. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the move is valid and applied, false otherwise. 
+\end{DoxyReturn}
+
+
+Implements \mbox{\hyperlink{class_board_a93d9dec601dda58b7e206ccb47633e57}{Board$<$ char $>$}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{_sayed_8h}{Sayed.\+h}}\item 
+\mbox{\hyperlink{_sayed_8cpp}{Sayed.\+cpp}}\end{DoxyCompactItemize}
