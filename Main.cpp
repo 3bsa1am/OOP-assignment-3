@@ -10,6 +10,7 @@
 9. Numerical Tic-Tac-Toe (Group)   (mohammed)
 10. Obstacles Tic-Tac-Toe (Group)  (mohammed)
 11. Infinity Tic-Tac-Toe (Group)   (Sayed)
+12.Ultimate Tic Tac Toe (Group - Bonus)
 13. Memory Tic-Tac-Toe (Group - Bonus)
 
 */
@@ -43,7 +44,7 @@ int main() {
         cout << "9. Num X-O (3x3)\n";
         cout << "10. Obstacles X-O (6x6)\n";
         cout << "11. Infinity Tic-Tac-Toe\n";
-
+        cout << "12.Ultimate Tic Tac Toe\n";
 
         cout << "14. X-O (3x3)\n";
         cout << "15. Exit\n";
@@ -80,33 +81,25 @@ int main() {
             players = ui->setup_players();
         }
         else if (choice == 3) {
-        board = new XO_5x5_Board();
-        ui = new XO_5x5_UI();
-        players = ui->setup_players();
+            board = new XO_5x5_Board();
+            ui = new XO_5x5_UI();
+            players = ui->setup_players();
         }
         else if (choice == 4) {
-        board = new Word_TTT_Board();
-        ui = new Word_TTT_UI();
-        players = ui->setup_players();
+            board = new Word_TTT_Board();
+            ui = new Word_TTT_UI();
+            players = ui->setup_players();
         } 
         else if (choice == 5) {
             board = new Misere_TTT_Board();
             ui = new Misere_TTT_UI();
             players = ui->setup_players();
         }
-
-
-
-
-
         else if (choice == 7) {
             board = new XO_4_x_4_Board();
             ui = new XO_4_x_4_UI();
             players = ui->setup_players();
         }
-
-
-
         else if (choice == 9) {
             board = new Numerical_TTT_Board();
             ui = new Numerical_TTT_UI();
@@ -118,10 +111,15 @@ int main() {
             players = ui->setup_players();
         }
         else if (choice == 11) {
-        board = new Infinity_TTT_Board();
-        ui = new Infinity_TTT_UI();
-        players = ui->setup_players();
-        }   
+            board = new Infinity_TTT_Board();
+            ui = new Infinity_TTT_UI();
+            players = ui->setup_players();
+        }
+        else if (choice == 12) {
+            board = new ultimate_XO_board();
+            ui = new ultimate_XO_UI();
+            players = ui->setup_players();
+        }
         else {
             cout << "Invalid choice. Please select from the menu.\n";
             continue;

@@ -1,3 +1,9 @@
+// BoardGame_classes.h
+// Version 2.3
+// Date: 25 Nov 2023
+// Author: Mohammad El-Ramly
+// Putpose: Core classes to build board XO-style games (x-o, connect4, etc)
+
 #ifndef _BOARDGAME_CLASSES_H
 #define _BOARDGAME_CLASSES_H
 
@@ -87,6 +93,14 @@ public:
 
     /** @brief Get number of columns. */
     int get_columns() const { return columns; }
+
+    /** @brief Get number of moves. */
+    int get_n_moves() const { return n_moves; }
+
+    /** @brief Return content of cell x, y in current board. */
+    T get_cell(int x, int y) {
+        return board[x][y];
+    }
 };
 
 //-----------------------------------------------------
@@ -97,9 +111,9 @@ public:
  */
 template <typename T>
 class Move {
-    int x;       ///< Row index
-    int y;       ///< Column index
-    T symbol;    ///< Symbol used in the move
+    int x;      ///< Row index
+    int y;      ///< Column index
+    T symbol;   ///< Symbol used in the move
 
 public:
     /** @brief Construct a move at (x, y) using a symbol. */
@@ -124,10 +138,10 @@ public:
 template <typename T>
 class Player {
 protected:
-    string name;        ///< Player name
-    PlayerType type;    ///< Player type (e.g., HUMAN or COMPUTER)
-    T symbol;           ///< Player’s symbol on board
-    Board<T>* boardPtr; ///< Pointer to the game board
+    string name;         ///< Player name
+    PlayerType type;     ///< Player type (e.g., HUMAN or COMPUTER)
+    T symbol;            ///< Players symbol on board
+    Board<T>* boardPtr;  ///< Pointer to the game board
 
 public:
     /**
@@ -168,7 +182,7 @@ protected:
     /**
      * @brief Ask the user for the player's name.
      */
-    string get_player_name(string player_label) {
+    virtual string get_player_name(string player_label) {
         string name;
         cout << "Enter " << player_label << " name: ";
         getline(cin >> ws, name);
@@ -178,7 +192,7 @@ protected:
     /**
      * @brief Ask the user to choose the player type from a list.
      */
-    PlayerType get_player_type_choice(string player_label, const vector<string>& options) {
+    virtual PlayerType get_player_type_choice(string player_label, const vector<string>& options) {
         cout << "Choose " << player_label << " type:\n";
         for (size_t i = 0; i < options.size(); ++i)
             cout << i + 1 << ". " << options[i] << "\n";
@@ -191,6 +205,11 @@ public:
     /**
      * @brief Construct the UI and display a welcome message.
      */
+    UI(int cell_display_width = 3) : cell_width(cell_display_width) {}
+    
+    /**
+     * @brief Construct the UI and display a welcome message.
+     */
     UI(string message, int cell_display_width)
         : cell_width(cell_display_width) {
         cout << message << endl;
@@ -199,7 +218,7 @@ public:
     virtual ~UI() {}
 
     /** @brief Display any message to the user. */
-    void display_message(string message) { cout << message << "\n"; }
+    virtual void display_message(string message) { cout << message << "\n"; }
 
     /**
      * @brief Ask the user (or AI) to make a move.
@@ -214,12 +233,13 @@ public:
     /**
      * @brief Create a player object based on input name, symbol, and type.
      */
-    virtual Player<T>* create_player(string& name, T symbol, PlayerType type) = 0;
+    virtual Player<T>* create_player(string& name, T symbol, PlayerType type);
 
     /**
      * @brief Display the current board matrix in formatted form.
      */
-    void display_board_matrix(const vector<vector<T>>& matrix) const {
+
+    virtual void display_board_matrix(const vector<vector<T>>& matrix) const {
         if (matrix.empty() || matrix[0].empty()) return;
 
         int rows = matrix.size();
@@ -248,7 +268,7 @@ public:
  */
 template <typename T>
 class GameManager {
-    Board<T>* boardPtr;   ///< Game board
+    Board<T>* boardPtr;    ///< Game board
     Player<T>* players[2]; ///< Two players
     UI<T>* ui;             ///< User interface
 
@@ -269,10 +289,11 @@ public:
      */
     void run() {
         ui->display_board_matrix(boardPtr->get_board_matrix());
+        Player<T>* currentPlayer = players[0];
 
         while (true) {
             for (int i : {0, 1}) {
-                Player<T>* currentPlayer = players[i];
+                currentPlayer = players[i];
                 Move<T>* move = ui->get_move(currentPlayer);
 
                 while (!boardPtr->update_board(move))
@@ -280,19 +301,14 @@ public:
 
                 ui->display_board_matrix(boardPtr->get_board_matrix());
 
-                // Check if current player won
                 if (boardPtr->is_win(currentPlayer)) {
                     ui->display_message(currentPlayer->get_name() + " wins!");
                     return;
                 }
-                
-                // Check if current player lost (opponent won)
                 if (boardPtr->is_lose(currentPlayer)) {
                     ui->display_message(players[1 - i]->get_name() + " wins!");
                     return;
                 }
-                
-                // Check for draw (only returns true when board is full and no win)
                 if (boardPtr->is_draw(currentPlayer)) {
                     ui->display_message("Draw!");
                     return;
@@ -320,6 +336,18 @@ Player<T>** UI<T>::setup_players() {
     players[1] = create_player(nameO, static_cast<T>('O'), typeO);
 
     return players;
+}
+
+/**
+ * @brief Default implementation of creating two players.
+ */
+template <typename T>
+Player<T>* UI<T>::create_player(string& name, T symbol, PlayerType type) {
+    // Create player based on type
+    cout << "Creating " << (type == PlayerType::HUMAN ? "human" : "computer")
+        << " player: " << name << " (" << symbol << ")\n";
+
+    return new Player<T>(name, symbol, type);
 }
 
 #endif // _BOARDGAME_CLASSES_H
