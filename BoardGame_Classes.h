@@ -140,7 +140,7 @@ class Player {
 protected:
     string name;         ///< Player name
     PlayerType type;     ///< Player type (e.g., HUMAN or COMPUTER)
-    T symbol;            ///< Player�s symbol on board
+    T symbol;            ///< Players symbol on board
     Board<T>* boardPtr;  ///< Pointer to the game board
 
 public:
@@ -206,7 +206,7 @@ public:
      * @brief Construct the UI and display a welcome message.
      */
     UI(int cell_display_width = 3) : cell_width(cell_display_width) {}
-    
+
     /**
      * @brief Construct the UI and display a welcome message.
      */

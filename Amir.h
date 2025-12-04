@@ -1,7 +1,5 @@
-#ifndef XO_4_X_4_H
-#define XO_4_X_4_H
+#pragma once
 #include "BoardGame_Classes.h"
-#include "Mohammed.h"
 using namespace std;
 
 class XO_4_x_4_Board : public Board<char> {
@@ -61,4 +59,50 @@ public:
     Player<char>* create_player(string& name, char symbol, PlayerType type)override;
 };
 
-#endif
+//////////////////////////////////////////////////////////////
+
+class ultimate_XO_board : public Board<char>{
+
+    int currentBigRow = -1 ;
+    int currentBigCol = -1 ;
+    int N_moves = 0;
+    char globalBoard[3][3];
+public:
+    ultimate_XO_board();
+    ~ultimate_XO_board();
+
+    bool isValidMove(int r, int c) const;
+    bool is_win_small(Move<char>* move) ;
+    bool update_board(Move<char>* move)override;
+    void update_board2(char symbol);
+    bool is_win(Player<char>* player)override;
+    bool is_lose(Player<char> *) override {return false;}
+    bool is_draw(Player<char>* player)override;
+    bool game_is_over(Player<char>* player)override;
+    void reset_small_board();
+    void display_global_board() const;
+    bool small_board_is_draw();
+
+
+
+    char get_small_cell(int r, int c) ;
+    char get_global_cell(int r, int c) ;
+    bool is_small_board_available(int br, int bc) ;
+
+    // current big cell setters/getters
+    void set_big_cell_Row(int r) { currentBigRow = r; }
+    void set_big_cell_Col(int c) { currentBigCol = c; }
+    int get_big_cell_Row() const { return currentBigRow; }
+    int get_big_cell_Col() const { return currentBigCol; }
+
+
+
+};
+
+class ultimate_XO_UI : public UI<char> {
+public:
+    ultimate_XO_UI();
+    ~ultimate_XO_UI() override = default;
+    Move<char>* get_move(Player<char>* player)override;
+    Player<char>* create_player(string& name, char symbol, PlayerType type)override;
+};
