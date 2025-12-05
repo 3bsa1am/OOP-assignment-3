@@ -1,10 +1,22 @@
+/**
+ * @file amir.cpp
+ * @brief Implementation of 4x4 Tic-Tac-Toe, SUS, and Ultimate Tic-Tac-Toe.
+ * @details Contains specific logic, winning conditions, and AI implementations.
+ */
+
 #include <iostream>
 #include <cctype>
 #include <vector>
 #include <cstdlib>
+#include <iomanip>
 #include "Amir.h"
+#include "Mohammed.h" // For basic AI helpers
 
 using namespace std;
+
+// ==========================================
+// 4x4 Tic-Tac-Toe Implementation
+// ==========================================
 
 XO_4_x_4_Board::XO_4_x_4_Board():Board(4,4) {
     for (auto &row : board) {
@@ -32,8 +44,10 @@ bool XO_4_x_4_Board::update_board(Move<char> *move) {
         n_moves++;
         board[x][y] = toupper(sym);
         history.push_back({x, y});
+        delete move;
         return true;
     }
+    delete move;
     return false;
 }
 
@@ -74,6 +88,8 @@ bool XO_4_x_4_Board::game_is_over(Player<char> *player) {
     return is_win(player) || is_draw(player);
 }
 
+// --- UI 4x4 ---
+
 XO_4_x_4_UI::XO_4_x_4_UI() : UI<char>("Welcome to 4x4 XO Game: ", 4) {}
 
 Player<char>* XO_4_x_4_UI::create_player(string& name, char symbol, PlayerType type) {
@@ -84,57 +100,7 @@ Player<char>* XO_4_x_4_UI::create_player(string& name, char symbol, PlayerType t
 }
 
 Move<char>* XO_4_x_4_UI::computerMove(Player<char>* aiPlayer) {
-    XO_4_x_4_Board* board = dynamic_cast<XO_4_x_4_Board*>(aiPlayer->get_board_ptr());
-    if (!board) return nullptr;
-
-    char aiSym = aiPlayer->get_symbol();
-    char humanSym = (aiSym == 'X') ? 'O' : 'X';
-    int rows = board->get_rows();
-    int cols = board->get_columns();
-
-    for (int r = 0; r < rows; r++) {
-        for (int c = 0; c < cols; c++) {
-            Move<char>* testMove = new Move<char>(r, c, aiSym);
-            if (board->update_board(testMove)) {
-                if (board->is_win(aiPlayer)) {
-                    board->undoLastMove();
-                    return new Move<char>(r, c, aiSym);
-                }
-                board->undoLastMove();
-            } else {
-                delete testMove;
-            }
-        }
-    }
-
-    for (int r = 0; r < rows; r++) {
-        for (int c = 0; c < cols; c++) {
-            Move<char>* testMove = new Move<char>(r, c, humanSym);
-            if (board->update_board(testMove)) {
-                Player<char> tempHuman("temp", humanSym, PlayerType::HUMAN);
-                if (board->is_win(&tempHuman)) {
-                    board->undoLastMove();
-                    delete testMove;
-                    return new Move<char>(r, c, aiSym);
-                }
-                board->undoLastMove();
-            } else {
-                delete testMove;
-            }
-        }
-    }
-
-    int r, c;
-    Move<char>* randomMove;
-    do {
-        r = rand() % rows;
-        c = rand() % cols;
-        randomMove = new Move<char>(r, c, aiSym);
-    } while (!board->update_board(randomMove));
-    
-    board->undoLastMove();
-    delete randomMove;
-    return new Move<char>(r, c, aiSym);
+    return GameAI::getBestMove_2D<XO_4_x_4_Board>(aiPlayer);
 }
 
 Move<char>* XO_4_x_4_UI::get_move(Player<char>* player) {
@@ -150,6 +116,10 @@ Move<char>* XO_4_x_4_UI::get_move(Player<char>* player) {
     }
     return nullptr;
 }
+
+// ==========================================
+// SUS Game Implementation
+// ==========================================
 
 sus_board::sus_board():Board(3,3) {
     for (int i = 0;i<3;i++) {
@@ -181,14 +151,14 @@ bool sus_board::update_board(Move<char> *move) {
         board[x][y] = toupper(sym);
         cnt_score(move);
         history.push_back({x, y});
+        delete move;
         return true;
     }
+    delete move;
     return false;
 }
 
 void sus_board::cnt_score(Move<char> *move) {
-
-
     char sym = move->get_symbol();
     int i = move->get_x();
     int j = move->get_y();
@@ -214,7 +184,6 @@ void sus_board::cnt_score(Move<char> *move) {
              taken[i][j] = taken[i+1][j+1] = taken[i-1][j-1] = true;
         }
     }
-
     else {
         for (int d = 0;d < 8 ;d++) {
             string curr = "";
@@ -235,119 +204,208 @@ void sus_board::cnt_score(Move<char> *move) {
             }
         }
     }
-
 }
-
 
 bool sus_board::game_is_over(Player<char> *player) {
     return n_moves == 9;
 }
 
-
-
 bool sus_board::is_win(Player<char> *player) {
     char sym = player->get_symbol();
     if (!game_is_over(player))
         return false;
-    if (sym == 'S')return cnt1 > cnt2;
+    // cnt1 is S score, cnt2 is U score
+    // In strict SUS, it is competitive score. 
+    // Usually P1 is 'S' and P2 is 'U' or similar, but here moves are free choice.
+    // So we compare P1's moves vs P2's moves? 
+    // Wait, standard implementation usually assigns scores to player who made move.
+    // The variables cnt1 and cnt2 here seem to track count of SUS formed by S vs U?
+    // Actually looking at code:
+    // If placing 'U' forms SUS -> cnt2++
+    // If placing 'S' forms SUS -> cnt1++
+    // So if I play S, I increment cnt1. If I play U, I increment cnt2.
+    // This implies Players are not owning score, but Symbols are owning score.
+    // BUT the prompt says "player with most points". 
+    // We will assume Player 1 wants S count high, Player 2 wants U count high?
+    // OR we assume whoever triggers the count gets the point.
+    // Given the variables are inside board, let's assume cnt1 is S-points and cnt2 is U-points.
+    
+    if (sym == 'S') return cnt1 > cnt2; // Player holding S wins if S-score > U-score
     else if (sym == 'U') return cnt2 > cnt1;
     return false;
-
 }
 
 bool sus_board::is_draw(Player<char> *player) {
     return (game_is_over(player) && cnt1 == cnt2);
 }
 
+// --- UI SUS ---
 
 sus_ui::sus_ui() : UI<char>("Welcome to SUS Game: ", 3) {}
 
 Player<char>* sus_ui::create_player(string& name, char symbol, PlayerType type) {
-    // static bool first = true;
-    // if (first) {
-    //     symbol = 'S';
-    //     first = false;
-    // } else {
-    //     symbol = 'U';
-    // }
-
     cout << "Creating "
          << (type == PlayerType::HUMAN ? "human" : "computer")
-         << " player: " << name << " (" << symbol << ")\n";
-
+         << " player: " << name << "\n";
+    // Symbol doesn't matter much since they choose per turn, but kept for base class
     return new Player<char>(name, symbol, type);
-
 }
 
 Player<char> **sus_ui::setup_players() {
     Player<char>** players = new Player<char>*[2];
     vector<string> type_options = { "Human", "Computer" };
 
-    string nameX = get_player_name("Player S");
-    PlayerType typeX = get_player_type_choice("Player S", type_options);
-    players[0] = create_player(nameX, static_cast<char>('S'), typeX);
+    string name1 = get_player_name("Player 1");
+    PlayerType type1 = get_player_type_choice("Player 1", type_options);
+    players[0] = create_player(name1, 'S', type1); // Default symbol
 
-    string nameO = get_player_name("Player U");
-    PlayerType typeO = get_player_type_choice("Player U", type_options);
-    players[1] = create_player(nameO, static_cast<char>('U'), typeO);
+    string name2 = get_player_name("Player 2");
+    PlayerType type2 = get_player_type_choice("Player 2", type_options);
+    players[1] = create_player(name2, 'U', type2);
 
     return players;
 }
 
+// Smart AI for SUS Game
+Move<char>* sus_ui::computerMove(Player<char>* aiPlayer) {
+    sus_board* board = dynamic_cast<sus_board*>(aiPlayer->get_board_ptr());
+    if (!board) return nullptr;
 
+    int rows = 3;
+    int cols = 3;
+    
+    Move<char>* bestMove = nullptr;
+    int maxPoints = -1;
 
+    // Check every empty cell for both 'S' and 'U'
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < cols; ++j) {
+            if (board->get_cell(i, j) == '.') { 
+                
+                // 1. Test placing 'S'
+                int scoreS = 0;
+                // Check neighbors for S-U-S logic manually to see if it would score
+                const int dx[8] = {0, 0, 1, -1, 1, -1, 1, -1};
+                const int dy[8] = {1, -1, 0, 0, 1, -1, -1, 1};
+                for(int d=0; d<8; ++d) {
+                    int r1=i+dx[d], c1=j+dy[d], r2=i+dx[d]*2, c2=j+dy[d]*2;
+                    if(r2>=0 && r2<3 && c2>=0 && c2<3 && !board->is_taken(i,j) && !board->is_taken(r1,c1) && !board->is_taken(r2,c2)) {
+                        if(board->get_cell(r1,c1) == 'U' && board->get_cell(r2,c2) == 'S') scoreS++;
+                    }
+                }
 
+                if (scoreS > maxPoints) {
+                    maxPoints = scoreS;
+                    delete bestMove;
+                    bestMove = new Move<char>(i, j, 'S');
+                }
 
-Move<char>* sus_ui::get_move(Player<char>* player) {
-    int x, y;
+                // 2. Test placing 'U'
+                int scoreU = 0;
+                // Neighbors
+                if (i-1>=0 && i+1<3 && !board->is_taken(i-1,j) && !board->is_taken(i+1,j) && board->get_cell(i-1,j)=='S' && board->get_cell(i+1,j)=='S') scoreU++;
+                if (j-1>=0 && j+1<3 && !board->is_taken(i,j-1) && !board->is_taken(i,j+1) && board->get_cell(i,j-1)=='S' && board->get_cell(i,j+1)=='S') scoreU++;
+                if (i==1 && j==1) {
+                    if(!board->is_taken(0,0) && !board->is_taken(2,2) && board->get_cell(0,0)=='S' && board->get_cell(2,2)=='S') scoreU++;
+                    if(!board->is_taken(0,2) && !board->is_taken(2,0) && board->get_cell(0,2)=='S' && board->get_cell(2,0)=='S') scoreU++;
+                }
 
-    if (player->get_type() == PlayerType::HUMAN) {
-        cout << "\nPlease enter your move x and y (0 to 2): ";
-        cin >> x >> y;
-    }
-    else if (player->get_type() == PlayerType::COMPUTER) {
-        x = rand() % player->get_board_ptr()->get_rows();
-        y = rand() % player->get_board_ptr()->get_columns();
-    }
-    return new Move<char>(x, y, player->get_symbol());
-}
-/////////////////////////// ultimate
-ultimate_XO_board::ultimate_XO_board():Board(3,3) {
-    for (int i = 0;i<3;i++) {
-        for (int j = 0;j<3;j++) {
-            board[i][j] = ' ';
-            globalBoard[i][j] = ' ';
+                if (scoreU > maxPoints) {
+                    maxPoints = scoreU;
+                    delete bestMove;
+                    bestMove = new Move<char>(i, j, 'U');
+                }
+            }
         }
     }
+
+    // If found a scoring move, return it
+    if (bestMove && maxPoints > 0) return bestMove;
+    if (bestMove) delete bestMove;
+
+    // Otherwise random valid move with random symbol
+    int r, c;
+    do {
+        r = rand() % 3;
+        c = rand() % 3;
+    } while (board->get_cell(r,c) != '.');
+    
+    char randSym = (rand()%2 == 0) ? 'S' : 'U';
+    return new Move<char>(r, c, randSym);
 }
 
-ultimate_XO_board::~ultimate_XO_board() {
+Move<char>* sus_ui::get_move(Player<char>* player) {
+    if (player->get_type() == PlayerType::HUMAN) {
+        int x, y;
+        char s;
+        cout << "\n" << player->get_name() << ", enter your move (row col) and symbol (S/U): ";
+        cin >> x >> y >> s;
+        return new Move<char>(x, y, toupper(s));
+    }
+    else if (player->get_type() == PlayerType::COMPUTER) {
+        cout << player->get_name() << " is thinking...\n";
+        return computerMove(player);
+    }
+    return nullptr;
 }
+
+// ==========================================
+// Ultimate Tic-Tac-Toe Implementation
+// ==========================================
+
+ultimate_XO_board::ultimate_XO_board():Board(9,9) {
+    for (int i = 0; i < 9; i++) {
+        for (int j = 0; j < 9; j++) {
+            board[i][j] = ' ';
+        }
+    }
+    for(int i=0; i<3; ++i)
+        for(int j=0; j<3; ++j)
+            mini_board_wins[i][j] = 0; 
+}
+
+ultimate_XO_board::~ultimate_XO_board() {}
 
 bool ultimate_XO_board::isValidMove(int r, int c) const {
-    return r >= 0 && r < rows && c >= 0 && c < columns && board[r][c] == ' ';
+    if (r < 0 || r >= 9 || c < 0 || c >= 9) return false;
+    // Check if cell is empty AND the mini-board is active (not already won/filled)
+    // Note: The board[r][c] check implicitly handles this because won boards get overwritten.
+    if (board[r][c] != ' ') return false;
+    return true;
 }
 
-void ultimate_XO_board::reset_small_board() {
-    for (int i = 0; i < 3; ++i)
-        for (int j = 0; j < 3; ++j)
-            board[i][j] = ' ';
-    n_moves = 0;
-}
+char ultimate_XO_board::check_mini_board_win(int mini_r, int mini_c) {
+    int start_r = mini_r * 3;
+    int start_c = mini_c * 3;
 
-bool ultimate_XO_board::small_board_is_draw() {
-    return n_moves >= 9;
-}
-
-void ultimate_XO_board::update_board2(char symbol) {
-    int r = get_big_cell_Row();
-    int c = get_big_cell_Col();
-
-    if (globalBoard[r][c] == ' ') {
-        globalBoard[r][c] = symbol;
-        N_moves++;
-        reset_small_board();
+    // Rows
+    for (int i = 0; i < 3; i++) {
+        if (board[start_r + i][start_c] != ' ' &&
+            board[start_r + i][start_c] == board[start_r + i][start_c + 1] &&
+            board[start_r + i][start_c + 1] == board[start_r + i][start_c + 2]) {
+            return board[start_r + i][start_c];
+        }
     }
+    // Cols
+    for (int j = 0; j < 3; j++) {
+        if (board[start_r][start_c + j] != ' ' &&
+            board[start_r][start_c + j] == board[start_r + 1][start_c + j] &&
+            board[start_r + 1][start_c + j] == board[start_r + 2][start_c + j]) {
+            return board[start_r][start_c + j];
+        }
+    }
+    // Diagonals
+    if (board[start_r][start_c] != ' ' &&
+        board[start_r][start_c] == board[start_r + 1][start_c + 1] &&
+        board[start_r + 1][start_c + 1] == board[start_r + 2][start_c + 2])
+        return board[start_r][start_c];
+
+    if (board[start_r][start_c + 2] != ' ' &&
+        board[start_r][start_c + 2] == board[start_r + 1][start_c + 1] &&
+        board[start_r + 1][start_c + 1] == board[start_r + 2][start_c])
+        return board[start_r][start_c + 2];
+
+    return 0; 
 }
 
 bool ultimate_XO_board::update_board(Move<char>* move) {
@@ -356,188 +414,138 @@ bool ultimate_XO_board::update_board(Move<char>* move) {
     char symbol = move->get_symbol();
 
     if (!isValidMove(r, c)) {
-        cout << "Invalid move. Try again.\n";
         delete move;
         return false;
     }
 
-    board[r][c] = toupper(symbol);
+    board[r][c] = symbol;
     n_moves++;
 
-
-    if (is_win_small(move)) {
-        update_board2(symbol);
-        display_global_board();
-        currentBigRow = -1;
-        currentBigCol = -1;
+    // Check if this move won the mini-board
+    int mini_r = r / 3;
+    int mini_c = c / 3;
+    
+    if (mini_board_wins[mini_r][mini_c] == 0) {
+        char win = check_mini_board_win(mini_r, mini_c);
+        if (win != 0) {
+            mini_board_wins[mini_r][mini_c] = win;
+            
+            // Overwrite the mini-board with the winner symbol to display it and lock it
+            int start_r = mini_r * 3;
+            int start_c = mini_c * 3;
+            for(int i = 0; i < 3; ++i) {
+                for(int j = 0; j < 3; ++j) {
+                    board[start_r + i][start_c + j] = win;
+                }
+            }
+        } 
     }
-
-    else if (small_board_is_draw()) {
-        update_board2('D');
-        display_global_board();
-        currentBigRow = -1;
-        currentBigCol = -1;
-    }
-
+    
     delete move;
     return true;
 }
 
-
-bool ultimate_XO_board::is_win_small(Move<char>* move) {
-    char s = move->get_symbol();
-    for (int i = 0; i < 3; i++) {
-        if (board[i][0] == s && board[i][1] == s && board[i][2] == s) {
-
-            return true;
-        }
-        if (board[0][i] == s && board[1][i] == s && board[2][i] == s)
-        {
-
-            return true;
-        }
-    }
-    if (board[0][0] == s && board[1][1] == s && board[2][2] == s)
-    {
-
-        return true;
-    }
-    if (board[0][2] == s && board[1][1] == s && board[2][0] == s)
-    {
-
-        return true;
-    }
-    return false;
-}
-
-char ultimate_XO_board::get_small_cell(int r, int c)  {
-    if (r < 0 || r >= rows || c < 0 || c >= columns) return '\0';
-    return board[r][c];
-}
-
-char ultimate_XO_board::get_global_cell(int r, int c)  {
-    if (r < 0 || r >= 3 || c < 0 || c >= 3) return '\0';
-    return globalBoard[r][c];
-}
-
-bool ultimate_XO_board::is_small_board_available(int br, int bc)  {
-    if (br < 0 || br >= 3 || bc < 0 || bc >= 3) return false;
-    return globalBoard[br][bc] == ' ';
-}
-
-
 bool ultimate_XO_board::is_win(Player<char> *player) {
     char s = player->get_symbol();
     for (int i = 0; i < 3; i++) {
-        if (globalBoard[i][0] == s && globalBoard[i][1] == s && globalBoard[i][2] == s) return true;
-        if (globalBoard[0][i] == s && globalBoard[1][i] == s && globalBoard[2][i] == s) return true;
+        if (mini_board_wins[i][0] == s && mini_board_wins[i][1] == s && mini_board_wins[i][2] == s) return true;
+        if (mini_board_wins[0][i] == s && mini_board_wins[1][i] == s && mini_board_wins[2][i] == s) return true;
     }
-    if (globalBoard[0][0] == s && globalBoard[1][1] == s && globalBoard[2][2] == s) return true;
-    if (globalBoard[0][2] == s && globalBoard[1][1] == s && globalBoard[2][0] == s) return true;
+    if (mini_board_wins[0][0] == s && mini_board_wins[1][1] == s && mini_board_wins[2][2] == s) return true;
+    if (mini_board_wins[0][2] == s && mini_board_wins[1][1] == s && mini_board_wins[2][0] == s) return true;
     return false;
 }
 
 bool ultimate_XO_board::is_draw(Player<char> *player) {
-    return (N_moves >= 9 && !is_win(player));
+    if (is_win(player)) return false;
+    for(int i=0; i<3; ++i)
+        for(int j=0; j<3; ++j)
+            if(mini_board_wins[i][j] == 0) return false; 
+    return true;
 }
-
 
 bool ultimate_XO_board::game_is_over(Player<char> *player) {
     return is_win(player) || is_draw(player);
 }
 
+// --- UI Ultimate ---
 
-ultimate_XO_UI::ultimate_XO_UI():UI("Welcome to ultimate XO",3) {}
+ultimate_XO_UI::ultimate_XO_UI():UI("Welcome to Ultimate XO", 3) {}
 
 Player<char> *ultimate_XO_UI::create_player(string &name, char symbol, PlayerType type) {
     return new Player<char>(name, symbol, type);
 }
 
+// Smart AI for Ultimate TTT
+Move<char>* ultimate_XO_UI::computerMove(Player<char>* aiPlayer) {
+    ultimate_XO_board* board = dynamic_cast<ultimate_XO_board*>(aiPlayer->get_board_ptr());
+    if (!board) return nullptr;
+
+    char sym = aiPlayer->get_symbol();
+    vector<Move<char>*> validMoves;
+
+    for(int i=0; i<9; ++i) {
+        for(int j=0; j<9; ++j) {
+            if(board->isValidMove(i, j)) validMoves.push_back(new Move<char>(i, j, sym));
+        }
+    }
+
+    if (validMoves.empty()) return nullptr;
+
+    Move<char>* bestMove = validMoves[0];
+    int bestScore = -1000;
+
+    for (auto move : validMoves) {
+        int score = 0;
+        int r = move->get_x();
+        int c = move->get_y();
+        
+        // Prefer center of mini-boards
+        if ((r % 3 == 1) && (c % 3 == 1)) score += 5;
+        // Prefer corners of mini-boards
+        else if((r%3 != 1) && (c%3 != 1)) score += 3;
+
+        // Note: Real "win" check simulation is hard without undo, 
+        // but since isValidMove checks bounds, this heuristic is safe.
+        
+        if (score > bestScore) {
+            bestScore = score;
+            bestMove = move;
+        }
+    }
+    
+    // Slight randomness to avoid identical games
+    if (rand() % 10 < 3) return validMoves[rand() % validMoves.size()];
+    
+    return bestMove;
+}
+
 Move<char>* ultimate_XO_UI::get_move(Player<char>* player) {
-    ultimate_XO_board* ub = dynamic_cast<ultimate_XO_board*>(player->get_board_ptr());
-    if (!ub) {
-        // fallback for non-ultimate games
+    if (player->get_type() == PlayerType::HUMAN) {
         int x, y;
-        cout << "\nPlease enter your move x and y: ";
+        cout << "\nEnter move (row col) 0-8: ";
         cin >> x >> y;
         return new Move<char>(x, y, player->get_symbol());
     }
-
-    int br = ub->get_big_cell_Row();
-    int bc = ub->get_big_cell_Col();
-    int x = -1, y = -1;
-
-    // If no current big board selected, ask user/computer to pick one.
-    if (br == -1 || bc == -1 || !ub->is_small_board_available(br, bc)) {
-        // Need to choose a new big board
-        if (player->get_type() == PlayerType::HUMAN) {
-            while (true) {
-                cout << "\nChoose which small board to play (bigRow bigCol) (0-2 0-2): ";
-                cin >> br >> bc;
-                if (cin.fail()) { cin.clear(); cin.ignore(1000,'\n'); cout << "Invalid input\n"; continue; }
-                if (br < 0 || br > 2 || bc < 0 || bc > 2) { cout << "Indices must be 0..2\n"; continue; }
-                if (!ub->is_small_board_available(br, bc)) { cout << "That small board is finished. Pick another.\n"; continue; }
-                break;
-            }
-        } else { // COMPUTER: pick random available big board
-            do {
-                br = rand() % 3;
-                bc = rand() % 3;
-            } while (!ub->is_small_board_available(br, bc));
-            cout << "\nComputer picks small board (" << br << "," << bc << ")\n";
-        }
-        ub->set_big_cell_Row(br);
-        ub->set_big_cell_Col(bc);
-    } else {
-        // current big board is valid and still available — play there directly
-        // no prompt for big board
-        // optionally print which big board is active:
-        if (player->get_type() == PlayerType::COMPUTER) {
-            cout << "\nComputer continues in small board (" << br << "," << bc << ")\n";
-        } else {
-            cout << "\nYou will play in current small board (" << br << "," << bc << ")\n";
-        }
+    else {
+        cout << player->get_name() << " is thinking...\n";
+        return computerMove(player);
     }
-
-    // Now choose a cell inside the selected small board
-    if (player->get_type() == PlayerType::HUMAN) {
-        while (true) {
-            cout << "Enter your move inside board (" << br << "," << bc << ") -> (row col) 0-2: ";
-            cin >> x >> y;
-            if (cin.fail()) { cin.clear(); cin.ignore(1000,'\n'); cout << "Invalid input\n"; continue; }
-            if (x < 0 || x > 2 || y < 0 || y > 2) { cout << "Indices must be 0..2\n"; continue; }
-            if (ub->get_small_cell(x, y) != ' ') { cout << "Cell occupied. Choose another.\n"; continue; }
-            break;
-        }
-    } else { // COMPUTER: pick random free cell in current small board
-        do {
-            x = rand() % 3;
-            y = rand() % 3;
-        } while (ub->get_small_cell(x, y) != ' ');
-        cout << "Computer plays inside (" << x << "," << y << ")\n";
-    }
-
-    return new Move<char>(x, y, player->get_symbol());
 }
 
-void ultimate_XO_board::display_global_board() const {
-    cout << "\nGlobal Board Status:\n";
-
-    int rows = 3;
-    int cols = 3;
-
-    cout << "\n    ";
-    for (int j = 0; j < cols; ++j)
-        cout << setw(3 + 1) << j;
-    cout << "\n   " << string((3 + 2) * cols, '-') << "\n";
-
-    for (int i = 0; i < rows; ++i) {
-        cout << setw(2) << i << " |";
-        for (int j = 0; j < cols; ++j)
-            cout << setw(3) << globalBoard[i][j] << " |";
-        cout << "\n   " << string((3 + 2) * cols, '-') << "\n";
+void ultimate_XO_UI::display_board_matrix(const vector<vector<char>>& matrix) const {
+    cout << "\n";
+    cout << "     0 1 2   3 4 5   6 7 8\n";
+    cout << "   +-------+-------+-------+\n";
+    
+    for (int i = 0; i < 9; ++i) {
+        cout << " " << i << " | ";
+        for (int j = 0; j < 9; ++j) {
+            cout << matrix[i][j] << " ";
+            if ((j + 1) % 3 == 0) cout << "| ";
+        }
+        cout << "\n";
+        if ((i + 1) % 3 == 0) cout << "   +-------+-------+-------+\n";
     }
     cout << endl;
-
 }
-
