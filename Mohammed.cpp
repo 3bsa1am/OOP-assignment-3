@@ -54,16 +54,7 @@ Move<char>* GameAI::getBestMove_2D(Player<char>* player) {
     }
 
     // Strategy 3: Random move fallback
-    int r, c;
-    Move<char>* randomMove;
-    do {
-        r = rand() % rows;
-        c = rand() % cols;
-        randomMove = new Move<char>(r, c, aiSym);
-    } while (!board->update_board(randomMove));
-    
-    board->undoLastMove(); 
-    return new Move<char>(r, c, aiSym);
+    return getRandomMove<BoardType>(player);
 }
 
 template <typename BoardType>
@@ -103,9 +94,12 @@ Move<char>* GameAI::getBestMove_Column(Player<char>* player) {
     // Random
     int c;
     Move<char>* randomMove;
+    int attempts = 0;
     do {
         c = rand() % cols;
         randomMove = new Move<char>(0, c, aiSym);
+        attempts++;
+        if (attempts > 100) return new Move<char>(0, 0, aiSym); // Fail-safe
     } while (!board->update_board(randomMove));
     
     board->undoLastMove();
@@ -144,7 +138,7 @@ Move<char>* GameAI::getMisereMove(Player<char>* player) {
     } else if (!allValidMoves.empty()) {
         p = allValidMoves[rand() % allValidMoves.size()];
     } else {
-        p = {0, 0};
+        return getRandomMove<BoardType>(player);
     }
     return new Move<char>(p.r, p.c, aiSym);
 }
@@ -153,20 +147,28 @@ template <typename BoardType>
 Move<char>* GameAI::getRandomMove(Player<char>* player) {
     BoardType* board = dynamic_cast<BoardType*>(player->get_board_ptr());
     char aiSym = player->get_symbol();
-    int r, c;
-    Move<char>* randomMove;
-    do {
-        r = rand() % board->get_rows();
-        c = rand() % board->get_columns();
-        if (dynamic_cast<Obstacles_TTT_Board*>(board)) {
-             if (!dynamic_cast<Obstacles_TTT_Board*>(board)->public_is_valid(r,c)) continue;
+    
+    // Improved Random Strategy: Find ALL valid moves first, then pick one.
+    // This prevents infinite loops on sparse or nearly full boards.
+    vector<Point> validMoves;
+    int rows = board->get_rows();
+    int cols = board->get_columns();
+
+    for (int r = 0; r < rows; ++r) {
+        for (int c = 0; c < cols; ++c) {
+            Move<char>* test = new Move<char>(r, c, aiSym);
+            if (board->update_board(test)) {
+                board->undoLastMove();
+                validMoves.push_back({r, c});
+            }
+            // Note: update_board creates history, undo removes it.
         }
-        randomMove = new Move<char>(r, c, aiSym);
-        if (board->update_board(randomMove)) {
-            board->undoLastMove();
-            return new Move<char>(r, c, aiSym);
-        }
-    } while (true);
+    }
+
+    if (validMoves.empty()) return nullptr; // No moves available
+
+    Point p = validMoves[rand() % validMoves.size()];
+    return new Move<char>(p.r, p.c, aiSym);
 }
 
 // --- TTT_Board Implementations ---
@@ -176,7 +178,6 @@ bool TTT_Board::isValidMove(int r, int c) const {
 }
 
 bool TTT_Board::checkWin(char s) {
-    // Check rows, columns, and diagonals
     for (int i = 0; i < 3; i++) {
         if (board[i][0] == s && board[i][1] == s && board[i][2] == s) return true;
         if (board[0][i] == s && board[1][i] == s && board[2][i] == s) return true;
@@ -213,7 +214,6 @@ bool TTT_Board::update_board(Move<char>* move) {
     char symbol = move->get_symbol();
 
     if (!isValidMove(r, c)) {
-        cout << "Invalid move. Try again.\n";
         delete move;
         return false;
     }
@@ -244,11 +244,11 @@ bool TTT_Board::game_is_over(Player<char>* p) {
 // --- Misere_TTT_Board Implementations ---
 
 bool Misere_TTT_Board::is_win(Player<char>* p) {
-    return false; // You win by forcing the other player to lose
+    return false; 
 }
 
 bool Misere_TTT_Board::is_lose(Player<char>* p) {
-    return checkWin(p->get_symbol()); // You lose if you complete a line
+    return checkWin(p->get_symbol()); 
 }
 
 bool Misere_TTT_Board::is_draw(Player<char>* p) {
@@ -269,7 +269,6 @@ bool C4_Board::checkWin(char s) {
     for (int r = 0; r < rows; r++) {
         for (int c = 0; c < columns; c++) {
             if (board[r][c] == s) {
-                // Check Horizontal, Vertical, Diagonal
                 if (c + 3 < columns && board[r][c + 1] == s && board[r][c + 2] == s && board[r][c + 3] == s) return true;
                 if (r + 3 < rows && board[r + 1][c] == s && board[r + 2][c] == s && board[r + 3][c] == s) return true;
                 if (r + 3 < rows && c + 3 < columns && board[r + 1][c + 1] == s && board[r + 2][c + 2] == s && board[r + 3][c + 3] == s) return true;
@@ -306,7 +305,6 @@ bool C4_Board::update_board(Move<char>* move) {
     char symbol = move->get_symbol();
 
     if (!isValidMove(col)) {
-        cout << "Invalid move. Try again.\n";
         delete move;
         return false;
     }
@@ -344,7 +342,8 @@ bool C4_Board::game_is_over(Player<char>* p) {
 // --- TTT_UI Implementations ---
 
 Move<char>* TTT_UI::computerMove(Player<char>* aiPlayer) {
-    return GameAI::getBestMove_2D<TTT_Board>(aiPlayer);
+    // CHANGED: Use random move instead of smart AI
+    return GameAI::getRandomMove<TTT_Board>(aiPlayer);
 }
 
 TTT_UI::TTT_UI() : UI("Welcome to X-O", 3) {}
@@ -355,47 +354,12 @@ Player<char>* TTT_UI::create_player(string& name, char symbol, PlayerType type) 
 
 Move<char>* TTT_UI::get_move(Player<char>* p) {
     if (p->get_type() == PlayerType::HUMAN) {
-        cout << p->get_name() << "'s Turn (" << p->get_symbol() << ").\n";
-        cout << "Enter row and col (0-2) or -1 to Undo: ";
-        
-        int r = -1, c = -1;
-        if (!(cin >> r)) {
-            cin.clear();
-            cin.ignore(1000, '\n');
-            cout << "Invalid input. Try again.\n";
-            return get_move(p);
-        }
-
-        if (r == -1) {
-            c = -1;
-            TTT_Board* board = dynamic_cast<TTT_Board*>(p->get_board_ptr());
-            if (board) {
-                if (board->get_history_size() >= 2) {
-                    board->undoLastMove();
-                    board->undoLastMove();
-                    cout << "Undo successful.\n";
-                } else if (board->get_history_size() == 1) {
-                    board->undoLastMove();
-                    cout << "Undo successful.\n";
-                } else {
-                    cout << "Cannot undo.\n";
-                }
-                display_board_matrix(board->get_board_matrix());
-            }
-            return get_move(p); 
-        }
-
-        if (!(cin >> c)) {
-            cin.clear();
-            cin.ignore(1000, '\n');
-            cout << "Invalid input. Try again.\n";
-            return get_move(p);
-        }
-        
+        int r, c;
+        cout << p->get_name() << ", enter row and col (0-2): ";
+        cin >> r >> c;
         return new Move<char>(r, c, p->get_symbol());
-
     } else {
-        cout << p->get_name() << " (" << p->get_symbol() << ") is thinking...\n";
+        cout << p->get_name() << " is thinking...\n";
         return computerMove(p);
     }
 }
@@ -410,59 +374,26 @@ Player<char>* Misere_TTT_UI::create_player(string& name, char symbol, PlayerType
 
 Move<char>* Misere_TTT_UI::get_move(Player<char>* p) {
     if (p->get_type() == PlayerType::HUMAN) {
-        cout << p->get_name() << "'s Turn (" << p->get_symbol() << ").\n";
-        cout << "Enter row and col (0-2) or -1 to Undo: ";
-        
-        int r = -1, c = -1;
-        if (!(cin >> r)) {
-            cin.clear();
-            cin.ignore(1000, '\n');
-            cout << "Invalid input. Try again.\n";
-            return get_move(p);
-        }
-
-        if (r == -1) {
-            c = -1;
-            TTT_Board* board = dynamic_cast<TTT_Board*>(p->get_board_ptr());
-            if (board) {
-                if (board->get_history_size() >= 2) {
-                    board->undoLastMove();
-                    board->undoLastMove();
-                    cout << "Undo successful.\n";
-                } else if (board->get_history_size() == 1) {
-                    board->undoLastMove();
-                    cout << "Undo successful.\n";
-                } else {
-                    cout << "Cannot undo.\n";
-                }
-                display_board_matrix(board->get_board_matrix());
-            }
-            return get_move(p); 
-        }
-        
-        if (!(cin >> c)) {
-            cin.clear();
-            cin.ignore(1000, '\n');
-            cout << "Invalid input. Try again.\n";
-            return get_move(p);
-        }
-        
+        int r, c;
+        cout << p->get_name() << ", enter row and col (0-2): ";
+        cin >> r >> c;
         return new Move<char>(r, c, p->get_symbol());
-
     } else {
-        cout << p->get_name() << " (" << p->get_symbol() << ") is thinking...\n";
+        cout << p->get_name() << " is thinking...\n";
         return computerMove(p);
     }
 }
 
 Move<char>* Misere_TTT_UI::computerMove(Player<char>* aiPlayer) {
-    return GameAI::getMisereMove<Misere_TTT_Board>(aiPlayer);
+    // CHANGED: Use random move instead of smart AI
+    return GameAI::getRandomMove<Misere_TTT_Board>(aiPlayer);
 }
 
 // --- C4_UI Implementations ---
 
 Move<char>* C4_UI::computerMove(Player<char>* aiPlayer) {
-    return GameAI::getBestMove_Column<C4_Board>(aiPlayer);
+    // CHANGED: Use random move instead of smart AI
+    return GameAI::getRandomMove<C4_Board>(aiPlayer);
 }
 
 C4_UI::C4_UI() : UI("Welcome to Four in a row", 2) {}
@@ -473,40 +404,12 @@ Player<char>* C4_UI::create_player(string& name, char symbol, PlayerType type) {
 
 Move<char>* C4_UI::get_move(Player<char>* p) {
     if (p->get_type() == PlayerType::HUMAN) {
-        cout << p->get_name() << "'s Turn (" << p->get_symbol() << ").\n";
-        cout << "Enter column (0-" << p->get_board_ptr()->get_columns() - 1 << ") or -1 to Undo: ";
-        
-        int c = -1;
-        if (!(cin >> c)) {
-            cin.clear();
-            cin.ignore(1000, '\n');
-            cout << "Invalid input. Try again.\n";
-            return get_move(p);
-        }
-        
-        if (c == -1) {
-            C4_Board* board = dynamic_cast<C4_Board*>(p->get_board_ptr());
-            if (board) {
-                if (board->get_history_size() >= 2) {
-                    board->undoLastMove();
-                    board->undoLastMove();
-                    cout << "Undo successful.\n";
-                } else if (board->get_history_size() == 1) {
-                    board->undoLastMove();
-                    cout << "Undo successful.\n";
-                } else {
-                    cout << "Cannot undo.\n";
-                }
-                display_board_matrix(board->get_board_matrix());
-            }
-            return get_move(p);
-        }
-
-        int r = 0;
-        return new Move<char>(r, c, p->get_symbol());
-
+        int c;
+        cout << p->get_name() << ", enter column (0-6): ";
+        cin >> c;
+        return new Move<char>(0, c, p->get_symbol());
     } else {
-        cout << p->get_name() << " (" << p->get_symbol() << ") is thinking...\n";
+        cout << p->get_name() << " is thinking...\n";
         return computerMove(p);
     }
 }
@@ -571,7 +474,6 @@ bool Numerical_TTT_Board::update_board(Move<char>* move) {
     bool is_odd_turn = (n_moves % 2 == 0);
 
     if (!isValidMove(r, c, num, is_odd_turn)) {
-        cout << "Invalid move. Try again.\n";
         delete move;
         return false;
     }
@@ -661,16 +563,20 @@ bool Obstacles_TTT_Board::isFull() const {
 }
 
 void Obstacles_TTT_Board::addObstacles() {
-    if (isFull()) return;
-
-    int count = 0;
-    while (count < 2) {
-        if (isFull()) return; 
-        int r = rand() % rows;
-        int c = rand() % columns;
-        if (board[r][c] == ' ') {
-            board[r][c] = '#';
-            count++;
+    // Add exactly 2 obstacles, if possible
+    for (int k = 0; k < 2; ++k) {
+        if (isFull()) return;
+        
+        int attempts = 0;
+        // Try up to 100 times to find an empty spot for this obstacle
+        while (attempts < 100) {
+            int r = rand() % 6;
+            int c = rand() % 6;
+            if (board[r][c] == ' ') {
+                board[r][c] = '#';
+                break; // Obstacle placed, move to next k
+            }
+            attempts++;
         }
     }
 }
@@ -690,7 +596,6 @@ bool Obstacles_TTT_Board::update_board(Move<char>* move) {
     char symbol = move->get_symbol();
 
     if (!isValidMove(r, c)) {
-        cout << "Invalid move. Try again.\n";
         delete move;
         return false;
     }
@@ -699,9 +604,14 @@ bool Obstacles_TTT_Board::update_board(Move<char>* move) {
     history.push_back({r, c});
     n_moves++;
 
+    // Add 2 obstacles only after every full round (Player 2's turn)
+    // Round 1: P1 (move 1), P2 (move 2) -> add obstacles
+    // Round 2: P1 (move 3), P2 (move 4) -> add obstacles
+    // Condition: n_moves is even (2, 4, 6...)
     if (n_moves > 0 && n_moves % 2 == 0) {
-        cout << "Adding obstacles...\n";
-        addObstacles();
+        if (!isFull()) {
+            addObstacles();
+        }
     }
 
     delete move;
@@ -755,71 +665,24 @@ Move<char>* Numerical_TTT_UI::get_move(Player<char>* p) {
         bool is_odd_player = (p->get_symbol() == 'X');
         
         Numerical_TTT_Board* board = dynamic_cast<Numerical_TTT_Board*>(p->get_board_ptr());
-        string available_nums_str;
         
-        if (is_odd_player) {
-            available_nums_str = "Odd: ";
-            map<int, bool> used = board->get_odd_nums_used();
-            for (map<int, bool>::iterator it = used.begin(); it != used.end(); ++it) {
-                if (!it->second) { 
-                    available_nums_str += to_string(it->first) + ",";
-                }
-            }
-        } else {
-            available_nums_str = "Even: ";
-            map<int, bool> used = board->get_even_nums_used();
-            for (map<int, bool>::iterator it = used.begin(); it != used.end(); ++it) {
-                if (!it->second) { 
-                    available_nums_str += to_string(it->first) + ",";
-                }
-            }
+        // Show available numbers
+        if (is_odd_player) cout << "Available (Odd): "; else cout << "Available (Even): ";
+        map<int, bool> used = is_odd_player ? board->get_odd_nums_used() : board->get_even_nums_used();
+        for (auto const& [num, is_used] : used) {
+            if (!is_used) cout << num << " ";
         }
-        if (available_nums_str.length() > 0 && available_nums_str.back() == ',') {
-            available_nums_str.pop_back(); 
-        }
+        cout << endl;
 
-        cout << p->get_name() << "'s Turn (" << available_nums_str << ").\n";
-        cout << "Enter row (0-2), col (0-2), and number, or -1 to Undo: ";
+        int r, c, num;
+        cout << p->get_name() << ", enter row (0-2), col (0-2), and number: ";
+        cin >> r >> c >> num;
         
-        int r = -1, c = -1, num = -1;
-        if (!(cin >> r)) {
-            cin.clear();
-            cin.ignore(1000, '\n');
-            cout << "Invalid input. Try again.\n";
-            return get_move(p);
-        }
-
-        if (r == -1) {
-            c = -1;
-            num = -1;
-            if (board) {
-                if (board->get_history_size() >= 2) {
-                    board->undoLastMove();
-                    board->undoLastMove();
-                    cout << "Undo successful.\n";
-                } else if (board->get_history_size() == 1) {
-                    board->undoLastMove();
-                    cout << "Undo successful.\n";
-                } else {
-                    cout << "Cannot undo.\n";
-                }
-                display_board_matrix(board->get_board_matrix());
-            }
-            return get_move(p);
-        }
-
-        if (!(cin >> c >> num)) {
-            cin.clear();
-            cin.ignore(1000, '\n');
-            cout << "Invalid input. Try again.\n";
-            return get_move(p);
-        } 
-
-        char num_char = (num == -1) ? ' ' : (num + '0');
+        char num_char = num + '0';
         return new Move<char>(r, c, num_char);
 
     } else {
-        cout << p->get_name() << " (" << p->get_symbol() << ") is thinking...\n";
+        cout << p->get_name() << " is thinking...\n";
         return computerMove(p);
     }
 }
@@ -830,25 +693,34 @@ Move<char>* Numerical_TTT_UI::computerMove(Player<char>* aiPlayer) {
 
     bool is_odd = (aiPlayer->get_symbol() == 'X');
     vector<int> available_nums;
-    if (is_odd) {
-        for (int i = 1; i <= 9; i += 2) available_nums.push_back(i);
-    } else {
-        for (int i = 2; i <= 8; i += 2) available_nums.push_back(i);
+    map<int, bool> used = is_odd ? board->get_odd_nums_used() : board->get_even_nums_used();
+    
+    for (auto const& [num, is_used] : used) {
+        if (!is_used) available_nums.push_back(num);
     }
 
-    int r, c, num;
-    char num_char;
-    // Move<char>* testMove; // unused variable
+    if (available_nums.empty()) return nullptr;
 
-    do {
-        r = rand() % 3;
-        c = rand() % 3;
-        num = available_nums[rand() % available_nums.size()];
-        num_char = num + '0';
-        
-    } while (!board->public_is_valid(r, c, num, is_odd));
+    // Robust Random Strategy: Find all valid (pos, num) pairs and pick one
+    vector<Move<char>*> validMoves;
+    for(int r=0; r<3; ++r) {
+        for(int c=0; c<3; ++c) {
+            for(int num : available_nums) {
+                if(board->public_is_valid(r, c, num, is_odd)) {
+                    validMoves.push_back(new Move<char>(r, c, num + '0'));
+                }
+            }
+        }
+    }
 
-    return new Move<char>(r, c, num_char);
+    if (validMoves.empty()) return nullptr;
+
+    Move<char>* selected = validMoves[rand() % validMoves.size()];
+    
+    Move<char>* retMove = new Move<char>(selected->get_x(), selected->get_y(), selected->get_symbol());
+    for(auto m : validMoves) delete m;
+    
+    return retMove;
 }
 
 // --- Obstacles_TTT_UI Implementations ---
@@ -861,47 +733,12 @@ Player<char>* Obstacles_TTT_UI::create_player(string& name, char symbol, PlayerT
 
 Move<char>* Obstacles_TTT_UI::get_move(Player<char>* p) {
     if (p->get_type() == PlayerType::HUMAN) {
-        cout << p->get_name() << "'s Turn (" << p->get_symbol() << ").\n";
-        cout << "Enter row and col (0-5) or -1 to Undo: ";
-        
-        int r = -1, c = -1;
-        if (!(cin >> r)) {
-            cin.clear();
-            cin.ignore(1000, '\n');
-            cout << "Invalid input. Try again.\n";
-            return get_move(p);
-        }
-
-        if (r == -1) {
-            c = -1;
-            Obstacles_TTT_Board* board = dynamic_cast<Obstacles_TTT_Board*>(p->get_board_ptr());
-            if (board) {
-                if (board->get_history_size() >= 2) {
-                    board->undoLastMove();
-                    board->undoLastMove();
-                    cout << "Undo successful.\n";
-                } else if (board->get_history_size() == 1) {
-                    board->undoLastMove();
-                    cout << "Undo successful.\n";
-                } else {
-                    cout << "Cannot undo.\n";
-                }
-                display_board_matrix(board->get_board_matrix());
-            }
-            return get_move(p);
-        }
-
-        if (!(cin >> c)) {
-            cin.clear();
-            cin.ignore(1000, '\n');
-            cout << "Invalid input. Try again.\n";
-            return get_move(p);
-        }
-        
+        int r, c;
+        cout << p->get_name() << ", enter row and col (0-5): ";
+        cin >> r >> c;
         return new Move<char>(r, c, p->get_symbol());
-
     } else {
-        cout << p->get_name() << " (" << p->get_symbol() << ") is thinking...\n";
+        cout << p->get_name() << " is thinking...\n";
         return computerMove(p);
     }
 }

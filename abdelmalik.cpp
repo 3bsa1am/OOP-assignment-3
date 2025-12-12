@@ -91,8 +91,62 @@ Player<char>* Pyramid_XO_UI::create_player(string& name, char symbol, PlayerType
     return new Player<char>(name, symbol, type);
 }
 
+// Locally implemented AI for Pyramid to avoid template issues
 Move<char>* Pyramid_XO_UI::computerMove(Player<char>* player) {
-    return GameAI::getBestMove_2D<Pyramid_X_O_Board>(player);
+    Pyramid_X_O_Board* board = dynamic_cast<Pyramid_X_O_Board*>(player->get_board_ptr());
+    if (!board) return nullptr;
+
+    char aiSym = player->get_symbol();
+    char oppSym = (aiSym == 'X') ? 'O' : 'X';
+    
+    // 1. Check Win
+    for(int r=0; r<3; ++r) {
+        for(int c=0; c<5; ++c) {
+            // Check manual validity first (pyramid shape)
+            bool valid = (r==0 && c==2) || (r==1 && c>=1 && c<=3) || (r==2 && c>=0 && c<=4);
+            if(valid && board->get_cell(r,c) == 0) {
+                Move<char>* m = new Move<char>(r, c, aiSym);
+                if(board->update_board(m)) {
+                    if(board->is_win(player)) {
+                        board->undoLastMove();
+                        return new Move<char>(r, c, aiSym);
+                    }
+                    board->undoLastMove();
+                }
+            }
+        }
+    }
+
+    // 2. Block
+    Player<char> opponent("temp", oppSym, PlayerType::HUMAN);
+    for(int r=0; r<3; ++r) {
+        for(int c=0; c<5; ++c) {
+            bool valid = (r==0 && c==2) || (r==1 && c>=1 && c<=3) || (r==2 && c>=0 && c<=4);
+            if(valid && board->get_cell(r,c) == 0) {
+                Move<char>* m = new Move<char>(r, c, oppSym);
+                if(board->update_board(m)) {
+                    if(board->is_win(&opponent)) {
+                        board->undoLastMove();
+                        return new Move<char>(r, c, aiSym);
+                    }
+                    board->undoLastMove();
+                }
+            }
+        }
+    }
+
+    // 3. Random
+    vector<pair<int,int>> validMoves;
+    for(int r=0; r<3; ++r) {
+        for(int c=0; c<5; ++c) {
+            bool valid = (r==0 && c==2) || (r==1 && c>=1 && c<=3) || (r==2 && c>=0 && c<=4);
+            if(valid && board->get_cell(r,c) == 0) validMoves.push_back({r,c});
+        }
+    }
+    
+    if(validMoves.empty()) return nullptr;
+    pair<int,int> p = validMoves[rand() % validMoves.size()];
+    return new Move<char>(p.first, p.second, aiSym);
 }
 
 Move<char>* Pyramid_XO_UI::get_move(Player<char>* player) {
@@ -239,8 +293,63 @@ Player<char>* Diamond_XO_UI::create_player(string& name, char symbol, PlayerType
     return new Player<char>(name, symbol, type);
 }
 
+// Locally implemented AI for Diamond to ensure robustness
 Move<char>* Diamond_XO_UI::computerMove(Player<char>* player) {
-    return GameAI::getBestMove_2D<Diamond_XO_Board>(player);
+    Diamond_XO_Board* board = dynamic_cast<Diamond_XO_Board*>(player->get_board_ptr());
+    if (!board) return nullptr;
+
+    char aiSym = player->get_symbol();
+    char oppSym = (aiSym == 'X') ? 'O' : 'X';
+    vector<Move<char>*> validMoves;
+
+    // 1. Gather all valid moves
+    for(int i=0; i<7; ++i) {
+        for(int j=0; j<7; ++j) {
+            // Check manual validity (bounds + diamond shape + empty)
+            if (abs(i - 3) + abs(j - 3) <= 3 && board->get_board_matrix()[i][j] == 0) {
+                validMoves.push_back(new Move<char>(i, j, aiSym));
+            }
+        }
+    }
+
+    if (validMoves.empty()) return nullptr;
+
+    // 2. Check for Immediate Win
+    for (auto move : validMoves) {
+        // Use a copy to prevent update_board from deleting the pointer in validMoves
+        Move<char>* tempMove = new Move<char>(move->get_x(), move->get_y(), move->get_symbol());
+        if (board->update_board(tempMove)) {
+            if (board->is_win(player)) {
+                board->undoLastMove();
+                Move<char>* winningMove = new Move<char>(move->get_x(), move->get_y(), move->get_symbol());
+                for(auto m : validMoves) delete m;
+                return winningMove; 
+            }
+            board->undoLastMove();
+        }
+    }
+
+    // 3. Check for Immediate Block
+    Player<char> opponent("temp", oppSym, PlayerType::HUMAN);
+    for (auto move : validMoves) {
+        Move<char>* oppMove = new Move<char>(move->get_x(), move->get_y(), oppSym);
+        if (board->update_board(oppMove)) {
+            if (board->is_win(&opponent)) {
+                board->undoLastMove();
+                Move<char>* blockingMove = new Move<char>(move->get_x(), move->get_y(), aiSym);
+                for(auto m : validMoves) delete m;
+                return blockingMove; 
+            }
+            board->undoLastMove();
+        }
+    }
+
+    // 4. Random fallback
+    Move<char>* bestMove = validMoves[rand() % validMoves.size()];
+    Move<char>* finalMove = new Move<char>(bestMove->get_x(), bestMove->get_y(), bestMove->get_symbol());
+    for(auto m : validMoves) delete m;
+
+    return finalMove;
 }
 
 Move<char>* Diamond_XO_UI::get_move(Player<char>* player) {
@@ -336,8 +445,57 @@ Player<char>* Memory_XO_UI::create_player(string& name, char symbol, PlayerType 
     return new Player<char>(name, symbol, type);
 }
 
+// Locally implemented AI for Memory
 Move<char>* Memory_XO_UI::computerMove(Player<char>* player) {
-    return GameAI::getBestMove_2D<Memory_XO_Board>(player);
+    Memory_XO_Board* board = dynamic_cast<Memory_XO_Board*>(player->get_board_ptr());
+    if (!board) return nullptr;
+
+    char aiSym = player->get_symbol();
+    char oppSym = (aiSym == 'X') ? 'O' : 'X';
+    
+    // 1. Win
+    for(int r=0; r<3; ++r) {
+        for(int c=0; c<3; ++c) {
+            if(board->get_cell(r, c) == 0) {
+                Move<char>* m = new Move<char>(r, c, aiSym);
+                if(board->update_board(m)) {
+                    if(board->is_win(player)) {
+                        board->undoLastMove();
+                        return new Move<char>(r, c, aiSym);
+                    }
+                    board->undoLastMove();
+                }
+            }
+        }
+    }
+
+    // 2. Block
+    Player<char> opponent("temp", oppSym, PlayerType::HUMAN);
+    for(int r=0; r<3; ++r) {
+        for(int c=0; c<3; ++c) {
+            if(board->get_cell(r, c) == 0) {
+                Move<char>* m = new Move<char>(r, c, oppSym);
+                if(board->update_board(m)) {
+                    if(board->is_win(&opponent)) {
+                        board->undoLastMove();
+                        return new Move<char>(r, c, aiSym);
+                    }
+                    board->undoLastMove();
+                }
+            }
+        }
+    }
+
+    // 3. Random
+    vector<pair<int, int>> validMoves;
+    for(int r=0; r<3; ++r) {
+        for(int c=0; c<3; ++c) {
+            if(board->get_cell(r, c) == 0) validMoves.push_back({r, c});
+        }
+    }
+    if(validMoves.empty()) return nullptr;
+    pair<int,int> p = validMoves[rand() % validMoves.size()];
+    return new Move<char>(p.first, p.second, aiSym);
 }
 
 Move<char>* Memory_XO_UI::get_move(Player<char>* player) {

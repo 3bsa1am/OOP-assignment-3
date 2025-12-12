@@ -413,11 +413,6 @@ bool Infinity_TTT_Board::update_board(Move<char>* move) {
         info.placed = {x, y};
         info.caused_removal = false;
 
-        // Removal Condition: Oldest move disappears every 3 moves starting from move 4
-        // Typically Infinity TTT limits pieces to 3 per player (6 total). 
-        // If we strictly follow "every 3 moves", board fills up.
-        // But if user wants a draw on full board, we let it fill.
-        
         if (n_moves >= 4 && (n_moves - 1) % 3 == 0) {
             if (!move_queue.empty()) {
                 Point oldest = move_queue.front();
@@ -464,8 +459,10 @@ bool Infinity_TTT_Board::is_win(Player<char>* player) {
 }
 
 bool Infinity_TTT_Board::is_draw(Player<char>* player) {
-    // Draw if board is full and no winner
-    // Check for any empty space
+    // Force draw after 50 moves to prevent infinite loops in AI vs AI
+    if (n_moves > 50) return true;
+    
+    // Standard Draw if board full (shouldn't happen often in Infinity)
     for(int i=0; i<rows; i++) {
         for(int j=0; j<columns; j++) {
             if (board[i][j] == blank_symbol) return false;
