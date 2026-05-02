@@ -1,87 +1,78 @@
 # OOP Assignment 3
 
-Welcome to the **OOP Assignment 3** repository – a multi-language academic project that demonstrates key concepts in Object-Oriented Programming (OOP) utilizing various modern technologies.
+Course assignment repository for an Object-Oriented Programming (OOP) project. It includes a written report (LaTeX/TeX), generated artifacts (PDF/PS), and implementation/demo materials (web + small amount of C++/JS).
 
-## Table of Contents
+## What’s in this repo
 
-- [Project Overview](#project-overview)
-- [Languages & Technologies](#languages--technologies)
-- [Directory Structure](#directory-structure)
-- [Getting Started](#getting-started)
-- [Building & Usage](#building--usage)
-- [Contributing](#contributing)
-- [License](#license)
+- **Documentation/report**: LaTeX/TeX sources and compiled outputs.
+- **Web content**: HTML/CSS/JavaScript pages for presenting or demoing the work.
+- **Source code**: C++ (and some JS) used in the assignment implementation.
 
----
+## Languages
 
-## Project Overview
+According to GitHub language stats:
 
-This repository contains the third major assignment for an Object-Oriented Programming course. It combines:
-- Web front-end components (HTML, CSS, JavaScript)
-- Algorithmic or backend logic in C++
-- Academic documentation in LaTeX/TeX
-- Visual or formatted outputs (PostScript)
+- HTML (~62.9%)
+- TeX (~23.9%)
+- JavaScript (~4.7%)
+- C++ (~3.4%)
+- PostScript (~3.0%)
+- CSS (~2.0%)
 
-The assignment is intended to showcase OOP principles in both practical (code) and theoretical (documentation) formats.
+## Getting started
 
-## Languages & Technologies
+### Clone
 
-- **HTML/CSS/JavaScript** — for the web interface and visualization (**~69.6%** combined)
-- **TeX/LaTeX** — academic documentation (**~23.9%**)
-- **C++** — core logic/algorithms (**~3.4%**)
-- **PostScript** — plot outputs or diagrams (**~3%**)
-
-## Directory Structure
-
-```plaintext
-/
-├── agents/           # Presumably contains agent code or documentation
-├── docs/             # Project documentation (LaTeX/TeX)
-├── src/              # Source code (C++, JS, etc.)
-├── web/              # HTML/CSS/JS files for web interface
-├── outputs/          # Generated PostScript figures or outputs
-├── README.md         # This file
+```bash
+git clone https://github.com/3bsa1am/OOP-assignment-3.git
+cd OOP-assignment-3
 ```
-*Actual structure may differ. Update as needed.*
 
-## Getting Started
+### Build the report (LaTeX)
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/3bsa1am/OOP-assignment-3.git
-   cd OOP-assignment-3
-   ```
+Install a LaTeX distribution (TeX Live / MiKTeX). Then, from the directory containing the main `.tex` file:
 
-2. **Install dependencies**
-    - For C++: Make sure you have a C++ compiler (e.g., g++, clang++).
-    - For LaTeX: Install a TeX distribution (e.g., TeX Live, MikTeX).
-    - For web: Use a modern browser or [live-server](https://www.npmjs.com/package/live-server) for local hosting.
+```bash
+pdflatex main.tex
+# run again if references are used
+pdflatex main.tex
+```
 
-3. **Build documentation**
-   ```bash
-   cd docs
-   pdflatex main.tex
-   ```
+If the report uses BibTeX:
 
-4. **Run/Build Code**
-   - For C++ (example):
-      ```bash
-      cd src/
-      g++ main.cpp -o assignment
-      ./assignment
-      ```
-   - For web:
-      Open `web/index.html` in your browser.
+```bash
+pdflatex main.tex
+bibtex main
+pdflatex main.tex
+pdflatex main.tex
+```
 
-## Building & Usage
+### View the web pages
 
-- Modify or extend code according to instructions in the documentation.
-- Review academic report in `docs/` for assignment overview and personal insights.
+If the repo contains an `index.html` (often under a `web/` folder), open it directly in a browser, or serve it locally.
 
-## Contributing
+Example (Python):
 
-Contributions and suggestions are welcome! Feel free to open issues or submit pull requests for improvements.
+```bash
+# run inside the folder that contains index.html
+python -m http.server 8000
+```
+
+Then visit `http://localhost:8000`.
+
+### Build / run the C++ code (if present)
+
+```bash
+# example only; adjust filenames as needed
+g++ -std=c++17 -O2 -o app main.cpp
+./app
+```
+
+## Notes
+
+- Generated artifacts (PDF/PS) may be present in the repo; if you rebuild the report, outputs may change based on your TeX setup.
+- This repository is primarily for academic/educational use.
 
 ## License
 
-This project is intended for educational purposes. For broader use, please contact the repository owner.
+No license is currently specified. If you intend to reuse or redistribute any part of this repository, please contact the repository owner.
